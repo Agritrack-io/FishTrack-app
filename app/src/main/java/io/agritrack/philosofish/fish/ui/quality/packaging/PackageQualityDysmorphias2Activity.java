@@ -1,11 +1,7 @@
 package io.agritrack.philosofish.fish.ui.quality.packaging;
 
-import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
-import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.fish.state.GlobalState.recQualityPackage;
-import static io.agritrack.philosofish.fish.state.GlobalState.recQualityReceipt;
-import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +9,6 @@ import android.text.InputFilter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,19 +18,13 @@ import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.common.InputFilterMinMax;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.dialog.SupportDialog;
-import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.state.PackageQualityRecord;
-import io.agritrack.philosofish.fish.state.QualityRecord;
-import io.agritrack.philosofish.fish.state.ReceiptQualityRecord;
-import io.agritrack.philosofish.fish.ui.quality.receipt.ReceiptQualityConfirmActivity;
-import io.agritrack.philosofish.fish.ui.quality.receipt.ReceiptQualityStartActivity;
-import io.agritrack.philosofish.ui.custom.ToggleGroup;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
 
 public class PackageQualityDysmorphias2Activity extends AppCompatActivity {
     private MobileDB db;
     private EditText etHemslight, etHemSpots, etHemDiffuse, etHemWounds, etEyeBLurred, etEyeCured, etEyeBlind,
-        etEyeBleed, etGillMucus, etGillBloody, etGillBrown, etGillDiscolored;
+            etEyeBleed, etGillMucus, etGillBloody, etGillBrown, etGillDiscolored;
     private ImageView ivSupport;
     private SupportDialog supportDialog;
 
@@ -231,7 +220,6 @@ public class PackageQualityDysmorphias2Activity extends AppCompatActivity {
 
         return packQualityRecord;
     }
-
 
 
 }

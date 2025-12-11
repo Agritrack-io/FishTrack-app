@@ -13,6 +13,7 @@ import android.widget.EditText;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.Locale;
+
 import io.agritrack.philosofish.R;
 
 public class SetTempDataDialog {
@@ -47,9 +48,9 @@ public class SetTempDataDialog {
         corrAction.setText(corrActi == null ? "" : corrActi);
 
         btnOk.setOnClickListener(v -> {
-            Double fishTP  = !Strings.isEmptyOrWhitespace(tvSurfaceT.getText().toString()) ? Double.valueOf(tvSurfaceT.getText().toString()) : null;
+            Double fishTP = !Strings.isEmptyOrWhitespace(tvSurfaceT.getText().toString()) ? Double.valueOf(tvSurfaceT.getText().toString()) : null;
             Double waterTP = !Strings.isEmptyOrWhitespace(tvBottomT.getText().toString()) ? Double.valueOf(tvBottomT.getText().toString()) : null;
-            String act     = !Strings.isEmptyOrWhitespace(corrAction.getText().toString()) ? corrAction.getText().toString() : null;
+            String act = !Strings.isEmptyOrWhitespace(corrAction.getText().toString()) ? corrAction.getText().toString() : null;
 
             if (mDataListener != null) mDataListener.onDataPassed(binEPC, fishTP, waterTP, act);
             dismiss();
@@ -60,8 +61,13 @@ public class SetTempDataDialog {
         this.mDataListener = listener;
     }
 
-    public void showDialog() { dialog.show(); }
-    public void dismiss()   { dialog.dismiss(); }
+    public void showDialog() {
+        dialog.show();
+    }
+
+    public void dismiss() {
+        dialog.dismiss();
+    }
 
     private void setDialog() {
         dialog = new Dialog(activity);
@@ -76,9 +82,9 @@ public class SetTempDataDialog {
     }
 
     private void findViews() {
-        btnOk      = dialog.findViewById(R.id.btnOk);
+        btnOk = dialog.findViewById(R.id.btnOk);
         tvSurfaceT = dialog.findViewById(R.id.tvFishT);
-        tvBottomT  = dialog.findViewById(R.id.tvWaterT);
+        tvBottomT = dialog.findViewById(R.id.tvWaterT);
         corrAction = dialog.findViewById(R.id.tvFishT2);
 
         tvSurfaceT.setSelectAllOnFocus(true);

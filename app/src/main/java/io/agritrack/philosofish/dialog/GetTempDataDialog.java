@@ -37,7 +37,7 @@ public class GetTempDataDialog {
 
     public void showDialog() {
         dialog.show();
-        if (temperature <=  Double.valueOf(4)) {
+        if (temperature <= Double.valueOf(4)) {
             String text = String.format("The temperature %.2f \u2103 in the bin %s is acceptable.", temperature, binEPC);
             txtData.setText(text);
         } else {

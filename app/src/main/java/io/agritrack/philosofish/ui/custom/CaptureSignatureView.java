@@ -133,7 +133,7 @@ public class CaptureSignatureView extends View {
         return b;
     }
 
-    public  boolean isSigned(){
-        return  this.signed;
+    public boolean isSigned() {
+        return this.signed;
     }
 }

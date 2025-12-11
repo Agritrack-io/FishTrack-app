@@ -19,7 +19,6 @@ import java.util.List;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.ui.adapter.CageListAdapter;
-import io.agritrack.philosofish.ui.adapter.TemplateRecyclerAdapter;
 
 
 public class CageListDialog {

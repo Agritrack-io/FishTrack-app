@@ -28,14 +28,14 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import io.agritrack.data.repo.MeasurementRepository;
-import io.agritrack.philosofish.data.dto.tx.ReceiptQualityTxDTO;
-import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.tx.TransactionApi;
 import io.agritrack.philosofish.api.upload.UploadingApi;
 import io.agritrack.philosofish.common.FileUtils;
 import io.agritrack.philosofish.data.db.MobileDB;
+import io.agritrack.philosofish.data.dto.tx.ReceiptQualityTxDTO;
+import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.data.repo.IFishTrackRepository;
 import io.agritrack.philosofish.data.repo.TemperatureDataRepository;
 import io.agritrack.philosofish.dialog.SupportDialog;
@@ -118,14 +118,15 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             Boolean proceed = updateState();
 
             if (proceed) {
-
-                QualityStepsState.completed[1] = true; // Step 2 receipt quality completed
+                QualityStepsState.completed[1] = true;
 
                 Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
                 startActivity(i);
+                finish();   // <-- IMPORTANT: removes old activity from back stack
             }
         }
     }
+
 
 
     protected void configFooter() {
@@ -170,24 +171,14 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
     private void initControlsFromState() {
         ReceiptQualityRecord qltRecord = GlobalState.recQualityReceipt;
 
-        if (!Strings.isEmptyOrWhitespace(qltRecord.lot)) {
-            tvLot.setText(qltRecord.lot);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(qltRecord.fishSpecies)) {
-            tvSpecies.setText(recFishing.speciesName);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(qltRecord.startTime)) {
-            tvStartTime.setText(qltRecord.startTime);
-        }
-
-        if (!Strings.isEmptyOrWhitespace(qltRecord.fishingDate)) {
-            tvFishDate.setText(qltRecord.fishingDate);
-        }
+        tvLot.setText(qltRecord.lot == null ? "" : qltRecord.lot);
+        tvSpecies.setText(recFishing.speciesName == null ? "" : recFishing.speciesName);
+        tvStartTime.setText(qltRecord.startTime == null ? "" : qltRecord.startTime);
+        tvFishDate.setText(qltRecord.fishingDate == null ? "" : qltRecord.fishingDate);
 
         tvUsername.setText(LocalPreferences.getLoggedInUser("").trim());
     }
+
 
     private boolean syncAllPhotos() {
         try {
@@ -272,18 +263,34 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
             return false;
         }
     }
+    private void resetReceiptQualityState() {
+        GlobalState.initReceiptQualityRecord();
+
+        runOnUiThread(() -> {
+            tvLot.setText("");
+            tvSpecies.setText("");
+            tvStartTime.setText("");
+            tvFishDate.setText("");
+        });
+    }
 
     public class SyncTxCallBack implements Callback<ReceiptQualityTxDTO> {
         @Override
         public void onResponse(Call<ReceiptQualityTxDTO> call, Response<ReceiptQualityTxDTO> response) {
             if (response.isSuccessful() || IsDemo) {
                 qualityTxMarkSynced();
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
+                resetReceiptQualityState();
+
+                runOnUiThread(() ->
+                        CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT)
+                );
             } else {
-                // could not update Processing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_postquality_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() ->
+                        CToast(getApplicationContext(), render(R.string.error_postquality_update_failure), Toast.LENGTH_LONG)
+                );
             }
         }
+
 
         @Override
         public void onFailure(Call<ReceiptQualityTxDTO> call, Throwable error) {

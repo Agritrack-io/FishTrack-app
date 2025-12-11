@@ -30,7 +30,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
 
 
     public TemplateRecyclerAdapter(Context context, List<BinEpc> values) {
-        this(context,values,true);
+        this(context, values, true);
     }
 
     public TemplateRecyclerAdapter(Context context, List<BinEpc> values, boolean isEPC) {
@@ -38,6 +38,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         this.mLayoutInflater = LayoutInflater.from(context);
         this.isEPC = isEPC;
     }
+
     public void removeItem(String epc) {
         Optional<BinEpc> binFound = this.mList.stream().filter(x -> x.epc.equals(epc)).findFirst();
         if (binFound.isPresent()) {
@@ -45,15 +46,15 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         }
     }
 
-    public String getSelectedValue(){
+    public String getSelectedValue() {
         return this.selectedValue;
     }
 
-    public String getSelectedLabel(){
+    public String getSelectedLabel() {
         return this.selectedLabel;
     }
 
-    public void clearSelectedValue(){
+    public void clearSelectedValue() {
         selectedPos = RecyclerView.NO_POSITION;
         this.selectedValue = null;
     }
@@ -66,7 +67,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         this.mList = values;
     }
 
-    public void setItemObserver(MutableLiveData<String> mld){
+    public void setItemObserver(MutableLiveData<String> mld) {
         this.liveItem = mld;
     }
 
@@ -150,7 +151,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         return mList != null ? mList.size() : 0;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder  {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvItemName, tvItemSNo;
 
         public MyViewHolder(@NonNull View itemView) {

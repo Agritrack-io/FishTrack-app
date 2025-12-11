@@ -44,7 +44,7 @@ public class OptionGridAdapter<T extends OptionGridAdapter.IDrawableWithText> ex
         ivImage = view.findViewById(R.id.ivImage);
         T option = mOptions.get(position);
         tvMenuCaptionDown.setText(option.getText());
-        tvNoItem.setText(""+(position+1));
+        tvNoItem.setText("" + (position + 1));
         ivImage.setImageResource(option.getResourceId());
         view.setBackground(mActivity.getDrawable(R.drawable.button_press_effect_round));
         ivImage.setImageTintList(ColorStateList.valueOf(mActivity.getColor(R.color.white)));

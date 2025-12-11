@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="empty"/>
+    <string name="empty" />
     <string name="app_name">FishTrack</string>
     <string name="app_name_tomato">TomatoTrack</string>
     <string name="app_name_hotel">LinenTrack</string>
@@ -1011,7 +1011,6 @@
     <string name="tag_loggger_correlation">Συσχέτιση ετικέτας-καταγραφικού</string>
     <string name="tag">Ετικέτα</string>
     <string name="scan_logger">Σκανάρετε Καταγραφικό</string>
-
 
 
     <string name="choose_rfid_level">Επιλέξτε Ένταση RFID</string>

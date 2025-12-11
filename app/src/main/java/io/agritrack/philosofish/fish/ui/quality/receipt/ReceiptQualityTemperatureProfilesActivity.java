@@ -1,28 +1,22 @@
 package io.agritrack.philosofish.fish.ui.quality.receipt;
 
 import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
-import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.fish.state.GlobalState.recLoggerData;
-import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.gms.common.util.Strings;
 
 import java.util.DoubleSummaryStatistics;
 import java.util.Map;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.dialog.SupportDialog;
-import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.state.LoggerDataRecord;
 import io.agritrack.philosofish.ui.adapter.TemperatureProfileAdapter;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
@@ -86,8 +80,8 @@ public class ReceiptQualityTemperatureProfilesActivity extends AppCompatActivity
 //                CToast(getApplicationContext(), render("Errors : " + v), Toast.LENGTH_LONG);
 //            } else {
 //                updateState();
-                Intent i = new Intent(getApplicationContext(), ReceiptQualityInfoActivity.class);
-                startActivity(i);
+            Intent i = new Intent(getApplicationContext(), ReceiptQualityInfoActivity.class);
+            startActivity(i);
 //            }
         });
 
@@ -105,7 +99,7 @@ public class ReceiptQualityTemperatureProfilesActivity extends AppCompatActivity
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
-       if (!IsDemo) {
+        if (!IsDemo) {
             if (recLoggerData == null || recLoggerData.data.isEmpty()) {
                 sb.append(String.format("\n%s is missing", getString(R.string.logger_data)));
             }

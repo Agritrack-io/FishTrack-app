@@ -23,17 +23,18 @@ public class SyncUsersCallBack extends BaseSyncCallBack<List<AppUserDTO>> {
         List<AppUserDTO> rs = response.body();
 
         if (rs != null) {
-            // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 
             for (AppUserDTO userDTO : rs) {
                 db.userDAO().insert(AppUserDTO.convert(userDTO));
             }
-            // Users sync succeeded.
-            syncResult.setValue(getAppContext().getString(R.string.users_sync_completed));
+
+            // SAFE
+            set(getAppContext().getString(R.string.users_sync_completed));
+
         } else {
-            // no Users found
-            syncResult.setValue(getAppContext().getString(R.string.no_users_found_alert));
+            // SAFE
+            set(getAppContext().getString(R.string.no_users_found_alert));
         }
     }
 }

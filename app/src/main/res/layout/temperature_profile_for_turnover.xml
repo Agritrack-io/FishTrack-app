@@ -75,14 +75,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/tempChartIn"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="@id/tempChart"
-            app:layout_constraintEnd_toEndOf="@id/tempChart"
-            app:layout_constraintStart_toStartOf="@+id/tempChart"
-            app:layout_constraintTop_toTopOf="@+id/tempChart" />
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/tempChartIn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="@id/tempChart"
+                app:layout_constraintEnd_toEndOf="@id/tempChart"
+                app:layout_constraintStart_toStartOf="@+id/tempChart"
+                app:layout_constraintTop_toTopOf="@+id/tempChart" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/infoLayout"

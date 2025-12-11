@@ -1,645 +1,645 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/fishingStartActivityLayout"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@color/agri_semi_green"
-android:descendantFocusability="beforeDescendants"
-android:focusableInTouchMode="true"
-tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/headerLayout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fishingStartActivityLayout"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
-    android:background="@drawable/bg_form_screen"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:fadingEdge="horizontal"
-    android:paddingTop="0dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    android:layout_height="match_parent"
+    android:background="@color/agri_semi_green"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    tools:context=".fish.ui.quality.receipt.ReceiptQualityInfoActivity">
 
-    <ImageView
-        android:id="@+id/ivSupport"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/button_press_effect"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/support" />
-
-    <TextView
-        android:id="@+id/tvTitleToolbar"
-        fontPath="fonts/open_sans_semibold.ttf"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="16dp"
-        android:width="250sp"
-        android:gravity="center|top|fill_vertical"
-        android:text="@string/title_quality_receipt"
-        android:textColor="@color/yellow"
-        android:textSize="@dimen/title_font_size"
-        app:layout_constraintBottom_toTopOf="@+id/tvHeaderReceiptQualityInfo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingPrefix" />
-
-    <TextView
-        android:id="@+id/tvHeaderReceiptQualityInfo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/agri_blue"
-        android:backgroundTintMode="screen"
-        android:gravity="center"
-        android:textColor="@color/agri_semi_green"
-        android:textSize="@dimen/subtitle_font_size"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitleToolbar"
-        tools:layout_conversion_absoluteHeight="0dp"
-        tools:layout_conversion_absoluteWidth="0dp" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/formLayout"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    app:layout_constraintBottom_toTopOf="@+id/footerLayout"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/headerLayout">
-
-    <RelativeLayout
-        android:id="@+id/processStartALayout"
-        android:layout_width="0dp"
         android:layout_height="75dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/moreInfoCLayout"
+        android:background="@drawable/bg_form_screen"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:fadingEdge="horizontal"
+        android:paddingTop="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="vertical"
-            android:padding="1dp">
-
-            <EditText
-                android:id="@+id/etPlot"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:completionThreshold="1"
-                android:ems="10"
-                android:hint="@string/enter_lot"
-                android:imeOptions="actionNext"
-                android:inputType="number"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/ivSupport"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_press_effect"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/support" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tvTitleToolbar"
+            fontPath="fonts/open_sans_semibold.ttf"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="16dp"
-            android:background="@color/agri_semi_green"
-            android:paddingHorizontal="8dp"
-            android:text="@string/packaging_details"
-            android:textColor="@color/label_blue"
-            android:textSize="18sp" />
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
+            android:width="250sp"
+            android:gravity="center|top|fill_vertical"
+            android:text="@string/title_quality_receipt"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/title_font_size"
+            app:layout_constraintBottom_toTopOf="@+id/tvHeaderReceiptQualityInfo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingPrefix" />
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/tvHeaderReceiptQualityInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/agri_blue"
+            android:backgroundTintMode="screen"
+            android:gravity="center"
+            android:textColor="@color/agri_semi_green"
+            android:textSize="@dimen/subtitle_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleToolbar"
+            tools:layout_conversion_absoluteHeight="0dp"
+            tools:layout_conversion_absoluteWidth="0dp" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <RelativeLayout
-        android:id="@+id/moreInfoCLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/formLayout"
         android:layout_width="0dp"
-        android:layout_height="350dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/processStartCLayout"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/footerLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/processStartALayout">
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="vertical"
-            android:padding="1dp">
+        <RelativeLayout
+            android:id="@+id/processStartALayout"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/moreInfoCLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <EditText
+                    android:id="@+id/etPlot"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:completionThreshold="1"
+                    android:ems="10"
+                    android:hint="@string/enter_lot"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/tvMinTempBinLabel"
-                android:layout_width="280dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="@string/bin_min_temp"
-                android:textAlignment="viewStart"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvMeanTempBinLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvMinTempBin"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rounded_dialog_non_input"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingTop="3dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvMeanTempBin"
-                app:layout_constraintStart_toEndOf="@+id/tvMinTempBinLabel"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvMinBin"
-                android:layout_width="30dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="8dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/tvMinTempBin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvMinTempBin"
-                app:layout_constraintTop_toTopOf="@+id/tvMinTempBin" />
-
-            <TextView
-                android:id="@+id/tvMeanTempBinLabel"
-                android:layout_width="280dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="@string/bin_avg_temp"
-                android:textAlignment="viewStart"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_semi_green"
+                android:paddingHorizontal="8dp"
+                android:text="@string/packaging_details"
                 android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvMaxTempBinLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMinTempBinLabel" />
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/moreInfoCLayout"
+            android:layout_width="0dp"
+            android:layout_height="350dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/processStartCLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/processStartALayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <TextView
+                    android:id="@+id/tvMinTempBinLabel"
+                    android:layout_width="280dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/bin_min_temp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMeanTempBinLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvMinTempBin"
+                    android:layout_width="70dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMeanTempBin"
+                    app:layout_constraintStart_toEndOf="@+id/tvMinTempBinLabel"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvMinBin"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:paddingLeft="4dp"
+                    android:text="°C"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvMinTempBin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvMinTempBin"
+                    app:layout_constraintTop_toTopOf="@+id/tvMinTempBin" />
+
+                <TextView
+                    android:id="@+id/tvMeanTempBinLabel"
+                    android:layout_width="280dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/bin_avg_temp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaxTempBinLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMinTempBinLabel" />
+
+                <TextView
+                    android:id="@+id/tvMeanTempBin"
+                    android:layout_width="70dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaxTempBin"
+                    app:layout_constraintStart_toEndOf="@+id/tvMeanTempBinLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMinTempBin" />
+
+                <TextView
+                    android:id="@+id/tvMeanBin"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:paddingLeft="4dp"
+                    android:text="°C"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvMeanTempBin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvMeanTempBin"
+                    app:layout_constraintTop_toTopOf="@+id/tvMeanTempBin" />
+
+                <TextView
+                    android:id="@+id/tvMaxTempBinLabel"
+                    android:layout_width="280dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/bin_max_temp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMinFishTempLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMeanTempBinLabel"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/tvMaxTempBin"
+                    android:layout_width="70dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_non_input"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingTop="3dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/etMinFishTemp"
+                    app:layout_constraintStart_toEndOf="@+id/tvMaxTempBinLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMeanTempBin" />
+
+                <TextView
+                    android:id="@+id/tvMaxBin"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:paddingLeft="4dp"
+                    android:text="°C"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvMaxTempBin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvMaxTempBin"
+                    app:layout_constraintTop_toTopOf="@+id/tvMaxTempBin" />
+
+                <TextView
+                    android:id="@+id/tvMinFishTempLabel"
+                    android:layout_width="280dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/fish_min_temp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMeanFishTempLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaxTempBinLabel" />
+
+                <EditText
+                    android:id="@+id/etMinFishTemp"
+                    android:layout_width="70dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="viewEnd"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/etMeanFishTemp"
+                    app:layout_constraintStart_toEndOf="@+id/tvMinFishTempLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMaxTempBin" />
+
+                <TextView
+                    android:id="@+id/tvMinFishTemp"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:paddingLeft="4dp"
+                    android:text="°C"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toBottomOf="@+id/etMinFishTemp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/etMinFishTemp"
+                    app:layout_constraintTop_toTopOf="@+id/etMinFishTemp" />
+
+                <TextView
+                    android:id="@+id/tvMeanFishTempLabel"
+                    android:layout_width="280dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/fish_avg_temp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/tvMaxFishTempLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMinFishTempLabel" />
+
+                <EditText
+                    android:id="@+id/etMeanFishTemp"
+                    android:layout_width="70dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="viewEnd"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toTopOf="@+id/etMaxFishTemp"
+                    app:layout_constraintStart_toEndOf="@+id/tvMeanFishTempLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/etMinFishTemp" />
+
+                <TextView
+                    android:id="@+id/tvMeanFishTemp"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:paddingLeft="4dp"
+                    android:text="°C"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toBottomOf="@+id/etMeanFishTemp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/etMeanFishTemp"
+                    app:layout_constraintTop_toTopOf="@+id/etMeanFishTemp" />
+
+                <TextView
+                    android:id="@+id/tvMaxFishTempLabel"
+                    android:layout_width="280dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:ems="10"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="@string/fish_max_temp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMeanFishTempLabel" />
+
+                <EditText
+                    android:id="@+id/etMaxFishTemp"
+                    android:layout_width="70dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:ems="10"
+                    android:inputType="numberDecimal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="viewEnd"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvMaxFishTempLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/etMeanFishTemp" />
+
+                <TextView
+                    android:id="@+id/tvMaxFishTemp"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:paddingLeft="4dp"
+                    android:text="°C"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_view_font_size_medium"
+                    app:layout_constraintBottom_toBottomOf="@+id/etMaxFishTemp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/etMaxFishTemp"
+                    app:layout_constraintTop_toTopOf="@+id/etMaxFishTemp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/tvMeanTempBin"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rounded_dialog_non_input"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingTop="3dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvMaxTempBin"
-                app:layout_constraintStart_toEndOf="@+id/tvMeanTempBinLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvMinTempBin" />
-
-            <TextView
-                android:id="@+id/tvMeanBin"
-                android:layout_width="30dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="8dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/tvMeanTempBin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvMeanTempBin"
-                app:layout_constraintTop_toTopOf="@+id/tvMeanTempBin" />
-
-            <TextView
-                android:id="@+id/tvMaxTempBinLabel"
-                android:layout_width="280dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="@string/bin_max_temp"
-                android:textAlignment="viewStart"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_semi_green"
+                android:paddingHorizontal="8dp"
+                android:text="@string/arrival_temperatures"
                 android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvMinFishTempLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMeanTempBinLabel"
-                app:layout_constraintVertical_bias="0.0" />
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/processStartCLayout"
+            android:layout_width="0dp"
+            android:layout_height="140dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/moreInfoCLayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <EditText
+                    android:id="@+id/mtvRemarks"
+                    android:layout_width="300dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:gravity="top"
+                    android:hint="@string/receipt_remarks"
+                    android:inputType="textMultiLine"
+                    android:completionThreshold="1"
+                    android:imeOptions="actionDone"
+                    android:padding="5dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"
+                    android:scrollbarFadeDuration="0"
+                    android:selectAllOnFocus="true"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/ivCamera"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/camera_press_effect"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/mtvRemarks"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_shortcut_camera_alt" />
+
+                <ImageView
+                    android:id="@+id/ivTakenPhoto"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/mtvRemarks"
+                    app:layout_constraintTop_toBottomOf="@+id/ivCamera"
+                    app:srcCompat="@drawable/no_image" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/tvMaxTempBin"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rounded_dialog_non_input"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingTop="3dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/etMinFishTemp"
-                app:layout_constraintStart_toEndOf="@+id/tvMaxTempBinLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvMeanTempBin" />
-
-            <TextView
-                android:id="@+id/tvMaxBin"
-                android:layout_width="30dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="8dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/tvMaxTempBin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvMaxTempBin"
-                app:layout_constraintTop_toTopOf="@+id/tvMaxTempBin" />
-
-            <TextView
-                android:id="@+id/tvMinFishTempLabel"
-                android:layout_width="280dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="@string/fish_min_temp"
-                android:textAlignment="viewStart"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_semi_green"
+                android:paddingHorizontal="8dp"
+                android:text="@string/remarks"
                 android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvMeanFishTempLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMaxTempBinLabel" />
+                android:textSize="18sp" />
 
-            <EditText
-                android:id="@+id/etMinFishTemp"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:inputType="numberDecimal"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/etMeanFishTemp"
-                app:layout_constraintStart_toEndOf="@+id/tvMinFishTempLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvMaxTempBin" />
+        </RelativeLayout>
 
-            <TextView
-                android:id="@+id/tvMinFishTemp"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="8dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etMinFishTemp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/etMinFishTemp"
-                app:layout_constraintTop_toTopOf="@+id/etMinFishTemp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/tvMeanFishTempLabel"
-                android:layout_width="280dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="@string/fish_avg_temp"
-                android:textAlignment="viewStart"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/tvMaxFishTempLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMinFishTempLabel" />
 
-            <EditText
-                android:id="@+id/etMeanFishTemp"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:inputType="numberDecimal"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toTopOf="@+id/etMaxFishTemp"
-                app:layout_constraintStart_toEndOf="@+id/tvMeanFishTempLabel"
-                app:layout_constraintTop_toBottomOf="@+id/etMinFishTemp" />
-
-            <TextView
-                android:id="@+id/tvMeanFishTemp"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="8dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etMeanFishTemp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/etMeanFishTemp"
-                app:layout_constraintTop_toTopOf="@+id/etMeanFishTemp" />
-
-            <TextView
-                android:id="@+id/tvMaxFishTempLabel"
-                android:layout_width="280dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:ems="10"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="@string/fish_max_temp"
-                android:textAlignment="viewStart"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMeanFishTempLabel" />
-
-            <EditText
-                android:id="@+id/etMaxFishTemp"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:ems="10"
-                android:inputType="numberDecimal"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:textAlignment="viewEnd"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvMaxFishTempLabel"
-                app:layout_constraintTop_toBottomOf="@+id/etMeanFishTemp" />
-
-            <TextView
-                android:id="@+id/tvMaxFishTemp"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="8dp"
-                android:paddingLeft="4dp"
-                android:text="°C"
-                android:textAlignment="viewStart"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_view_font_size_medium"
-                app:layout_constraintBottom_toBottomOf="@+id/etMaxFishTemp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/etMaxFishTemp"
-                app:layout_constraintTop_toTopOf="@+id/etMaxFishTemp" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="16dp"
-            android:background="@color/agri_semi_green"
-            android:paddingHorizontal="8dp"
-            android:text="@string/arrival_temperatures"
-            android:textColor="@color/label_blue"
-            android:textSize="18sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/processStartCLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/footerLayout"
         android:layout_width="0dp"
-        android:layout_height="140dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
+        android:layout_height="68sp"
+        android:background="@drawable/border_top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/moreInfoCLayout">
+        app:layout_constraintTop_toBottomOf="@+id/formLayout">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="vertical"
-            android:padding="1dp">
-
-            <EditText
-                android:id="@+id/mtvRemarks"
-                android:layout_width="300dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:gravity="top"
-                android:hint="@string/receipt_remarks"
-                android:inputType="textMultiLine"
-                android:completionThreshold="1"
-                android:imeOptions="actionDone"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:scrollbarFadeDuration="0"
-                android:selectAllOnFocus="true"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/ivCamera"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/camera_press_effect"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/mtvRemarks"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_shortcut_camera_alt" />
-
-            <ImageView
-                android:id="@+id/ivTakenPhoto"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/mtvRemarks"
-                app:layout_constraintTop_toBottomOf="@+id/ivCamera"
-                app:srcCompat="@drawable/no_image" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
+        <ImageView
+            android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivToPackageQualityMoreInfo"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToPackageQualityTempProfiles"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/powered_by_agritrack" />
+
+        <ImageView
+            android:id="@+id/ivBackToPackageQualityTempProfiles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:background="@color/agri_semi_green"
-            android:paddingHorizontal="8dp"
-            android:text="@string/remarks"
-            android:textColor="@color/label_blue"
-            android:textSize="18sp" />
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
+            android:scaleX="1.5"
+            android:scaleY="1.2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
-    </RelativeLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/footerLayout"
-    android:layout_width="0dp"
-    android:layout_height="68sp"
-    android:background="@drawable/border_top"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/formLayout">
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:scaleX="0.7"
-        android:scaleY="0.7"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivToPackageQualityMoreInfo"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToPackageQualityTempProfiles"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/powered_by_agritrack" />
-
-    <ImageView
-        android:id="@+id/ivBackToPackageQualityTempProfiles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/button_rounded_shape_corners"
-        android:padding="1dp"
-        android:scaleX="1.5"
-        android:scaleY="1.2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_shortcut_arrow_back" />
-
-    <ImageView
-        android:id="@+id/ivToPackageQualityMoreInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/button_rounded_shape_corners"
-        android:padding="1dp"
-        android:scaleX="1.5"
-        android:scaleY="1.2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/ivToPackageQualityMoreInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
+            android:scaleX="1.5"
+            android:scaleY="1.2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

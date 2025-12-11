@@ -27,6 +27,10 @@ public interface FinalQualityTxDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(FinalQualityTransaction qualityTx);
 
+    @Query("DELETE FROM final_quality_transaction WHERE fish_lot = :fishLot")
+    int deleteByFishingLot(String fishLot);
+
+
     @Delete
     void delete(FinalQualityTransaction qualityTx);
 
@@ -38,4 +42,8 @@ public interface FinalQualityTxDAO {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(FinalQualityTransaction qualityTx);
+
+    @Query("DELETE FROM final_quality_transaction WHERE lot = :lot")
+    void deleteByLot(String lot);
+
 }

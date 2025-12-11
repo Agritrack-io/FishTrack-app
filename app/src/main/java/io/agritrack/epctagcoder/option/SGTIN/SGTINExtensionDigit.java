@@ -26,6 +26,7 @@ public enum SGTINExtensionDigit {
     }
 
     private static final Map<Integer, SGTINExtensionDigit> BY_CODE_MAP = new LinkedHashMap<>();
+
     static {
         for (SGTINExtensionDigit rae : SGTINExtensionDigit.values()) {
             BY_CODE_MAP.put(rae.value, rae);

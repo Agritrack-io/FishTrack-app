@@ -24,6 +24,7 @@ public enum SGTINFilterValue {
     }
 
     private static final Map<Integer, SGTINFilterValue> BY_CODE_MAP = new LinkedHashMap<>();
+
     static {
         for (SGTINFilterValue rae : SGTINFilterValue.values()) {
             BY_CODE_MAP.put(rae.value, rae);

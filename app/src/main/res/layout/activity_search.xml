@@ -139,7 +139,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/rvAssets"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/spAssetType"/>
+                    app:layout_constraintTop_toBottomOf="@+id/spAssetType" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvAssets"
@@ -154,8 +154,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/etAssetBarcode"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/svSearchAsset">
-                </androidx.recyclerview.widget.RecyclerView>
+                    app:layout_constraintTop_toBottomOf="@+id/svSearchAsset"></androidx.recyclerview.widget.RecyclerView>
 
                 <ImageButton
                     android:id="@+id/ivPasteItem"
@@ -219,7 +218,7 @@
             app:layout_constraintBottom_toBottomOf="@id/formLayout"
             app:layout_constraintRight_toRightOf="@id/formLayout"
             app:flow_verticalBias="0.95"
-            app:flow_horizontalBias="0.50"/>
+            app:flow_horizontalBias="0.50" />
 
         <RelativeLayout
             android:id="@+id/SearchBLayout"

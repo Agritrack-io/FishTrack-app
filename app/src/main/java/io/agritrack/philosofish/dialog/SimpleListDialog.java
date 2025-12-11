@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.Window;
-import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import androidx.annotation.StringRes;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.ui.adapter.TemplateRecyclerAdapter;
-import io.agritrack.philosofish.ui.login.api.SiteInfoRS;
 
 public class SimpleListDialog {
     private final TemplateRecyclerAdapter itemsAdapter;
@@ -46,7 +44,7 @@ public class SimpleListDialog {
         rvItems.setLayoutManager(layoutManager);
         rvItems.setItemAnimator(new DefaultItemAnimator());
         rvItems.addItemDecoration(new DividerItemDecoration(this.activity, DividerItemDecoration.VERTICAL));
-        itemsAdapter = new TemplateRecyclerAdapter(this.activity, data.stream().map(x-> new TemplateRecyclerAdapter.BinEpc(x)).collect(Collectors.toList()), false);
+        itemsAdapter = new TemplateRecyclerAdapter(this.activity, data.stream().map(x -> new TemplateRecyclerAdapter.BinEpc(x)).collect(Collectors.toList()), false);
         rvItems.setAdapter(itemsAdapter);
         rvItems.setNestedScrollingEnabled(false);
 

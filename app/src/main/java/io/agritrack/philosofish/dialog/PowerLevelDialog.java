@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import io.agritrack.philosofish.R;
-import io.agritrack.philosofish.ui.service.LocalPreferences;
 
 
 public class PowerLevelDialog extends DialogFragment {

@@ -235,6 +235,7 @@ public class SearchActivity extends AppCompatActivity {
 //        etAssetBarcode.setLayoutParams(params);
 
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -320,6 +321,7 @@ public class SearchActivity extends AppCompatActivity {
             startActivity(i);
         });
     }
+
     private void pastePlate() {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         String pasteData = clipboard.getPrimaryClip().getItemAt(0).getText().toString();
@@ -411,7 +413,7 @@ public class SearchActivity extends AppCompatActivity {
                 tvProximity.setText(R.string.proximity);
                 //uhfReader.setFilterEPC(epcPrefix + code.substring(0, 3) + selectedBarcode);
                 Asset searchAsset = db.assetDAO().getByCode(selectedBarcode);
-                if (searchAsset != null){
+                if (searchAsset != null) {
                     uhfReader.setFilterEPC(db.assetDAO().getByCode(selectedBarcode).rfid);
                 } else {
                     uhfReader.setFilterEPC(epcPrefix + "141" + selectedBarcode);

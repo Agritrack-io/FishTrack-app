@@ -451,22 +451,22 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
             tvOutgoingProcessTo.setText(outgoingWHRecord.toSite);
         }
 
-            if (outgoingWHRecord.items != null) {
-                Map<String, List<Asset>> adapterMap = new HashMap<>();
-                for (String key : outgoingWHRecord.items.keySet()) {
-                    List<Asset> assetList = new ArrayList<>();
-                    for (String rfid : outgoingWHRecord.items.get(key)) {
-                        Asset asset = db.assetDAO().getAssetByEpc(rfid);
-                        if (asset != null){
-                            assetList.add(asset);
-                        }
+        if (outgoingWHRecord.items != null) {
+            Map<String, List<Asset>> adapterMap = new HashMap<>();
+            for (String key : outgoingWHRecord.items.keySet()) {
+                List<Asset> assetList = new ArrayList<>();
+                for (String rfid : outgoingWHRecord.items.get(key)) {
+                    Asset asset = db.assetDAO().getAssetByEpc(rfid);
+                    if (asset != null) {
+                        assetList.add(asset);
                     }
-                    adapterMap.put(key,assetList);
                 }
-                adapterOutgoingItems.setValues(adapterMap);
-
-                adapterOutgoingItems.notifyDataSetChanged();
+                adapterMap.put(key, assetList);
             }
+            adapterOutgoingItems.setValues(adapterMap);
+
+            adapterOutgoingItems.notifyDataSetChanged();
+        }
     }
 
     protected void onClick(View view) {
@@ -549,11 +549,11 @@ public class OutgoingAssetActivity extends LocationAwareActivity {
                             List<Asset> assetList = new ArrayList<>();
                             for (String rfid : values.get(key)) {
                                 Asset asset = db.assetDAO().getAssetByEpc(rfid);
-                                if (asset != null){
+                                if (asset != null) {
                                     assetList.add(asset);
                                 }
                             }
-                            adapterMap.put(key,assetList);
+                            adapterMap.put(key, assetList);
                         }
 
 

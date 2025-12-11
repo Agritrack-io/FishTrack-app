@@ -512,7 +512,6 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -557,8 +556,7 @@
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="@+id/overallGradeLabel"
                     app:layout_constraintStart_toEndOf="@+id/overallGradeLabel"
-                    app:layout_constraintBottom_toBottomOf="@+id/overallGradeLabel"
-                     />
+                    app:layout_constraintBottom_toBottomOf="@+id/overallGradeLabel" />
 
                 <TextView
                     android:id="@+id/outOfTwelve"
@@ -572,8 +570,7 @@
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="@+id/overallGrade"
                     app:layout_constraintStart_toEndOf="@+id/overallGrade"
-                    app:layout_constraintBottom_toBottomOf="@+id/overallGrade"
-                    />
+                    app:layout_constraintBottom_toBottomOf="@+id/overallGrade" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -591,8 +588,6 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent" />
-
-
 
 
         </RelativeLayout>
@@ -716,8 +711,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/lotNumberLabel"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/lotNumberLabel"
-                    app:layout_constraintTop_toTopOf="@id/lotNumberLabel"
-                    />
+                    app:layout_constraintTop_toTopOf="@id/lotNumberLabel" />
 
                 <TextView
                     android:id="@+id/binNumberLabel"
@@ -752,8 +746,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/binNumberLabel"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/binNumberLabel" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

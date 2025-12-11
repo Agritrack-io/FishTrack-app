@@ -82,7 +82,6 @@
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
 
-
         <RelativeLayout
             android:id="@+id/moreInfoBLayout"
             android:layout_width="0dp"

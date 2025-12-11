@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cvParent"
@@ -63,21 +62,21 @@
         app:layout_constraintStart_toEndOf="@+id/divider1"
         app:layout_constraintTop_toTopOf="parent">
 
-<!--        <TextView-->
-<!--            android:uid="@+uid/tvBinWeightLabel"-->
-<!--            fontPath="fonts/open_sans_extra_bold.ttf"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="sans-serif"-->
-<!--            android:text="@string/weight_bin"-->
-<!--            android:textAlignment="center"-->
-<!--            android:textColor="@color/yellow"-->
-<!--            android:textSize="22sp"-->
-<!--            android:textStyle="normal"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            tools:ignore="MissingPrefix" />-->
+        <!--        <TextView-->
+        <!--            android:uid="@+uid/tvBinWeightLabel"-->
+        <!--            fontPath="fonts/open_sans_extra_bold.ttf"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:fontFamily="sans-serif"-->
+        <!--            android:text="@string/weight_bin"-->
+        <!--            android:textAlignment="center"-->
+        <!--            android:textColor="@color/yellow"-->
+        <!--            android:textSize="22sp"-->
+        <!--            android:textStyle="normal"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            tools:ignore="MissingPrefix" />-->
 
         <EditText
             android:id="@+id/etBinWeight"
@@ -127,22 +126,22 @@
         app:layout_constraintStart_toEndOf="@+id/divider1"
         app:layout_constraintTop_toTopOf="parent">
 
-<!--        <TextView-->
-<!--            android:uid="@+uid/tvAddTemp"-->
-<!--            fontPath="fonts/open_sans_extra_bold.ttf"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:fontFamily="sans-serif"-->
-<!--            android:text="@string/temp"-->
-<!--            android:textAlignment="center"-->
-<!--            android:textColor="@color/yellow"-->
-<!--            android:textSize="22sp"-->
-<!--            android:textStyle="normal"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            tools:ignore="MissingPrefix" />-->
+        <!--        <TextView-->
+        <!--            android:uid="@+uid/tvAddTemp"-->
+        <!--            fontPath="fonts/open_sans_extra_bold.ttf"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="8dp"-->
+        <!--            android:fontFamily="sans-serif"-->
+        <!--            android:text="@string/temp"-->
+        <!--            android:textAlignment="center"-->
+        <!--            android:textColor="@color/yellow"-->
+        <!--            android:textSize="22sp"-->
+        <!--            android:textStyle="normal"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            tools:ignore="MissingPrefix" />-->
 
         <EditText
             android:id="@+id/etBinTemperature"

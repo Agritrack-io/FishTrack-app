@@ -27,25 +27,26 @@ public class SyncBinInfo extends BaseSyncCallBack<List<BinInfoDTO>> {
         List<BinInfoDTO> rs = response.body();
 
         if (rs != null) {
-            // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 
             for (BinInfoDTO binDTO : rs) {
                 db.binInfoDAO().insert(BinInfoDTO.convert(binDTO));
             }
-            // Cage Details sync succeeded.
-            syncResult.setValue(getAppContext().getString(R.string.cage_details_sync_completed));
+
+            // SAFE: does NOT crash in silent mode
+            set(getAppContext().getString(R.string.cage_details_sync_completed));
         } else {
-            // no Cage Details found
-            syncResult.setValue(getAppContext().getString(R.string.no_cage_details_found_alert));
+            set(getAppContext().getString(R.string.no_cage_details_found_alert));
         }
     }
+
     @Override
     public void onFailure(Call<List<BinInfoDTO>> call, Throwable t) {
         System.out.println(t);
 
         CToast(getAppContext(), render("Please Check WIFI connection.."), Toast.LENGTH_LONG);
-        syncResult.setValue(null);
-    }
 
+        // SAFE: no crash even if syncResult == null
+        set(null);
+    }
 }

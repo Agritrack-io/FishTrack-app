@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class DateConverter {
     @TypeConverter
-    public static Date toDate(Long timestamp){
+    public static Date toDate(Long timestamp) {
         return timestamp == null ? null : new Date(timestamp);
     }
 
@@ -18,10 +18,10 @@ public class DateConverter {
     }
 
     @TypeConverter
-    public  static Date toDate(String dateString) {
+    public static Date toDate(String dateString) {
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date  = new Date();
+        Date date = new Date();
         try {
             date = dateFormat.parse(dateString);
         } catch (Exception e) {

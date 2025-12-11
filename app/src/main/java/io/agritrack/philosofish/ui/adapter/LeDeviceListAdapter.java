@@ -18,52 +18,50 @@ import io.agritrack.philosofish.R;
 
 public class LeDeviceListAdapter extends BaseAdapter {
 
-	// Adapter for holding devices found through scanning.
-	public interface ListDataSource {
-		KBeacon getBeaconDevice(int nIndex);
+    // Adapter for holding devices found through scanning.
+    public interface ListDataSource {
+        KBeacon getBeaconDevice(int nIndex);
 
-		int getCount();
-	}
+        int getCount();
+    }
 
-	private ListDataSource mDataSource;
-	private Context mContext;
+    private ListDataSource mDataSource;
+    private Context mContext;
 
-	public LeDeviceListAdapter(ListDataSource c, Context ctx) {
-		super();
-		mDataSource = c;
-		mContext = ctx;
-	}
+    public LeDeviceListAdapter(ListDataSource c, Context ctx) {
+        super();
+        mDataSource = c;
+        mContext = ctx;
+    }
 
-	@Override
-	public int getCount() {
-		return mDataSource.getCount();
-	}
+    @Override
+    public int getCount() {
+        return mDataSource.getCount();
+    }
 
-	@Override
-	public Object getItem(int i) {
-		return mDataSource.getBeaconDevice(i);
-	}
+    @Override
+    public Object getItem(int i) {
+        return mDataSource.getBeaconDevice(i);
+    }
 
-	@Override
-	public long getItemId(int i) {
-		return i;
-	}
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
 
 
-	@Override
-	public View getView(int i, View view, ViewGroup viewGroup)
-	{
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
         try {
             ViewHolder viewHolder;
             // General ListView optimization code.
-            if (view == null)
-            {
+            if (view == null) {
                 view = LayoutInflater.from(mContext).inflate(R.layout.listitem_device, null);
                 viewHolder = new ViewHolder();
                 viewHolder.deviceName = view
                         .findViewById(R.id.beacon_name);
 
-                viewHolder.deviceMacAddr =  view
+                viewHolder.deviceMacAddr = view
                         .findViewById(R.id.beacon_mac_address);
 
                 viewHolder.rssiState = view
@@ -74,17 +72,14 @@ public class LeDeviceListAdapter extends BaseAdapter {
 
 
                 //humidity
-                viewHolder.llHTSensor= view
+                viewHolder.llHTSensor = view
                         .findViewById(R.id.ll_ht_sensor);
                 viewHolder.deviceTemp = view
                         .findViewById(R.id.tv_temp);
 
 
-
                 view.setTag(viewHolder);
-            }
-            else
-            {
+            } else {
                 viewHolder = (ViewHolder) view.getTag();
             }
 
@@ -116,12 +111,10 @@ public class LeDeviceListAdapter extends BaseAdapter {
 
             //KBSensor info
             KBAdvPacketSensor kSensor = (KBAdvPacketSensor) device.getAdvPacketByType(KBAdvType.Sensor);
-            if (kSensor != null)
-            {
+            if (kSensor != null) {
                 //humidity and temp info
                 StringBuffer strHTInfo = new StringBuffer(50);
-                if (kSensor.getTemperature() != null)
-                {
+                if (kSensor.getTemperature() != null) {
                     strHTInfo.append(kSensor.getTemperature())
                             .append("℃ ");
                 }
@@ -131,9 +124,7 @@ public class LeDeviceListAdapter extends BaseAdapter {
                 } else {
                     viewHolder.deviceTemp.setTextColor(Color.GREEN);
                 }
-            }
-            else
-            {
+            } else {
                 viewHolder.llHTSensor.setVisibility(View.GONE);
             }
 
@@ -143,12 +134,12 @@ public class LeDeviceListAdapter extends BaseAdapter {
         }
     }
 
-	class ViewHolder {
-		TextView deviceName;      //名
-		TextView rssiState;     //状态
-		TextView deviceBatteryPercent;
-		TextView deviceMacAddr;
-		LinearLayout llHTSensor;
-		TextView deviceTemp;
-	}
+    class ViewHolder {
+        TextView deviceName;      //名
+        TextView rssiState;     //状态
+        TextView deviceBatteryPercent;
+        TextView deviceMacAddr;
+        LinearLayout llHTSensor;
+        TextView deviceTemp;
+    }
 }

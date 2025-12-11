@@ -1,5 +1,9 @@
 package io.agritrack.philosofish.fish.ui.transport;
 
+import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
+import static io.agritrack.philosofish.common.LargeString.render;
+import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -17,10 +21,6 @@ import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.state.TransportationRecord;
 import io.agritrack.philosofish.ui.custom.CaptureSignatureView;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
-
-import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
-import static io.agritrack.philosofish.common.LargeString.render;
-import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 public class TransportDriverConfirmActivity extends AppCompatActivity {
 
@@ -93,7 +93,7 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
             tvSitePackaging.setText(trns.packagingSite);
         }
 
-        if (trns.availBins!=null) {
+        if (trns.availBins != null) {
             tvNumberOfBinsCount.setText(String.valueOf(trns.availBins.size()));
         }
 
@@ -104,7 +104,7 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
         if (!Strings.isEmptyOrWhitespace(trns.licensePlate)) {
             tvLicensePlate.setText(trns.licensePlate);
             int truckCapacity = LocalPreferences.getTruckCapacity(trns.licensePlate);
-            if (truckCapacity>0){
+            if (truckCapacity > 0) {
                 etTruckCapacity.setText(String.valueOf(truckCapacity));
             }
         }
@@ -130,12 +130,12 @@ public class TransportDriverConfirmActivity extends AppCompatActivity {
         GlobalState.recTransport.signatureBytes = signatureView.getBytes();
         GlobalState.recTransport.capacity = !Strings.isEmptyOrWhitespace(etTruckCapacity.getText().toString()) ? Integer.parseInt(etTruckCapacity.getText().toString()) : 0;
         Integer truckCapacity = LocalPreferences.getTruckCapacity(GlobalState.recTransport.licensePlate);
-        if (truckCapacity==0 || !GlobalState.recTransport.capacity.equals(truckCapacity)){
+        if (truckCapacity == 0 || !GlobalState.recTransport.capacity.equals(truckCapacity)) {
             LocalPreferences.addTruckCapacity(GlobalState.recTransport.licensePlate, GlobalState.recTransport.capacity);
         }
     }
 
-    private String validate(){
+    private String validate() {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (!signatureView.isSigned()) {

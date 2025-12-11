@@ -5,12 +5,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="appSettings"
             type="io.agritrack.philosofish.ui.viewmodel.ConfigViewModel" />
     </data>
 
-    <FrameLayout android:layout_width="match_parent"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/agri_semi_green"
         tools:context=".fragment.LicenseSettingsFragment">

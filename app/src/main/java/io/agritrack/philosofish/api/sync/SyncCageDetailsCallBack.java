@@ -23,17 +23,17 @@ public class SyncCageDetailsCallBack extends BaseSyncCallBack<List<CageDetailsDT
         List<CageDetailsDTO> rs = response.body();
 
         if (rs != null) {
-            // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 
             for (CageDetailsDTO detailDTO : rs) {
                 db.cageDetailsDAO().insert(CageDetailsDTO.convert(detailDTO));
             }
-            // Cage Details sync succeeded.
-            syncResult.setValue(getAppContext().getString(R.string.cage_details_sync_completed));
+
+            set(getAppContext().getString(R.string.cage_details_sync_completed));
+
         } else {
-            // no Cage Details found
-            syncResult.setValue(getAppContext().getString(R.string.no_cage_details_found_alert));
+
+            set(getAppContext().getString(R.string.no_cage_details_found_alert));
         }
     }
 }

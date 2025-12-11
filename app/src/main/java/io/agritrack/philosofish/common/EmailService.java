@@ -51,7 +51,7 @@ public class EmailService {
         props.put("mail.smtp.auth", "true");
 
         // GMAIL only properties
-        if("smtp.gmail.com".equalsIgnoreCase(SMTP_HOST)){
+        if ("smtp.gmail.com".equalsIgnoreCase(SMTP_HOST)) {
             props.put("mail.smtp.socketFactory.port", "465");
             props.put("mail.smtp.socketFactory.class",
                     "javax.net.ssl.SSLSocketFactory");
@@ -63,12 +63,12 @@ public class EmailService {
 
         // Create a message with the specified information.
         MimeMessage msg = new MimeMessage(session);
-        msg.setFrom(new InternetAddress(FROM,FROMNAME));
+        msg.setFrom(new InternetAddress(FROM, FROMNAME));
         msg.setRecipients(Message.RecipientType.TO, TO);
         msg.setSubject(SUBJECT, "UTF-8");
 
         String messageBody = String.format(BODY, Calendar.getInstance().getTime(), senderName, senderTel, issueDescription);
-        msg.setContent(messageBody,"text/html; charset=UTF-8");
+        msg.setContent(messageBody, "text/html; charset=UTF-8");
 
         // Create a transport.
 

@@ -26,6 +26,10 @@ public interface QualityTransactionDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(QualityTransaction... qualityTxs);
 
+    @Query("DELETE FROM quality_transaction WHERE plot=:plot")
+    int deleteByPlot(String plot);
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(QualityTransaction qualityTx);
 

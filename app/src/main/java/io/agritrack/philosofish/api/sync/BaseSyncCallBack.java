@@ -16,7 +16,19 @@ public abstract class BaseSyncCallBack<T> implements Callback<T> {
     protected MobileDB db;
 
     protected BaseSyncCallBack(MutableLiveData<String> syncResult) {
-        this.syncResult = syncResult;
+        this.syncResult = syncResult; // may be null in silent mode
+    }
+
+    protected void set(String msg) {
+        if (syncResult != null && msg != null) {
+            syncResult.setValue(msg);
+        }
+    }
+
+    protected void post(String msg) {
+        if (syncResult != null && msg != null) {
+            syncResult.postValue(msg);
+        }
     }
 
     @Override
@@ -24,8 +36,7 @@ public abstract class BaseSyncCallBack<T> implements Callback<T> {
 
     @Override
     public void onFailure(Call<T> call, Throwable t) {
-        // Probably Network Communication Error
-        call.request().url();
-        syncResult.setValue(getAppContext().getString(R.string.synch_failed));
+        String msg = getAppContext().getString(R.string.synch_failed);
+        set(msg); // safe, does nothing if syncResult == null
     }
 }

@@ -11,7 +11,7 @@ import io.agritrack.philosofish.fish.ui.bo.BinWeightRecord;
 
 public class FishingTxDTO {
 
-    private static final SimpleDateFormat simpleDateTime =  new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
+    private static final SimpleDateFormat simpleDateTime = new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
 
     public UUID id;
     public String fishing_request;

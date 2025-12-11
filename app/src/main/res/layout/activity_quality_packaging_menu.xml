@@ -99,8 +99,7 @@
                 android:layout_marginTop="12dp"
                 android:background="@drawable/shape_rounded_corner_with_shadow"
                 android:orientation="vertical"
-                android:padding="20dp"
-                >
+                android:padding="20dp">
 
                 <GridView
                     android:id="@+id/gvQualityMenu"

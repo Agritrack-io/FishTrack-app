@@ -1,11 +1,8 @@
 package io.agritrack.philosofish.data.model.common;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 import java.sql.Time;
-import java.time.LocalDateTime;
 
 public class SortingSample {
 

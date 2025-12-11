@@ -26,7 +26,6 @@ import java.math.RoundingMode;
 import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
 
-import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.tx.TransactionApi;
@@ -37,6 +36,7 @@ import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.state.QualityRecord;
+import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.ui.LocationAwareActivity;
 import io.agritrack.philosofish.ui.service.AuthenticationService;
 import io.agritrack.philosofish.ui.service.LocalPreferences;

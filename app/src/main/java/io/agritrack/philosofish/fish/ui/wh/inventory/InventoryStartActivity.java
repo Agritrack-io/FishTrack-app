@@ -139,7 +139,7 @@ public class InventoryStartActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recWHInventory.subSite)) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.subsite)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.subsite)));
 
             }
         }

@@ -38,7 +38,6 @@ import io.agritrack.philosofish.api.sync.SyncStepCallBack;
 import io.agritrack.philosofish.api.sync.SyncUsersCallBack;
 import io.agritrack.philosofish.api.tx.TransactionApi;
 import io.agritrack.philosofish.api.upload.UploadingApi;
-import io.agritrack.philosofish.common.DeviceUtils;
 import io.agritrack.philosofish.common.FileUtils;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.dto.AppUserDTO;
@@ -169,11 +168,17 @@ public class WhMenuActivity extends AppCompatActivity {
 
         ivRefresh = findViewById(R.id.ivRefresh);
         ivRefresh.setOnClickListener(view -> {
+            // Visible sync
             invokeSyncAll();
             invokeUploadPendingAll();
+
+            // Optional silent background sync
+            silentSyncAll();
+
             syncAssetDialog = new SyncAssetDialog(WhMenuActivity.this);
             syncAssetDialog.showDialog();
         });
+
 
         ivSupport = findViewById(R.id.ivSupport);
         ivSupport.setOnClickListener(view -> {
@@ -232,7 +237,73 @@ public class WhMenuActivity extends AppCompatActivity {
         }
     }
 
+    private void silentSyncAll() {
+        try {
+            SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
+            TransactionApi pendingTxSvc = APIServiceGenerator.createAPI(TransactionApi.class);
+            String token = LocalPreferences.getToken();
+            UUID siteId = LocalPreferences.getCurrentSiteId();
+            String clusterId = LocalPreferences.getCurrentClusterId();
 
+            // Use null to disable UI updates completely
+            MutableLiveData<String> silent = null;
+
+            // ===========================
+            // 1. Sync Sites
+            // ===========================
+            Call<List<SiteDTO>> syncSitesCall =
+                    syncService.getSitesByCluster(clusterId, "Bearer " + token);
+            syncSitesCall.enqueue(new SyncClusterSitesCallBack(silent));
+
+            // ===========================
+            // 2. Sync Users
+            // ===========================
+            Call<List<AppUserDTO>> syncUsersCall =
+                    syncService.getUsersBySiteId(siteId, "Bearer " + token);
+            syncUsersCall.enqueue(new SyncUsersCallBack(silent));
+
+            // ===========================
+            // 3. Sync EPC Step / ConfigDevice
+            // ===========================
+            EnquiryApi eqApi = APIServiceGenerator.createAPI(EnquiryApi.class);
+
+            Call<ConfigDevice> getStepCall =
+                    eqApi.getCurrentEpcsByDevice("Bearer " + token);
+            getStepCall.enqueue(new SyncStepCallBack(silent));
+
+            // ===========================
+            // 4. Sync pending correlation TX
+            // ===========================
+            List<CorrelationTransaction> correlationTXs =
+                    db.correlationTransactionDAO().getAll();
+
+            if (!correlationTXs.isEmpty()) {
+                List<CorrelationTransaction> identifications =
+                        correlationTXs.stream().filter(f -> f.assetRFID == null).toList();
+                List<CorrelationTransaction> inter =
+                        correlationTXs.stream().filter(f -> f.assetRFID != null).toList();
+
+                if (!identifications.isEmpty()) {
+                    List<CorrelationTxDTO> dto =
+                            identifications.stream().map(CorrelationTxDTO::convert).toList();
+                    Call<ResponseBody> call =
+                            pendingTxSvc.syncAssetCorrelationTx(dto, "Bearer " + token);
+                    call.enqueue(new PendingCorrelationTxCallBack(silent));
+                }
+
+                if (!inter.isEmpty()) {
+                    List<CorrelationTxDTO> dto =
+                            inter.stream().map(CorrelationTxDTO::convert).toList();
+                    Call<ResponseBody> call =
+                            pendingTxSvc.syncAssetWithAssetCorrelationTx(dto, "Bearer " + token);
+                    call.enqueue(new PendingCorrelationTxCallBack(silent));
+                }
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
     private void invokeSyncAll() {
         try {

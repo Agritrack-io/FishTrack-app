@@ -57,7 +57,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
             Optional<BinDetails> curItem = this.mList.stream().filter(x -> x.epc.equals(epc)).findFirst();
             if (curItem.isPresent()) {
                 BinDetails bin = curItem.get();
-                bin.flag = bin.flag!=2 ? 0 : bin.flag;
+                bin.flag = bin.flag != 2 ? 0 : bin.flag;
             }
 //            else {
 //                BinDetails bin = new BinDetails(epc);
@@ -67,15 +67,15 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
         }
     }
 
-    public String getSelectedValue(){
+    public String getSelectedValue() {
         return this.selectedValue;
     }
 
-    public String getSelectedLabel(){
+    public String getSelectedLabel() {
         return this.selectedLabel;
     }
 
-    public void clearSelectedValue(){
+    public void clearSelectedValue() {
         selectedPos = RecyclerView.NO_POSITION;
         this.selectedValue = null;
     }
@@ -100,7 +100,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        if (mList.size()<=position){
+        if (mList.size() <= position) {
             return;
         }
         BinDetails currBin = mList.get(position);
@@ -114,7 +114,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
         }
         if (currBin.weight != null) {
             holder.tvWeight.setText(currBin.weight.toString());
-        }  else {
+        } else {
             holder.tvWeight.setText("");
         }
 
@@ -190,7 +190,7 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
         }
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder  {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvItemName, tvItemSNo, tvCage, tvWeight;
 
         public MyViewHolder(@NonNull View itemView) {

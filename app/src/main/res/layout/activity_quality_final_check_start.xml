@@ -370,7 +370,7 @@
                                 android:textColor="@drawable/button_text_color"
                                 android:textOff="@string/correction"
                                 android:textOn="@string/correction"
-                                android:textSize="17sp"/>
+                                android:textSize="17sp" />
 
 
                         </io.agritrack.philosofish.ui.custom.ToggleGroup>
@@ -429,7 +429,8 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/cbCylindrical"/>
+                            app:layout_constraintEnd_toStartOf="@id/cbCylindrical" />
+
                         <CheckBox
                             android:id="@+id/cbCylindrical"
                             android:layout_width="wrap_content"
@@ -440,7 +441,7 @@
                             android:buttonTint="@color/agri_blue"
                             app:layout_constraintTop_toTopOf="@id/tvCylindrical"
                             app:layout_constraintBottom_toBottomOf="@id/tvCylindrical"
-                            app:layout_constraintStart_toEndOf="@id/tvCylindrical"/>
+                            app:layout_constraintStart_toEndOf="@id/tvCylindrical" />
 
                         <TextView
                             android:id="@+id/tvExpanded"
@@ -458,6 +459,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@id/cbCylindrical"
                             app:layout_constraintEnd_toStartOf="@id/cbExpanded" />
+
                         <CheckBox
                             android:id="@+id/cbExpanded"
                             android:layout_width="wrap_content"
@@ -468,7 +470,7 @@
                             android:buttonTint="@color/agri_blue"
                             app:layout_constraintTop_toTopOf="@id/tvExpanded"
                             app:layout_constraintBottom_toBottomOf="@id/tvExpanded"
-                            app:layout_constraintStart_toEndOf="@id/tvExpanded"/>
+                            app:layout_constraintStart_toEndOf="@id/tvExpanded" />
 
                         <TextView
                             android:id="@+id/tvSoft"
@@ -486,6 +488,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@id/cbExpanded"
                             app:layout_constraintEnd_toStartOf="@id/cbSoft" />
+
                         <CheckBox
                             android:id="@+id/cbSoft"
                             android:layout_width="wrap_content"
@@ -496,7 +499,7 @@
                             android:buttonTint="@color/agri_blue"
                             app:layout_constraintTop_toTopOf="@id/tvSoft"
                             app:layout_constraintBottom_toBottomOf="@id/tvSoft"
-                            app:layout_constraintStart_toEndOf="@id/tvSoft"/>
+                            app:layout_constraintStart_toEndOf="@id/tvSoft" />
 
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -553,7 +556,8 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@id/cbHead"/>
+                            app:layout_constraintEnd_toStartOf="@id/cbHead" />
+
                         <CheckBox
                             android:id="@+id/cbHead"
                             android:layout_width="wrap_content"
@@ -564,7 +568,7 @@
                             android:buttonTint="@color/agri_blue"
                             app:layout_constraintTop_toTopOf="@id/tvHead"
                             app:layout_constraintBottom_toBottomOf="@id/tvHead"
-                            app:layout_constraintStart_toEndOf="@id/tvHead"/>
+                            app:layout_constraintStart_toEndOf="@id/tvHead" />
 
                         <TextView
                             android:id="@+id/tvBody"
@@ -582,6 +586,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@id/cbHead"
                             app:layout_constraintEnd_toStartOf="@id/cbBody" />
+
                         <CheckBox
                             android:id="@+id/cbBody"
                             android:layout_width="wrap_content"
@@ -592,7 +597,7 @@
                             android:buttonTint="@color/agri_blue"
                             app:layout_constraintTop_toTopOf="@id/tvBody"
                             app:layout_constraintBottom_toBottomOf="@id/tvBody"
-                            app:layout_constraintStart_toEndOf="@id/tvBody"/>
+                            app:layout_constraintStart_toEndOf="@id/tvBody" />
 
                         <TextView
                             android:id="@+id/tvAreas"
@@ -610,6 +615,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toEndOf="@id/cbBody"
                             app:layout_constraintEnd_toStartOf="@id/cbAreas" />
+
                         <CheckBox
                             android:id="@+id/cbAreas"
                             android:layout_width="wrap_content"
@@ -620,7 +626,7 @@
                             android:buttonTint="@color/agri_blue"
                             app:layout_constraintTop_toTopOf="@id/tvAreas"
                             app:layout_constraintBottom_toBottomOf="@id/tvAreas"
-                            app:layout_constraintStart_toEndOf="@id/tvAreas"/>
+                            app:layout_constraintStart_toEndOf="@id/tvAreas" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -668,8 +674,7 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            >
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/scanLayout"
@@ -775,8 +780,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/lotNumberLabel"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/lotNumberLabel"
-                    app:layout_constraintTop_toTopOf="@id/lotNumberLabel"
-                    />
+                    app:layout_constraintTop_toTopOf="@id/lotNumberLabel" />
 
                 <TextView
                     android:id="@+id/binNumberLabel"
@@ -811,8 +815,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/binNumberLabel"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/binNumberLabel" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

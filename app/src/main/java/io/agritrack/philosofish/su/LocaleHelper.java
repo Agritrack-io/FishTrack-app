@@ -14,9 +14,9 @@ public class LocaleHelper {
     public static void onCreate(Context context) {
 
         String lang;
-        if(getLanguage(context).isEmpty()){
+        if (getLanguage(context).isEmpty()) {
             lang = getPersistedData(context, Locale.getDefault().getLanguage());
-        }else {
+        } else {
             lang = getLanguage(context);
         }
 

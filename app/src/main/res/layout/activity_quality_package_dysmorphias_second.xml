@@ -82,7 +82,6 @@
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
 
-
         <RelativeLayout
             android:id="@+id/moreInfoBLayout"
             android:layout_width="0dp"
@@ -304,8 +303,6 @@
                     app:layout_constraintBottom_toBottomOf="@+id/etHemWounds"
                     app:layout_constraintStart_toEndOf="@+id/etHemWounds"
                     app:layout_constraintTop_toTopOf="@+id/etHemWounds" />
-
-
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

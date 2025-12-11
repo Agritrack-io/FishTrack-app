@@ -11,25 +11,25 @@ public class RestfulCommunicationSingleton {
     private RequestQueue mRequestQueue;
     private static Context mContext;
 
-    private RestfulCommunicationSingleton(Context context){
+    private RestfulCommunicationSingleton(Context context) {
         // Specify the application context
         mContext = context;
         // Get the request queue
         mRequestQueue = getRequestQueue();
     }
 
-    public static synchronized RestfulCommunicationSingleton getInstance(Context context){
+    public static synchronized RestfulCommunicationSingleton getInstance(Context context) {
         // If Instance is null then initialize new Instance
-        if(mInstance == null){
+        if (mInstance == null) {
             mInstance = new RestfulCommunicationSingleton(context);
         }
         // Return MySingleton new Instance
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue(){
+    public RequestQueue getRequestQueue() {
         // If RequestQueue is null the initialize new RequestQueue
-        if(mRequestQueue == null){
+        if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(mContext.getApplicationContext());
         }
 
@@ -37,7 +37,7 @@ public class RestfulCommunicationSingleton {
         return mRequestQueue;
     }
 
-    public<T> void addToRequestQueue(Request<T> request){
+    public <T> void addToRequestQueue(Request<T> request) {
         // Add the specified request to the request queue
         getRequestQueue().add(request);
     }

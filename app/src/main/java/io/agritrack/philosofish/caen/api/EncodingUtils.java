@@ -12,20 +12,22 @@ public class EncodingUtils {
 
     /**
      * returns Hex representation of a byte
+     *
      * @return
      */
     public static String BytesToHex(final byte b) {
-        return BytesToHex(new byte[] {b});
+        return BytesToHex(new byte[]{b});
     }
 
     /**
      * accepts a byte array and converts it to a Hex string
+     *
      * @param bytes
      * @return Hex encoded String
      */
     public static String BytesToHex(final byte[] bytes) {
         StringBuilder sb = new StringBuilder();
-        for(byte b : bytes){
+        for (byte b : bytes) {
             sb.append(String.format("%02X", (0xFF & b)));
         }
 
@@ -34,6 +36,7 @@ public class EncodingUtils {
 
     /**
      * accepts a short number and converts it to a byte array.
+     *
      * @param x : short number to be converted to bytes array
      * @return: bytes array
      */
@@ -42,10 +45,10 @@ public class EncodingUtils {
     }
 
     public static short ToShort(byte[] bytes) {
-        if(bytes.length>2) {
-            bytes = Arrays.copyOf(bytes,2);
+        if (bytes.length > 2) {
+            bytes = Arrays.copyOf(bytes, 2);
             return ByteBuffer.wrap(bytes).getShort();
-        } else if (bytes.length==1) {
+        } else if (bytes.length == 1) {
             return bytes[0];
         } else {
             return ByteBuffer.wrap(bytes).getShort();
@@ -55,6 +58,7 @@ public class EncodingUtils {
     /**
      * converts a Long to a bytes array.
      * used in SetTimestamp, the bytes should by given in REVERSE order!!
+     *
      * @param x: long to be converted
      * @return: a bytes array.
      */
@@ -86,7 +90,7 @@ public class EncodingUtils {
 
     public static String parseData(byte[] data) {
         StringBuffer sb = new StringBuffer();
-        if (data!=null) {
+        if (data != null) {
             for (int i = 0; i < data.length; i += 6) {
                 short t = ToShort(new byte[]{data[i], data[i + 1]});
 
@@ -100,23 +104,23 @@ public class EncodingUtils {
 
     public static String parseTemperatureText(short t) {
         if (t > 2240) {
-            return String.format("%.2f",(double)(t - 8192) / 32d);
+            return String.format("%.2f", (double) (t - 8192) / 32d);
         } else {
-            return String.format("%.2f",(double)(t / 32d));
+            return String.format("%.2f", (double) (t / 32d));
         }
     }
 
     public static Double parseTemperatureNumeric(short t) {
         if (t > 2240) {
-            return ((double)(t - 8192) / 32d);
+            return ((double) (t - 8192) / 32d);
         } else {
-            return ((double)(t / 32d));
+            return ((double) (t / 32d));
         }
     }
 
     public static String parseTimestamp(byte[] b) {
         int l = ToInt(b);
-        Date dt = new Date(l*1000l);
+        Date dt = new Date(l * 1000l);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         return format.format(dt);
     }

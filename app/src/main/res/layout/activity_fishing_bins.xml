@@ -178,7 +178,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/rvBins"
                     app:srcCompat="@drawable/test_bin_temp"
-                    app:tint="@color/yellow"/>
+                    app:tint="@color/yellow" />
 
                 <TextView
                     android:id="@+id/tvNumberBins"

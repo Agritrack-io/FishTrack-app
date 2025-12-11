@@ -31,7 +31,7 @@ import io.agritrack.philosofish.ui.service.LocalPreferences;
 public class ReceiptQualityFreshCheckActivity extends AppCompatActivity implements ToggleGroup.OnCheckedChangeListener {
 
     private MobileDB db;
-    private ToggleGroup tgSmellCondition , tgEyeCondition, tgGillCondition, tgColorCondition, tgFleshCondition;
+    private ToggleGroup tgSmellCondition, tgEyeCondition, tgGillCondition, tgColorCondition, tgFleshCondition;
     private Integer selectedEyeRating, selectedGillRating, selectedSkinRating, selectedFleshRating;
     private EditText etEyes, etBlood, etMouth, etTail, etSkelet, etOper, etComments;
     private ImageView ivSupport;
@@ -274,19 +274,19 @@ public class ReceiptQualityFreshCheckActivity extends AppCompatActivity implemen
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recQualityReceipt.eyeRating == null || recQualityReceipt.eyeRating < 1 || recQualityReceipt.eyeRating > 4) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.eye_evaluation)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.eye_evaluation)));
 
             }
             if (recQualityReceipt.skinRating == null || recQualityReceipt.skinRating < 1 || recQualityReceipt.skinRating > 4) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.skin_condition)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.skin_condition)));
 
             }
             if (recQualityReceipt.fleshRating == null || recQualityReceipt.fleshRating < 1 || recQualityReceipt.fleshRating > 4) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.elasticity)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.elasticity)));
 
             }
             if (recQualityReceipt.gillRating == null || recQualityReceipt.gillRating < 1 || recQualityReceipt.gillRating > 4) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.gill_condition)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.gill_condition)));
 
             }
 
@@ -305,7 +305,7 @@ public class ReceiptQualityFreshCheckActivity extends AppCompatActivity implemen
             selectedEyeRating = 2;
         } else if (checkedId == R.id.tbFailEyes) {
             selectedEyeRating = 1;
-        }else if (checkedId == R.id.tbExtraGill) {
+        } else if (checkedId == R.id.tbExtraGill) {
             selectedGillRating = 4;
         } else if (checkedId == R.id.tbAGill) {
             selectedGillRating = 3;
@@ -313,7 +313,7 @@ public class ReceiptQualityFreshCheckActivity extends AppCompatActivity implemen
             selectedGillRating = 2;
         } else if (checkedId == R.id.tbFailGill) {
             selectedGillRating = 1;
-        }else if (checkedId == R.id.tbExtraElasticity) {
+        } else if (checkedId == R.id.tbExtraElasticity) {
             selectedFleshRating = 4;
         } else if (checkedId == R.id.tbAElasticity) {
             selectedFleshRating = 3;
@@ -321,7 +321,7 @@ public class ReceiptQualityFreshCheckActivity extends AppCompatActivity implemen
             selectedFleshRating = 2;
         } else if (checkedId == R.id.tbFailElasticity) {
             selectedFleshRating = 1;
-        }else if (checkedId == R.id.tbExtraColor) {
+        } else if (checkedId == R.id.tbExtraColor) {
             selectedSkinRating = 4;
         } else if (checkedId == R.id.tbAColor) {
             selectedSkinRating = 3;

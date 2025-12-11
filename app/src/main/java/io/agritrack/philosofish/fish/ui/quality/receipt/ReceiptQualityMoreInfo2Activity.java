@@ -186,7 +186,7 @@ public class ReceiptQualityMoreInfo2Activity extends AppCompatActivity implement
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.smellCondition)) {
                 sb.append(String.format("\n%s is missing", "'Smell condition'"));
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.smell)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.smell)));
 
             }
 

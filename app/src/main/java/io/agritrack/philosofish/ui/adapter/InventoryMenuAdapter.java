@@ -25,7 +25,7 @@ public class InventoryMenuAdapter extends ArrayAdapter<MenuItem> {
     public View getView(int position, View convertView, ViewGroup parent) {
         final View menuItemView = (convertView != null ? convertView : createView(parent));
 
-        final InventoryMenuAdapter.MenuItemViewHolder viewHolder = (InventoryMenuAdapter.MenuItemViewHolder)menuItemView.getTag();
+        final InventoryMenuAdapter.MenuItemViewHolder viewHolder = (InventoryMenuAdapter.MenuItemViewHolder) menuItemView.getTag();
         viewHolder.setMenuItem(getItem(position));
 
         return menuItemView;

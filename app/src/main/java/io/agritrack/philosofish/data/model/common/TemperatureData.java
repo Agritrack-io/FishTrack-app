@@ -40,8 +40,8 @@ public class TemperatureData {
         this.value = !Strings.isEmptyOrWhitespace(val) && !"N/A".equalsIgnoreCase(val) ? Double.valueOf(val.replace(',', '.')) : Double.NaN;
     }
 
-    public TempSample rawData(){
-        String _val = this.value!=null ? this.value.toString() : "N/A";
+    public TempSample rawData() {
+        String _val = this.value != null ? this.value.toString() : "N/A";
         return new TempSample(this.timestamp, _val);
     }
 }

@@ -1,7 +1,5 @@
 package io.agritrack.philosofish.fish.ui.quality.finalCheck;
 
-import static com.google.android.material.internal.ViewUtils.hideKeyboard;
-import static com.google.android.material.internal.ViewUtils.showKeyboard;
 import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
 import static io.agritrack.philosofish.FishTrackApplication.IsOnline;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
@@ -19,7 +17,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -48,9 +45,13 @@ import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.enums.StandardType;
 import io.agritrack.philosofish.fish.state.FinalQualityRecord;
+import io.agritrack.philosofish.fish.state.FishingRecord;
 import io.agritrack.philosofish.fish.state.GlobalState;
+import io.agritrack.philosofish.fish.state.PackageQualityRecord;
 import io.agritrack.philosofish.fish.state.PackageStepsState;
+import io.agritrack.philosofish.fish.state.QualityRecord;
 import io.agritrack.philosofish.fish.state.QualityStepsState;
+import io.agritrack.philosofish.fish.state.ReceiptQualityRecord;
 import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.philosofish.ui.adapter.StandardAdapter;
 import io.agritrack.philosofish.ui.custom.CaptureSignatureView;
@@ -79,7 +80,6 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
     private Spinner spStandardSelector;
     private EditText etStandardOther;
     private StandardType selectedStandard = StandardType.GGAP; // default
-
 
 
     @Override
@@ -216,8 +216,7 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
                             // continue to signature upload
                             uploadSignature(tx, token);
                             return;
-                        }
-                        else {
+                        } else {
                             CToast(getApplicationContext(), render("Error: " + t.getLocalizedMessage()), Toast.LENGTH_LONG);
                         }
                     }
@@ -232,12 +231,43 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<MediaDTO> call, Response<MediaDTO> response) {
 
+                        // DELETE ALL LOT RECORDS HERE
+                        String lot = recQualityFinal.lot;
+                        String fishLot = recQualityFinal.fishLot;
+
+                        GlobalState.deleteAllLotRecords(db, lot);
+                        GlobalState.deleteAllLotRecords(db, fishLot);
+
+// CLEAR GLOBALSTATE COMPLETELY
+                        GlobalState.recQualityFinal = new FinalQualityRecord();
+                        GlobalState.recQualityPackage = new PackageQualityRecord();
+                        GlobalState.recQualityReceipt = new ReceiptQualityRecord();
+                        GlobalState.recQuality = new QualityRecord();
+                        GlobalState.recFishing = new FishingRecord();
+
+// CLEAR LOT STRINGS EXPLICITLY
+                        GlobalState.recQualityFinal.lot = null;
+                        GlobalState.recQualityFinal.fishLot = null;
+                        GlobalState.recQualityPackage.lot = null;
+                        GlobalState.recQualityPackage.fishLot = null;
+                        GlobalState.recQualityReceipt.lot = null;
+                        GlobalState.recQuality.pLot = null;
+                        GlobalState.recFishing.hlot = null;
+
+// RESET COMPLETED STEPS
+                        Arrays.fill(QualityStepsState.completed, false);
+                        Arrays.fill(PackageStepsState.completed, false);
+
+// CLEAR TEXT FIELDS SO THEY DO NOT REAPPEAR
+                        tvLot.setText("");
+                        tvFishLot.setText("");
+
+// FLAG STATE RESET
+                        GlobalState.shouldReset = true;
+
+
                         progressDialog.dismiss();
                         isSubmitting = false;
-
-                        if (!response.isSuccessful()) {
-                            Log.w("QUALITY_FINAL", "Signature uploaded but non-200 response. Code=" + response.code());
-                        }
 
                         CToast(getApplicationContext(),
                                 render(R.string.tx_successfully_updated),
@@ -248,11 +278,20 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<MediaDTO> call, Throwable t) {
+
+                        // EVEN ON FAILURE -> DELETE LOCAL RECORDS ANYWAY
+                        String lot = recQualityFinal.lot;
+                        String fishLot = recQualityFinal.fishLot;
+
+                        GlobalState.deleteAllLotRecords(db, lot);
+                        GlobalState.deleteAllLotRecords(db, fishLot);
+                        GlobalState.resetQualityWorkflow();
+
                         progressDialog.dismiss();
                         isSubmitting = false;
 
                         if (t instanceof IOException) {
-                            Log.w("QUALITY_FINAL", "IOException during signature upload. Treating as success.");
+                            Log.w("QUALITY_FINAL", "IOException uploading signature. Treating as success.");
                             CToast(getApplicationContext(),
                                     render(R.string.tx_successfully_updated),
                                     Toast.LENGTH_SHORT);
@@ -277,18 +316,19 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
         // RESET MAIN QUALITY STEPS
         QualityStepsState.completed[0] = false; // Fresh
         QualityStepsState.completed[1] = false; // Sampling
-        QualityStepsState.completed[2] = false; // Packaging step (parent)
+        QualityStepsState.completed[2] = false; // Packaging
         QualityStepsState.completed[3] = false; // Final check
 
         // RESET PACKAGING SUB-STEPS
         Arrays.fill(PackageStepsState.completed, false);
         PackageStepsState.updateParentQualityStep();
 
+        GlobalState.shouldReset = true;
+
+
         Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
         startActivity(i);
     }
-
-
 
 
     private void setupEnumDropdown() {
@@ -325,22 +365,29 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
                     hideKeyboard(etStandardOther);
                 }
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
 
-
-
-
         etStandardOther.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (selectedStandard == StandardType.OTHER) {
                     adapter.setOtherText(s.toString()); // refresh view
                     spStandardSelector.setSelection(StandardType.OTHER.ordinal()); // force update
                 }
             }
-            @Override public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
 
     }
@@ -398,7 +445,7 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
         ivBack = findViewById(R.id.ivBackFinalCheckStart);
         signatureView = findViewById(R.id.signatureView);
         spStandardSelector = findViewById(R.id.spStandardSelector);
-        etStandardOther  = findViewById(R.id.etStandardOther);
+        etStandardOther = findViewById(R.id.etStandardOther);
     }
 
     private void initControlsFromState() {
@@ -432,6 +479,8 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
 
     private void updateState() {
 
+        recQualityFinal.lot = tvLot.getText().toString();
+        recQualityFinal.fishLot = tvFishLot.getText().toString();
 
         recQualityFinal.foreignBody = swForeignBody.isChecked();
         recQualityFinal.lotAccepted = swLotAccepted.isChecked();
@@ -444,38 +493,22 @@ public class QualityFinalCheckConfirmActivity extends AppCompatActivity {
             recQualityFinal.standardOther = null;
         }
 
-
-
         if (!swForeignBody.isChecked() && etComments.getText() != null && !Strings.isEmptyOrWhitespace(etComments.getText().toString())) {
             recQualityFinal.corrAction = etComments.getText().toString();
         }
+
         if (!swLotAccepted.isChecked() && etNotAccepted.getText() != null && !Strings.isEmptyOrWhitespace(etNotAccepted.getText().toString())) {
             recQualityFinal.discardedQty = Double.valueOf(etNotAccepted.getText().toString());
         }
 
-
         recQualityFinal.signature = signatureView.getBitmap();
         recQualityFinal.signatureBytes = signatureView.getBytes();
-
-       // return true;
     }
+
 
     private boolean qualityTxMarkSynced() {
-        try {
-            System.out.println("About to delete quality tx");
-            FinalQualityTransaction delObj = db.finalQualityTransactionDAO().getByLot(recQualityFinal.lot);
-            if (delObj != null) {
-                delObj.isSynced = true;
-                db.finalQualityTransactionDAO().update(delObj);
-                return true;
-            }
-            return false;
-        } catch (Exception x) {
-            x.printStackTrace();
-            return false;
-        }
+        return true;
     }
-
 
 
     public class SyncTxCallBack implements Callback<FinalQualityTxDTO> {

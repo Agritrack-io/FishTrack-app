@@ -54,17 +54,14 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import io.agritrack.api.sync.EncodingSchemeCallBack;
-import io.agritrack.philosofish.api.sync.PendingBinInfoTxCallBack;
-import io.agritrack.philosofish.crypto.Crypto;
-import io.agritrack.philosofish.data.model.BinInfo;
-import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.AgritrackProducts;
 import io.agritrack.philosofish.FishTrackApplication;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.login.AuthApi;
+import io.agritrack.philosofish.api.sync.EncodingSchemeCallBack;
 import io.agritrack.philosofish.api.sync.PendindQualityMeasurementsTxCallBack;
+import io.agritrack.philosofish.api.sync.PendingBinInfoTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingCorrelationTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingFishingTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingProcessTxCallBack;
@@ -75,7 +72,6 @@ import io.agritrack.philosofish.api.sync.SyncBinInfo;
 import io.agritrack.philosofish.api.sync.SyncCageDetailsCallBack;
 import io.agritrack.philosofish.api.sync.SyncClusterSitesCallBack;
 import io.agritrack.philosofish.api.sync.SyncCustomersCallBack;
-import io.agritrack.philosofish.api.sync.SyncEmployeesCallBack;
 import io.agritrack.philosofish.api.sync.SyncFishingRequestCallBack;
 import io.agritrack.philosofish.api.sync.SyncIOTLoggersCallBack;
 import io.agritrack.philosofish.api.sync.SyncSpeciesCallBack;
@@ -83,6 +79,7 @@ import io.agritrack.philosofish.api.sync.SyncSuppliersCallBack;
 import io.agritrack.philosofish.api.sync.SyncUsersCallBack;
 import io.agritrack.philosofish.api.tx.TransactionApi;
 import io.agritrack.philosofish.common.DeviceUtils;
+import io.agritrack.philosofish.crypto.Crypto;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.dto.AppUserDTO;
 import io.agritrack.philosofish.data.dto.BinInfoDTO;
@@ -91,7 +88,6 @@ import io.agritrack.philosofish.data.dto.EncodingSchemeDTO;
 import io.agritrack.philosofish.data.dto.FishingRequestDTO;
 import io.agritrack.philosofish.data.dto.SiteDTO;
 import io.agritrack.philosofish.data.dto.common.CustomerDTO;
-import io.agritrack.philosofish.data.dto.common.EmployeeDTO;
 import io.agritrack.philosofish.data.dto.common.IotLoggerDTO;
 import io.agritrack.philosofish.data.dto.common.SpeciesDTO;
 import io.agritrack.philosofish.data.dto.common.SupplierDTO;
@@ -102,12 +98,14 @@ import io.agritrack.philosofish.data.dto.tx.ProcessingTxDTO;
 import io.agritrack.philosofish.data.dto.tx.QualityTxDTO;
 import io.agritrack.philosofish.data.dto.wh.AssetDTO;
 import io.agritrack.philosofish.data.model.AppUser;
+import io.agritrack.philosofish.data.model.BinInfo;
 import io.agritrack.philosofish.data.model.common.TemperatureTimeSeries;
 import io.agritrack.philosofish.data.model.tx.CorrelationTransaction;
 import io.agritrack.philosofish.data.model.tx.FishingTransaction;
 import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
 import io.agritrack.philosofish.data.model.tx.QualityTransaction;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
+import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.settings.ApplicationSettings;
 import io.agritrack.philosofish.settings.EncryptedSharedPreferences;
 import io.agritrack.philosofish.settings.SettingsActivity;
@@ -596,7 +594,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             Call<List<SpeciesDTO>> syncSpeciesAsyncCall = syncService.getSpeciesByCountryCodeAndType(FishTrackApplication.COUNTRY, FishTrackApplication.getProduct(), "Bearer " + token);
             syncSpeciesAsyncCall.enqueue(new SyncSpeciesCallBack(this.syncResult));
 
-             //sync IOT Loggers
+            //sync IOT Loggers
             Call<List<IotLoggerDTO>> syncIOTLoggersAsyncCall = syncService.getIOTLoggersBySiteId(siteId, "Bearer " + token);
             syncIOTLoggersAsyncCall.enqueue(new SyncIOTLoggersCallBack(this.syncResult));
 
@@ -856,8 +854,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                 ));
 
                 LocalPreferences.updateLoginTime();
-            }
-            else {
+            } else {
                 // Probably Invalid Credentials
                 runOnUiThread(() -> loginResult.setValue(new LoginResult(R.string.login_failed)));
             }

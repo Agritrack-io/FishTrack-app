@@ -1,8 +1,5 @@
 package io.agritrack.philosofish.data.dto.tx;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -11,9 +8,9 @@ import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
 
 public class ReceiptQualityTxDTO {
-    private static final SimpleDateFormat simpleDate =  new SimpleDateFormat("dd/MM/yyyy");
-    private static final SimpleDateFormat simpleDateTime =  new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
-    private static final SimpleDateFormat simpleTime =  new SimpleDateFormat("HH:mm");
+    private static final SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM/yyyy");
+    private static final SimpleDateFormat simpleDateTime = new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
+    private static final SimpleDateFormat simpleTime = new SimpleDateFormat("HH:mm");
 
     public UUID id;
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="spinner_style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -33,7 +34,9 @@
         <item name="android:actionBarStyle">@style/WhiteActionbarStyle</item>
         <item name="android:windowBackground">@color/background_color</item>
     </style>
+
     <color name="background_color">#f5f5f5</color>
+
     <style name="WhiteActionbarStyle" parent="Widget.AppCompat.Light.ActionBar">
         <item name="background">@android:color/transparent</item>
         <item name="backgroundStacked">@android:color/transparent</item>
@@ -44,8 +47,7 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="Widget.App.ButtonStyle"
-        parent="Widget.MaterialComponents.Button">
+    <style name="Widget.App.ButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="materialThemeOverlay">@style/GreenButtonThemeOverlay</item>
         <item name="backgroundTint">@color/button_color_selector</item>
         <item name="android:textColor">@color/text_color_selector</item>

@@ -1,4 +1,3 @@
-
 package io.agritrack.philosofish.data.dao.tx;
 
 import androidx.room.Dao;
@@ -20,6 +19,9 @@ public interface ReceiptQualityTxDAO {
 
     @Query("SELECT * from receipt_quality_transaction where lot=:lot LIMIT 1")
     ReceiptQualityTransaction getByLot(String lot);
+
+    @Query("DELETE FROM receipt_quality_transaction WHERE lot=:lot")
+    int deleteByLot(String lot);
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

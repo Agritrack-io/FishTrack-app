@@ -33,7 +33,6 @@ public class SyncClusterSitesCallBack extends BaseSyncCallBack<List<SiteDTO>> {
         pref = new EncryptedSharedPreferences(getAppContext());
 
         if (siteDTOs != null) {
-            // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 
             for (SiteDTO siteDTO : siteDTOs) {
@@ -42,19 +41,18 @@ public class SyncClusterSitesCallBack extends BaseSyncCallBack<List<SiteDTO>> {
 
             String siteName = pref.loadPreference("centralSite");
             Site site = db.siteDAO().getBySiteName(siteName);
-            // persist selected Site to local Preferences.
+
             LocalPreferences.writeValue(SelectedSiteName_Key, siteName);
+
             if (site != null) {
                 LocalPreferences.writeValue(SelectedSiteId_Key, site.id);
                 LocalPreferences.writeValue(SelectedCluster_Key, site.lvl2);
                 LocalPreferences.writeValue(SelectedSiteLevel_Key, site.lvl3);
             }
 
-            // Sites sync succeeded.
-            syncResult.setValue(getAppContext().getString(R.string.sites_sync_completed));
+            set(getAppContext().getString(R.string.sites_sync_completed));
         } else {
-            //  no Sites found
-            syncResult.setValue(getAppContext().getString(R.string.no_sites_found_alert));
+            set(getAppContext().getString(R.string.no_sites_found_alert));
         }
     }
 }

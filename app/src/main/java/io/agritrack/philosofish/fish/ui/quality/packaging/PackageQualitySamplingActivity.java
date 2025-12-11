@@ -80,7 +80,7 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
     private SupportDialog supportDialog;
     private RecyclerView rvSortingSamples, rvTonnageSample;
     private boolean scanning = false;
-    private YesNoDialogFragment confirmNewLotDialog,  confirmSaveDataDialog;
+    private YesNoDialogFragment confirmNewLotDialog, confirmSaveDataDialog;
     private String currentLot, bestBefore;
     private Spinner spFishLot;
     private Set<String> fishLotSet;
@@ -92,7 +92,6 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
     private TonnageSampleAdapter adapterTonnage;
     private SetSortingSampleDialog setSortingDialog;
     private SetTonnageSampleDialog setTonnageSampleDialog;
-
 
 
     // BroadcastReceiver to receiver scan data
@@ -143,7 +142,7 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
             scanning = false;
         } else if (!txQuality.isSampleSynced) {
 
-            if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot))  {
+            if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot)) {
                 int position = lotListAdapter.getPosition(txQuality.fishingLot);
                 if (position != -1) {
                     spFishLot.setSelection(position);
@@ -160,7 +159,7 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
             loadStatefromDB(txQuality);
             scanning = false;
         } else {
-            CToast(getAppContext(),String.format(getResources().getString(R.string.lot_sample_control_done), txQuality.lot), Toast.LENGTH_LONG );
+            CToast(getAppContext(), String.format(getResources().getString(R.string.lot_sample_control_done), txQuality.lot), Toast.LENGTH_LONG);
             scanning = false;
         }
     }
@@ -260,11 +259,11 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
         setTonnageSampleDialog = new SetTonnageSampleDialog(this);
         setTonnageSampleDialog.setMyDialogListener(this);
 
-        confirmNewLotDialog= YesNoDialogFragment.instance();
+        confirmNewLotDialog = YesNoDialogFragment.instance();
         confirmNewLotDialog.onConfirm(bundle -> {
             PackageQualityTransaction tx = commitPackageSampleQuality(db, false);
             if (tx == null) {
-                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot),Toast.LENGTH_LONG);
+                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot), Toast.LENGTH_LONG);
             }
             loadBarcodeInfo(currentLot);
         });
@@ -272,12 +271,12 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
 
         });
 
-        confirmSaveDataDialog= YesNoDialogFragment.instance();
+        confirmSaveDataDialog = YesNoDialogFragment.instance();
         confirmSaveDataDialog.onConfirm(bundle -> {
             updateState();
             PackageQualityTransaction tx = commitPackageSampleQuality(db, false);
             if (tx == null) {
-                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot),Toast.LENGTH_LONG);
+                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot), Toast.LENGTH_LONG);
             }
             PackageStepsState.completed[1] = true;
             LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverSample);
@@ -424,7 +423,7 @@ public class PackageQualitySamplingActivity extends AppCompatActivity implements
                 } catch (Exception e) {
                     e.printStackTrace();
                     CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
-                    proceed =  false;
+                    proceed = false;
                 } finally {
                     progressDialog.dismiss();
                 }

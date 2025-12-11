@@ -42,13 +42,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.model.FishingRequest;
 import io.agritrack.philosofish.dialog.SelectReasonOutOfSystemFishingDialog;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.fish.state.GlobalState;
+import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.fish.ui.bo.GenericListModel;
 import io.agritrack.philosofish.ui.custom.ToggleGroup;
 import io.agritrack.philosofish.ui.service.AuthenticationService;

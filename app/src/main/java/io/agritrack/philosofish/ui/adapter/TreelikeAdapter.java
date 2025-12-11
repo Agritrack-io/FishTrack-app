@@ -19,10 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.data.db.MobileDB;

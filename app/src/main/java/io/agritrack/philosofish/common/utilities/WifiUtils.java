@@ -32,7 +32,7 @@ public class WifiUtils {
                 for (byte b : macBytes) {
 
                     //res1.append(Integer.toHexString(b & 0xFF) + ":");
-                    res1.append(String.format("%02X:",b));
+                    res1.append(String.format("%02X:", b));
                 }
 
                 if (res1.length() > 0) {
@@ -47,15 +47,15 @@ public class WifiUtils {
         return "";
     }
 
-    public static String getMacAddress(Context context){
-        try{
+    public static String getMacAddress(Context context) {
+        try {
             WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             WifiInfo wInfo = wifiManager.getConnectionInfo();
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED) {
                 return "";
             }
             return wInfo.getMacAddress();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "";

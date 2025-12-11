@@ -67,7 +67,7 @@ public class DeviceUtils {
     }
 
     // BUILD method
-    public static String getSerialNumber(Context context){
+    public static String getSerialNumber(Context context) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
@@ -79,21 +79,21 @@ public class DeviceUtils {
             return getSerialNumber();
         }
 
-        try{
+        try {
             String serialNumber;
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 serialNumber = Build.getSerial();
-            } else{
+            } else {
                 serialNumber = Build.SERIAL;
             }
 
-            if("UNKNOWN".equalsIgnoreCase(serialNumber)){
+            if ("UNKNOWN".equalsIgnoreCase(serialNumber)) {
                 return "";
             } else {
                 return serialNumber;
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return "";
         }

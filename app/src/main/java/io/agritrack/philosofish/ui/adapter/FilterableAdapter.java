@@ -176,7 +176,7 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
             boolean isCorrelated;
             if (this.rfid.getText().toString() == null || this.rfid.getText().toString().isEmpty()) {
                 isCorrelated = false;
-            }else{
+            } else {
                 isCorrelated = true;
             }
             if (getAdapterPosition() == RecyclerView.NO_POSITION) return;

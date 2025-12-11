@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="appSettings"
             type="io.agritrack.philosofish.ui.viewmodel.ConfigViewModel" />
@@ -123,14 +124,14 @@
                 android:layout_height="wrap_content"
                 android:text="Terminal Id"
                 android:gravity="center"
-                android:layout_weight="3"/>
+                android:layout_weight="3" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left|center_vertical"
                 android:text="@{appSettings.getDeviceId}"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -152,7 +153,7 @@
                 android:text="S/N"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:layout_weight="3"/>
+                android:layout_weight="3" />
 
             <EditText
                 android:id="@+id/etSerialNumber"
@@ -162,7 +163,7 @@
                 android:padding="8dp"
                 android:text="@={appSettings.deviceSN}"
                 android:textSize="16sp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -185,8 +186,7 @@
                 android:layout_gravity="center"
                 android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/ivRefreshSettings"
@@ -225,7 +225,7 @@
                 android:text="B/E"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:layout_weight="3"/>
+                android:layout_weight="3" />
 
             <EditText
                 android:id="@+id/etBackendURL"
@@ -235,7 +235,7 @@
                 android:padding="8dp"
                 android:text=""
                 android:textSize="16sp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -301,7 +301,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/ivSave"
                 app:layout_constraintStart_toEndOf="@+id/ivBack"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/powered_by_agritrack"/>
+                app:srcCompat="@drawable/powered_by_agritrack" />
 
             <TextView
                 android:id="@+id/customerLabel"

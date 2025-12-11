@@ -82,7 +82,7 @@ public class ProcessingTransaction {
             String bins = receivedBins.stream().sorted().collect(Collectors.joining("."));
 
             this.hashCode = String.format("%s:%s", today, bins).hashCode();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

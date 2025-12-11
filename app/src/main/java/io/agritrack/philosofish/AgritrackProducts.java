@@ -10,7 +10,7 @@ public enum AgritrackProducts {
     private static List<String> values = null;
 
     public List<String> allValues() {
-        if(values==null) {
+        if (values == null) {
             values = Arrays.stream(AgritrackProducts.values()).map(x -> x.name()).collect(Collectors.toList());
         }
         return values;

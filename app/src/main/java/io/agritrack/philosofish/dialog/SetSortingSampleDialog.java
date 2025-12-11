@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.provider.ContactsContract;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -30,14 +29,14 @@ public class SetSortingSampleDialog {
         setDialog();
         findViews();
 
-        this.etFishT.setText( "");
-        this.etWaterT.setText("" );
+        this.etFishT.setText("");
+        this.etWaterT.setText("");
 
         btnOK.setOnClickListener(view -> {
             Double fishTP = !Strings.isEmptyOrWhitespace(this.etFishT.getText().toString()) ? Double.parseDouble(this.etFishT.getText().toString()) : 0;
             Double waterTP = !Strings.isEmptyOrWhitespace(this.etWaterT.getText().toString()) ? Double.parseDouble(this.etWaterT.getText().toString()) : 0;
-            this.etFishT.setText( "");
-            this.etWaterT.setText("" );
+            this.etFishT.setText("");
+            this.etWaterT.setText("");
             if (mDataListener != null) {
                 mDataListener.onDataPassed(fishTP, waterTP, null);
             }

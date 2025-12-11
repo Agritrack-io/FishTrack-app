@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/fishingBinsLayout"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@color/agri_semi_green"
-tools:context=".fish.ui.wh.inventory.InventoryAssetActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fishingBinsLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/agri_semi_green"
+    tools:context=".fish.ui.wh.inventory.InventoryAssetActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
@@ -71,352 +71,352 @@ tools:context=".fish.ui.wh.inventory.InventoryAssetActivity">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/formLayout"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    app:layout_constraintBottom_toTopOf="@+id/footerLayout"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/headerLayout">
-
-    <RelativeLayout
-        android:id="@+id/inventoryAssetCLayout"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/inventoryAssetALayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="vertical"
-            android:padding="1dp">
-
-            <Spinner
-                android:id="@+id/spSite"
-                style="@style/spinner_style"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
-                android:dropDownWidth="wrap_content"
-                android:focusableInTouchMode="true"
-                android:requiresFadingEdge="horizontal"
-                android:spinnerMode="dropdown"
-                android:textAlignment="textStart"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.666"
-                tools:layout_conversion_absoluteHeight="0dp"
-                tools:layout_conversion_absoluteWidth="0dp" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="16dp"
-            android:background="@color/agri_semi_green"
-            android:paddingHorizontal="8dp"
-            android:text="@string/choose_site"
-            android:textColor="@color/label_blue"
-            android:textSize="18sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/inventoryAssetALayout"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/inventoryAssetBLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inventoryAssetCLayout">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="vertical"
-            android:padding="1dp">
-
-            <Spinner
-                android:id="@+id/spAssetType"
-                style="@style/spinner_style"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
-                android:dropDownWidth="wrap_content"
-                android:focusableInTouchMode="true"
-                android:requiresFadingEdge="horizontal"
-                android:spinnerMode="dropdown"
-                android:textAlignment="textStart"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.666"
-                tools:layout_conversion_absoluteHeight="0dp"
-                tools:layout_conversion_absoluteWidth="0dp" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="16dp"
-            android:background="@color/agri_semi_green"
-            android:paddingHorizontal="8dp"
-            android:text="@string/select_asset_type"
-            android:textColor="@color/label_blue"
-            android:textSize="18sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/inventoryAssetBLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/formLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/footerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout">
+
+        <RelativeLayout
+            android:id="@+id/inventoryAssetCLayout"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/inventoryAssetALayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <Spinner
+                    android:id="@+id/spSite"
+                    style="@style/spinner_style"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:dropDownWidth="wrap_content"
+                    android:focusableInTouchMode="true"
+                    android:requiresFadingEdge="horizontal"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="textStart"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.666"
+                    tools:layout_conversion_absoluteHeight="0dp"
+                    tools:layout_conversion_absoluteWidth="0dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_semi_green"
+                android:paddingHorizontal="8dp"
+                android:text="@string/choose_site"
+                android:textColor="@color/label_blue"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/inventoryAssetALayout"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/inventoryAssetBLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inventoryAssetCLayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <Spinner
+                    android:id="@+id/spAssetType"
+                    style="@style/spinner_style"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:dropDownWidth="wrap_content"
+                    android:focusableInTouchMode="true"
+                    android:requiresFadingEdge="horizontal"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="textStart"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.666"
+                    tools:layout_conversion_absoluteHeight="0dp"
+                    tools:layout_conversion_absoluteWidth="0dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_semi_green"
+                android:paddingHorizontal="8dp"
+                android:text="@string/select_asset_type"
+                android:textColor="@color/label_blue"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/inventoryAssetBLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inventoryAssetALayout">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <Button
+                    android:id="@+id/btnScanAsset"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/button_press_effect"
+                    android:text="@string/scan_assets"
+                    android:textColor="@color/yellow"
+                    android:textSize="@dimen/button_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems"
+                    tools:layout_conversion_absoluteHeight="120dp"
+                    tools:layout_conversion_absoluteWidth="0dp" />
+
+                <TextView
+                    android:id="@+id/tvHeaders"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="14dp"
+                    android:text="@string/inventory_header"
+                    android:textSize="20sp"
+                    android:textColor="@color/agri_blue"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/xvInventoryItems"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ExpandableListView
+                    android:id="@+id/xvInventoryItems"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_rounded_input_spinner"
+                    android:padding="5dp"
+                    android:paddingStart="10dp"
+                    app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvHeaders" />
+
+                <TextView
+                    android:id="@+id/tvGroupsCntLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/inventory_codes"
+                    android:textColor="@color/black"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvItemsCntLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/tvGroupsCnt"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
+
+                <TextView
+                    android:id="@+id/tvGroupsCnt"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toTopOf="@+id/tvItemsCnt"
+                    app:layout_constraintEnd_toStartOf="@+id/btnScanAsset"
+                    app:layout_constraintStart_toEndOf="@+id/tvGroupsCntLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
+
+                <TextView
+                    android:id="@+id/tvItemsCntLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/inventory_items"
+                    android:textColor="@color/black"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/tvItemsCnt"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvGroupsCntLabel" />
+
+                <TextView
+                    android:id="@+id/tvItemsCnt"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnScanAsset"
+                    app:layout_constraintStart_toEndOf="@+id/tvItemsCntLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvGroupsCnt" />
+
+                <ImageButton
+                    android:id="@+id/ivDeleteItem"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@color/transparent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems"
+                    app:srcCompat="@drawable/ic_delete" />
+
+                <ImageButton
+                    android:id="@+id/ivCopyItem"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@color/transparent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivDeleteItem"
+                    app:srcCompat="@drawable/ic_outline_content_copy_24"
+                    tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/footerLayout"
+        android:layout_width="0dp"
+        android:layout_height="68sp"
+        android:background="@drawable/border_top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inventoryAssetALayout">
+        app:layout_constraintTop_toBottomOf="@+id/formLayout">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="vertical"
-            android:padding="1dp">
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToWhMenu"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/powered_by_agritrack" />
 
-            <Button
-                android:id="@+id/btnScanAsset"
-                android:layout_width="150dp"
-                android:layout_height="60dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/button_press_effect"
-                android:text="@string/scan_assets"
-                android:textColor="@color/yellow"
-                android:textSize="@dimen/button_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems"
-                tools:layout_conversion_absoluteHeight="120dp"
-                tools:layout_conversion_absoluteWidth="0dp" />
+        <ImageView
+            android:id="@+id/ivBackToWhMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
+            android:scaleX="1.5"
+            android:scaleY="1.2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_shortcut_arrow_back" />
 
-            <TextView
-                android:id="@+id/tvHeaders"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:gravity="center_vertical"
-                android:paddingStart="14dp"
-                android:text="@string/inventory_header"
-                android:textSize="20sp"
-                android:textColor="@color/agri_blue"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/xvInventoryItems"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/ivToCongs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
+            android:scaleX="1.5"
+            android:scaleY="1.2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_check_blue" />
 
-            <ExpandableListView
-                android:id="@+id/xvInventoryItems"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rounded_input_spinner"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                app:layout_constraintBottom_toTopOf="@+id/btnScanAsset"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvHeaders" />
-
-            <TextView
-                android:id="@+id/tvGroupsCntLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:text="@string/inventory_codes"
-                android:textColor="@color/black"
-                android:textIsSelectable="false"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toTopOf="@+id/tvItemsCntLabel"
-                app:layout_constraintEnd_toStartOf="@+id/tvGroupsCnt"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
-
-            <TextView
-                android:id="@+id/tvGroupsCnt"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textIsSelectable="false"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@+id/tvItemsCnt"
-                app:layout_constraintEnd_toStartOf="@+id/btnScanAsset"
-                app:layout_constraintStart_toEndOf="@+id/tvGroupsCntLabel"
-                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems" />
-
-            <TextView
-                android:id="@+id/tvItemsCntLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/inventory_items"
-                android:textColor="@color/black"
-                android:textIsSelectable="false"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvItemsCnt"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvGroupsCntLabel" />
-
-            <TextView
-                android:id="@+id/tvItemsCnt"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textIsSelectable="false"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnScanAsset"
-                app:layout_constraintStart_toEndOf="@+id/tvItemsCntLabel"
-                app:layout_constraintTop_toBottomOf="@+id/tvGroupsCnt" />
-
-            <ImageButton
-                android:id="@+id/ivDeleteItem"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="8dp"
-                android:background="@color/transparent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/xvInventoryItems"
-                app:srcCompat="@drawable/ic_delete" />
-
-            <ImageButton
-                android:id="@+id/ivCopyItem"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="8dp"
-                android:background="@color/transparent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivDeleteItem"
-                app:srcCompat="@drawable/ic_outline_content_copy_24"
-                tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </RelativeLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/footerLayout"
-    android:layout_width="0dp"
-    android:layout_height="68sp"
-    android:background="@drawable/border_top"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/formLayout">
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:scaleX="0.7"
-        android:scaleY="0.7"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivToCongs"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToWhMenu"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/powered_by_agritrack" />
-
-    <ImageView
-        android:id="@+id/ivBackToWhMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/button_rounded_shape_corners"
-        android:padding="1dp"
-        android:scaleX="1.5"
-        android:scaleY="1.2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_shortcut_arrow_back" />
-
-    <ImageView
-        android:id="@+id/ivToCongs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/button_rounded_shape_corners"
-        android:padding="1dp"
-        android:scaleX="1.5"
-        android:scaleY="1.2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_check_blue" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

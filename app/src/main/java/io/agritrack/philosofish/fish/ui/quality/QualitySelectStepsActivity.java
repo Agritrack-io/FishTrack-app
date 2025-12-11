@@ -1,7 +1,6 @@
 package io.agritrack.philosofish.fish.ui.quality;
 
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
-import static io.agritrack.philosofish.fish.state.GlobalState.recLoggerData;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,26 +14,17 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import io.agritrack.philosofish.data.model.TempSample;
-import io.agritrack.philosofish.fish.state.QualityStepsState;
-import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.data.db.MobileDB;
-import io.agritrack.philosofish.data.model.common.Measurement;
-import io.agritrack.philosofish.data.model.common.TemperatureData;
-import io.agritrack.philosofish.data.model.common.TemperatureTimeSeries;
-import io.agritrack.philosofish.data.model.tx.QualityTransaction;
 import io.agritrack.philosofish.dialog.SupportDialog;
-import io.agritrack.philosofish.enums.TxStatus;
 import io.agritrack.philosofish.fish.state.GlobalState;
-import io.agritrack.philosofish.fish.state.QualityRecord;
+import io.agritrack.philosofish.fish.state.QualityStepsState;
+import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.fish.ui.binTurnover.BinTurnoverActivity;
 import io.agritrack.philosofish.fish.ui.quality.finalCheck.QualityFinalCheckActivity;
 import io.agritrack.philosofish.fish.ui.quality.packaging.PackageQualityMenuActivity;
-import io.agritrack.philosofish.fish.ui.quality.postpackage.PostPackagingQualityActivity;
 import io.agritrack.philosofish.fish.ui.quality.receipt.ReceiptQualityStartActivity;
 import io.agritrack.philosofish.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.philosofish.ui.adapter.InventoryMenuAdapter;

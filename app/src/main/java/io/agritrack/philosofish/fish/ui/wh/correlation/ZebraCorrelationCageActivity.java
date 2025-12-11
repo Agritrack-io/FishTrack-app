@@ -40,7 +40,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
-//import com.zebra.rfid.api3.TagData;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -63,15 +62,13 @@ import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.data.service.EncodingSchemeService;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
+import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.ui.bo.GenericListModel;
 import io.agritrack.philosofish.rfid.SingleShotScanner;
+import io.agritrack.philosofish.rfid.X9KeyReceiver;
 import io.agritrack.philosofish.ui.LocationAwareActivity;
 import io.agritrack.philosofish.ui.adapter.FilterableAdapter;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
-import io.agritrack.philosofish.rfid.X9KeyReceiver;
-import io.agritrack.philosofish.fish.state.GlobalState;
-//import io.agritrack.philosofish.ui.adapter.bo.GenericListModel;
-//import io.agritrack.philosofish.ui.wh.fish.zebra.WhMenuActivity;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -472,7 +469,7 @@ public class ZebraCorrelationCageActivity extends LocationAwareActivity implemen
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(adapterAssets==null) {
+                if (adapterAssets == null) {
                     return true;
                 }
                 btnUncorr.setVisibility(View.GONE);
@@ -498,7 +495,6 @@ public class ZebraCorrelationCageActivity extends LocationAwareActivity implemen
 
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
-
 
 
             // sync WH Correlation Tx
@@ -619,7 +615,7 @@ public class ZebraCorrelationCageActivity extends LocationAwareActivity implemen
     public void onItemClick(boolean isCorrelated) {
         if (isCorrelated) {
             btnUncorr.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             btnUncorr.setVisibility(View.GONE);
         }
     }
@@ -654,7 +650,7 @@ public class ZebraCorrelationCageActivity extends LocationAwareActivity implemen
                                             confirmRfidReplacement.showNow(fm, getString(R.string.confirm_selection));
                                         });
 
-                                    }else {
+                                    } else {
                                         GlobalState.recWHCorrelation.rfid = epcStr;
                                         runOnUiThread(() -> tvCorrCageBarcode.setText(label));
                                         break;
@@ -713,14 +709,14 @@ public class ZebraCorrelationCageActivity extends LocationAwareActivity implemen
                         db.assetDAO().update(currCage);
                     }
                 }
-                if(btnUncorr.isClickable()) {
+                if (btnUncorr.isClickable()) {
                     btnUncorr.setVisibility(View.GONE);
                 }
                 updateCagesList();
 
-                if(correlatedFilter.isChecked()) {
+                if (correlatedFilter.isChecked()) {
                     loadCagesFromLocalDB(uncorrCagesList);
-                }else {
+                } else {
                     loadCagesFromLocalDB(CagesList);
                 }
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));

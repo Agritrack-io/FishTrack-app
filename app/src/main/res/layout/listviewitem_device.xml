@@ -1,61 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="fill_parent"
-android:layout_height="@dimen/item_device_height"
-android:background="@color/blue"
-android:orientation="vertical">
-
-<LinearLayout
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_weight="1.0"
-    android:orientation="horizontal"
-    android:padding="2.0dip">
-
-    <ImageView
-        android:id="@+id/imgIcon_item_device"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_margin="@dimen/item_device_icon_margin"
-        android:src="@drawable/ic_action_bluetooth" />
+    android:layout_height="@dimen/item_device_height"
+    android:background="@color/blue"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1.0"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="2.0dip">
 
-        <TextView
-            android:id="@+id/lblTitle_item_device"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Title"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_normal" />
+        <ImageView
+            android:id="@+id/imgIcon_item_device"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_margin="@dimen/item_device_icon_margin"
+            android:src="@drawable/ic_action_bluetooth" />
 
-        <TextView
-            android:id="@+id/lblSubTitle_item_device"
+        <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Title"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/text_size_small" />
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lblTitle_item_device"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_normal" />
+
+            <TextView
+                android:id="@+id/lblSubTitle_item_device"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/text_size_small" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/prgLoading_item_device"
+            style="?android:progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_margin="@dimen/item_device_icon_margin"
+            android:indeterminate="true" />
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/prgLoading_item_device"
-        style="?android:progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_margin="@dimen/item_device_icon_margin"
-        android:indeterminate="true" />
-</LinearLayout>
-
-<TextView
-    android:layout_width="fill_parent"
-    android:layout_height="1.0dip"
-    android:layout_marginLeft="10.0dip"
-    android:layout_marginRight="10.0dip"
-    android:background="@color/light_gray" />
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="1.0dip"
+        android:layout_marginLeft="10.0dip"
+        android:layout_marginRight="10.0dip"
+        android:background="@color/light_gray" />
 </LinearLayout>

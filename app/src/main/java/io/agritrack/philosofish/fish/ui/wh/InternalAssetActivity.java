@@ -45,7 +45,6 @@ import io.agritrack.philosofish.data.dto.tx.AssetTxDTO;
 import io.agritrack.philosofish.data.dto.tx.AssetTxItemDTO;
 import io.agritrack.philosofish.data.model.Site;
 import io.agritrack.philosofish.data.model.tx.AssetTransaction;
-import io.agritrack.philosofish.data.model.tx.AssetTxItem;
 import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.dialog.SimpleListDialog;
 import io.agritrack.philosofish.dialog.SupportDialog;
@@ -317,17 +316,17 @@ public class InternalAssetActivity extends LocationAwareActivity implements Togg
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recWHInternal.items == null || recWHInternal.items.isEmpty()) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.asset)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.asset)));
 
             }
 
             if (Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.fromSite) && Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.fromAsset)) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.from)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.from)));
 
             }
 
             if (Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.toSite) && Strings.isEmptyOrWhitespace(GlobalState.recWHInternal.toAsset)) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.to)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.to)));
             }
         }
 

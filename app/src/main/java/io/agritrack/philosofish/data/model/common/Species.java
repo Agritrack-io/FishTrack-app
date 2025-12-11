@@ -10,19 +10,19 @@ public class Species {
     @PrimaryKey
     public Long id;
 
-    @ColumnInfo(name="country")
+    @ColumnInfo(name = "country")
     public String country;
 
-    @ColumnInfo(name="tax_name")
+    @ColumnInfo(name = "tax_name")
     public String scientificName;
 
-    @ColumnInfo(name="local_name")
+    @ColumnInfo(name = "local_name")
     public String localName;
 
-    @ColumnInfo(name="name")
+    @ColumnInfo(name = "name")
     public String name;
 
-    @ColumnInfo(name="type")
+    @ColumnInfo(name = "type")
     public String type;
 
     public Species() {

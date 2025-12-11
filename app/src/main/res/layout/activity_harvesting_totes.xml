@@ -262,7 +262,7 @@
             android:text="ΕΝΤΑΣΗ RFID: "
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/ivBackToHarvestingStart"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/ivBackToHarvestingStart"

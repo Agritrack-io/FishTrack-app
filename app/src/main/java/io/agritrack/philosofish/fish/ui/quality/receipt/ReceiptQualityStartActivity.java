@@ -14,9 +14,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +37,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.List;
 
 import io.agritrack.philosofish.R;
@@ -55,7 +52,6 @@ import io.agritrack.philosofish.data.model.BinInfo;
 import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
-import io.agritrack.philosofish.fish.state.QualityStepsState;
 import io.agritrack.philosofish.fish.state.ReceiptQualityRecord;
 import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
 import io.agritrack.philosofish.rfid.SingleShotScanner;
@@ -124,25 +120,27 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         // initiate raw sound
         SoundUtil.initSoundPool(this);
 
-        confirmNewLotDialog= YesNoDialogFragment.instance();
+        confirmNewLotDialog = YesNoDialogFragment.instance();
         confirmNewLotDialog.onConfirm(bundle -> {
+            updateState(); // optional but usually good: persist current changes
             ReceiptQualityTransaction tx = commitReceiptQuality(db, false);
             if (tx == null) {
-                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityReceipt.lot),Toast.LENGTH_LONG);
+                CToast(getAppContext(),
+                        String.format(getResources().getString(R.string.save_quality_failed), recQualityReceipt.lot),
+                        Toast.LENGTH_LONG);
             }
-            loadLotInfo(epcStr);
-        });
-        confirmNewLotDialog.onReject(bundle -> {
-
+            // User explicitly agreed to switch LOT → force override
+            loadLotInfo(epcStr, true);
         });
 
 
-        confirmSaveDataDialog= YesNoDialogFragment.instance();
+
+        confirmSaveDataDialog = YesNoDialogFragment.instance();
         confirmSaveDataDialog.onConfirm(bundle -> {
             updateState();
             ReceiptQualityTransaction tx = commitReceiptQuality(db, false);
             if (tx == null) {
-                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityReceipt.lot),Toast.LENGTH_LONG);
+                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityReceipt.lot), Toast.LENGTH_LONG);
             }
             Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
             startActivity(i);
@@ -382,80 +380,108 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
     }
 
 
-    public void loadLotInfo(String epc) {
+    public void loadLotInfo(String epc, boolean forceLotOverride) {
         try {
-            if (!Strings.isEmptyOrWhitespace(epc)) {
-                BinInfo binInfo = db.binInfoDAO().getByRFId(epc);
-                if (binInfo == null || binInfo.lot == null || binInfo.lot.isEmpty()) {
-                    CToast(getAppContext(), String.format(getResources().getString(R.string.no_lot_for_bin), epcShort), Toast.LENGTH_LONG);
-                    return;
-                } else {
-                    ReceiptQualityTransaction recTrans = db.receiptQualityTransactionDAO().getByLot(binInfo.lot);
-                    if (recTrans == null) {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            if (Strings.isEmptyOrWhitespace(epc)) {
+                CToast(getApplicationContext(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
+                return;
+            }
 
-                        recQualityReceipt.lot = binInfo.lot;
-                        recQualityReceipt.cage = binInfo.cage;
-                        recQualityReceipt.fishSpecies = binInfo.species;
-                        recQualityReceipt.farm = binInfo.farm;
-                        recQualityReceipt.plant = binInfo.plant;
-                        if (binInfo.pickedAt != null){
-                            LocalDate date = Instant.ofEpochMilli(binInfo.pickedAt)
-                                    .atZone(ZoneId.systemDefault()) // You can specify your time zone if needed
-                                    .toLocalDate();
-                            recQualityReceipt.fishingDate = date.format(formatter);
-                        }
-                        if (binInfo.deliveredAt != null) {
-                            recQualityReceipt.arrivalTime = Instant.ofEpochMilli(binInfo.deliveredAt)
+            BinInfo binInfo = db.binInfoDAO().getByRFId(epc);
+            if (binInfo == null || Strings.isEmptyOrWhitespace(binInfo.lot)) {
+                CToast(getAppContext(),
+                        String.format(getResources().getString(R.string.no_lot_for_bin), epcShort),
+                        Toast.LENGTH_LONG);
+                return;
+            }
+
+            // Decide if we are allowed to overwrite LOT
+            boolean lotWasEmpty = Strings.isEmptyOrWhitespace(recQualityReceipt.lot);
+            boolean allowLotOverride = forceLotOverride || lotWasEmpty;
+
+            ReceiptQualityTransaction recTrans = db.receiptQualityTransactionDAO().getByLot(binInfo.lot);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            if (recTrans == null) {
+
+                if (allowLotOverride) {
+                    recQualityReceipt.lot = binInfo.lot;
+                }
+
+                recQualityReceipt.cage = binInfo.cage;
+                recQualityReceipt.fishSpecies = binInfo.species;
+                recQualityReceipt.farm = binInfo.farm;
+                recQualityReceipt.plant = binInfo.plant;
+
+                if (binInfo.pickedAt != null) {
+                    LocalDate date = Instant.ofEpochMilli(binInfo.pickedAt)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate();
+                    recQualityReceipt.fishingDate = date.format(formatter);
+                }
+
+                if (binInfo.deliveredAt != null) {
+                    recQualityReceipt.arrivalTime =
+                            Instant.ofEpochMilli(binInfo.deliveredAt)
                                     .atZone(ZoneId.systemDefault())
                                     .toLocalTime()
                                     .format(DateTimeFormatter.ofPattern("HH:mm"));
-                        }
-                        recQualityReceipt.startTime = null;
-                    } else if (recTrans.isSynced) {
-                        CToast(getAppContext(),String.format(getResources().getString(R.string.lot_receipt_control_done), binInfo.lot), Toast.LENGTH_LONG );
-                    } else {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                        recQualityReceipt.lot = recTrans.lot;
-                        recQualityReceipt.cage = recTrans.cage;
-                        recQualityReceipt.fishSpecies = recTrans.species;
-                        recQualityReceipt.farm = recTrans.farm;
-                        recQualityReceipt.plant = recTrans.plant;
-                        if (recTrans.fishingDate != null) {
-                            LocalDate date = recTrans.fishingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                            recQualityReceipt.fishingDate = date.format(formatter);
-                        }
-                        if (recTrans.arrivalTime != null) {
-                            recQualityReceipt.arrivalTime = recTrans.arrivalTime.toString();
-                        }
-                        if (recTrans.startTime != null) {
-                            recQualityReceipt.startTime = recTrans.startTime.toString();
-                        }
-                        recQualityReceipt.binSeal = recTrans.sealed;
-                        recQualityReceipt.eyeRating = recTrans.eyeRating;
-                        recQualityReceipt.gillRating = recTrans.gillRating;
-                        recQualityReceipt.fleshRating = recTrans.fleshRating;
-                        recQualityReceipt.skinRating = recTrans.skinRating;
-                        recQualityReceipt.disEyes = recTrans.disEyes;
-                        recQualityReceipt.disTail = recTrans.disTail;
-                        recQualityReceipt.disSkeletal = recTrans.disSkeletal;
-                        recQualityReceipt.disBlood = recTrans.disBlood;
-                        recQualityReceipt.disMouth = recTrans.disMouth;
-                        recQualityReceipt.disOper = recTrans.disOper;
-                        recQualityReceipt.comments = recTrans.comments;
-
-                    }
-
-                    initControlsFromState();
-                    return;
                 }
+
+                recQualityReceipt.startTime = null;
+            } else if (recTrans.isSynced) {
+                CToast(getAppContext(),
+                        String.format(getResources().getString(R.string.lot_receipt_control_done), binInfo.lot),
+                        Toast.LENGTH_LONG);
+                return;
             } else {
-                CToast(getApplicationContext(), render(R.string.no_tag_detected), Toast.LENGTH_SHORT);
+                if (allowLotOverride) {
+                    recQualityReceipt.lot = recTrans.lot;
+                }
+
+                recQualityReceipt.cage = recTrans.cage;
+                recQualityReceipt.fishSpecies = recTrans.species;
+                recQualityReceipt.farm = recTrans.farm;
+                recQualityReceipt.plant = recTrans.plant;
+
+                if (recTrans.fishingDate != null) {
+                    LocalDate date = recTrans.fishingDate.toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate();
+                    recQualityReceipt.fishingDate = date.format(formatter);
+                }
+
+                if (recTrans.arrivalTime != null) {
+                    recQualityReceipt.arrivalTime = recTrans.arrivalTime.toString();
+                }
+
+                if (recTrans.startTime != null) {
+                    recQualityReceipt.startTime = recTrans.startTime.toString();
+                }
+
+                recQualityReceipt.binSeal = recTrans.sealed;
+                recQualityReceipt.eyeRating = recTrans.eyeRating;
+                recQualityReceipt.gillRating = recTrans.gillRating;
+                recQualityReceipt.fleshRating = recTrans.fleshRating;
+                recQualityReceipt.skinRating = recTrans.skinRating;
+
+                recQualityReceipt.disEyes = recTrans.disEyes;
+                recQualityReceipt.disTail = recTrans.disTail;
+                recQualityReceipt.disSkeletal = recTrans.disSkeletal;
+                recQualityReceipt.disBlood = recTrans.disBlood;
+                recQualityReceipt.disMouth = recTrans.disMouth;
+                recQualityReceipt.disOper = recTrans.disOper;
+
+                recQualityReceipt.comments = recTrans.comments;
             }
+
+            initControlsFromState();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     private class ScanHandler extends Handler {
         private final WeakReference<ReceiptQualityStartActivity> mActivity;
@@ -467,39 +493,58 @@ public class ReceiptQualityStartActivity extends AppCompatActivity {
         @SuppressLint("StringFormatMatches")
         @Override
         public void handleMessage(Message msg) {
+
             switch (msg.what) {
+
                 case 1:
                     epcStr = msg.getData().getString("epc");
                     if (epcStr == null) return;
-                    String rssi = msg.getData().getString("rssi");
-                    epcShort = epcStr.substring(epcStr.length() - 6);
+
+                    epcShort = epcStr.length() > 6 ? epcStr.substring(epcStr.length() - 6) : epcStr;
                     this.removeCallbacks(scanner_runnable);
-                    if (recQualityReceipt.lot == null || recQualityReceipt.lot.isEmpty()) {
-                        loadLotInfo(epcStr);
+
+                    // CASE A — LOT is empty → simply load new lot
+                    if (Strings.isEmptyOrWhitespace(recQualityReceipt.lot)) {
+                        loadLotInfo(epcStr, false);
                         return;
-                    } else {
-                        if (!Strings.isEmptyOrWhitespace(epcStr)) {
-                            BinInfo binInfo = db.binInfoDAO().getByRFId(epcStr);
-                            if (binInfo == null || binInfo.lot == null || binInfo.lot.isEmpty()) {
-                                CToast(getAppContext(), String.format(getResources().getString(R.string.no_lot_for_bin), epcShort), Toast.LENGTH_LONG);
-                                return;
-                            } else if (binInfo.lot.equals(recQualityReceipt.lot)) {
-                                CToast(getAppContext(), String.format(getResources().getString(R.string.lot_already_loaded), binInfo.lot), Toast.LENGTH_LONG);
-                                return;
-                            }
-                            FragmentManager fm = getSupportFragmentManager();
-                            confirmNewLotDialog.setMessage(getString(R.string.bin_on_another_lot, epcShort, recQualityReceipt.lot));
-                            confirmNewLotDialog.showNow(fm, getString(R.string.confirm_selection));
-                            return;
-                        }
                     }
+
+                    // CASE B — LOT already set → evaluate scanned bin
+                    BinInfo binInfo = db.binInfoDAO().getByRFId(epcStr);
+
+                    if (binInfo == null || Strings.isEmptyOrWhitespace(binInfo.lot)) {
+                        CToast(getAppContext(),
+                                String.format(getResources().getString(R.string.no_lot_for_bin), epcShort),
+                                Toast.LENGTH_LONG);
+                        return;
+                    }
+
+                    // CASE C — same lot → notify user only
+                    if (binInfo.lot.equals(recQualityReceipt.lot)) {
+                        CToast(getAppContext(),
+                                String.format(getResources().getString(R.string.lot_already_loaded), binInfo.lot),
+                                Toast.LENGTH_LONG);
+                        return;
+                    }
+
+                    // CASE D — DIFFERENT lot detected → ask user
+                    FragmentManager fm = getSupportFragmentManager();
+                    String currentLot = Strings.isEmptyOrWhitespace(recQualityReceipt.lot)
+                            ? "-"
+                            : recQualityReceipt.lot;
+
+                    confirmNewLotDialog.setMessage(
+                            getString(R.string.bin_on_another_lot, epcShort, currentLot)
+                    );
+
+                    confirmNewLotDialog.showNow(fm, getString(R.string.confirm_selection));
+                    return;
 
 
                 case 1980:
                     this.removeCallbacks(scanner_runnable);
                     break;
             }
-
         }
     }
 }

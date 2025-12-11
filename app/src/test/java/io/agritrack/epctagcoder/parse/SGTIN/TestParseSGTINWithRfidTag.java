@@ -22,8 +22,8 @@ public class TestParseSGTINWithRfidTag {
         SGTIN sgtin2 = Builder().withRFIDTag(rfidTag2).build().getSGTIN();
 
         System.out.println(String.format("for RFID:%s the SGTIN is:(01)%s %s%s %s (21)%s",
-                        rfidTag1,sgtin1.getExtensionDigit(), sgtin1.getCompanyPrefix(),
-                                 sgtin1.getItemReference(), sgtin1.getCheckDigit(), sgtin1.getSerial()));
+                rfidTag1, sgtin1.getExtensionDigit(), sgtin1.getCompanyPrefix(),
+                sgtin1.getItemReference(), sgtin1.getCheckDigit(), sgtin1.getSerial()));
         //System.out.println(String.format("for RFID:%s the serial is:(21)%s", rfidTag1, sgtin1.getSerial()));
         //System.out.println(String.format("for RFID:%s the serial is:(21)%s", rfidTag2, sgtin2.getSerial()));
         assertEquals("10000001981", sgtin1.getSerial());

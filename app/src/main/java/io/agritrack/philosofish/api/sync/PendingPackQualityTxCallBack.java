@@ -7,9 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.dto.tx.PackageQualityTxDTO;
-import io.agritrack.philosofish.data.dto.tx.ReceiptQualityTxDTO;
 import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
-import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import retrofit2.Call;
 import retrofit2.Response;
 

@@ -58,10 +58,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
-        applicationVariants.all{
+        applicationVariants.all {
             variant ->
-                variant.outputs.each{
-                    output->
+                variant.outputs.each {
+                    output ->
                         def name = "agritrack-philosofish.apk"
                         output.outputFileName = name
                 }
@@ -223,5 +223,5 @@ dependencies {
 
 //    //TODO:: Delete before production
 //    // browse local db
-  //  debugImplementation 'com.github.amitshekhariitbhu.Android-Debug-Database:debug-db:v1.0.7'
+    //  debugImplementation 'com.github.amitshekhariitbhu.Android-Debug-Database:debug-db:v1.0.7'
 }

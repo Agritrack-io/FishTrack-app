@@ -29,12 +29,12 @@ public class SetTonnageSampleDialog {
         setDialog();
         findViews();
 
-        this.etFishT.setText( "" );
+        this.etFishT.setText("");
 
         btnOK.setOnClickListener(view -> {
             Double fishTP = !Strings.isEmptyOrWhitespace(this.etFishT.getText().toString()) ? Double.parseDouble(this.etFishT.getText().toString()) : 0;
             String corrAction = !Strings.isEmptyOrWhitespace(this.etCorrAct.getText().toString()) ? this.etCorrAct.getText().toString() : null;
-            this.etFishT.setText( "" );
+            this.etFishT.setText("");
             if (mDataListener != null) {
                 mDataListener.onDataPassed(fishTP, null, corrAction);
             }

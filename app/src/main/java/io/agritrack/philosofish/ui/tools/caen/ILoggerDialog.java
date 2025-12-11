@@ -19,5 +19,6 @@ public interface ILoggerDialog {
     void setButtonsVisibility(int buttonBits);
 
     void setStateObserver(MutableLiveData<CAENState> stateResult);
+
     enum StatesEnum {STOP_LOGGER, COUNT_SAMPLES, READ_VALUES, RESET, INIT, VALID}
 }

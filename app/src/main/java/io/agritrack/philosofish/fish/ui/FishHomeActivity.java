@@ -38,11 +38,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import io.agritrack.api.sync.EncodingSchemeCallBack;
 import io.agritrack.philosofish.BuildConfig;
 import io.agritrack.philosofish.FishTrackApplication;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
+import io.agritrack.philosofish.api.sync.EncodingSchemeCallBack;
 import io.agritrack.philosofish.api.sync.PendindQualityMeasurementsTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingBinInfoTxCallBack;
 import io.agritrack.philosofish.api.sync.PendingCorrelationTxCallBack;

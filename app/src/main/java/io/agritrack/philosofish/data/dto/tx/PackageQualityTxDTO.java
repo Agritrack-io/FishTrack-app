@@ -15,7 +15,7 @@ import io.agritrack.philosofish.ui.service.LocalPreferences;
 
 public class PackageQualityTxDTO {
 
-    private static final SimpleDateFormat simpleDateTime =  new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
+    private static final SimpleDateFormat simpleDateTime = new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
 
     public UUID id;
 
@@ -47,11 +47,8 @@ public class PackageQualityTxDTO {
     public String plant;
 
 
-
     @JsonProperty
     public String user = LocalPreferences.getLoggedInUser("N/A");
-
-
 
 
     public static PackageQualityTxDTO convert(PackageQualityTransaction qualityTx) {

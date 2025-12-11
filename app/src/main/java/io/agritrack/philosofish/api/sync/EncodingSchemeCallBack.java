@@ -1,4 +1,4 @@
-package io.agritrack.api.sync;
+package io.agritrack.philosofish.api.sync;
 
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 
@@ -24,17 +24,17 @@ public class EncodingSchemeCallBack extends BaseSyncCallBack<List<EncodingScheme
         List<EncodingSchemeDTO> rs = response.body();
 
         if (rs != null) {
-            // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 
             for (EncodingSchemeDTO schemeDTO : rs) {
                 db.encodingSchemeDAO().insert(EncodingSchemeDTO.convert(schemeDTO));
             }
-            // Encoding Scheme sync succeeded.
-            syncResult.setValue(getAppContext().getString(R.string.EncodeScheme_sync_completed));
+
+            set(getAppContext().getString(R.string.EncodeScheme_sync_completed));
+
         } else {
-            // no Encoding Scheme  found
-            syncResult.setValue(getAppContext().getString(R.string.no_EncodeScheme_found_alert));
+
+            set(getAppContext().getString(R.string.no_EncodeScheme_found_alert));
         }
     }
 }

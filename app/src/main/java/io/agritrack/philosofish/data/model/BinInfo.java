@@ -5,8 +5,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
-
 @Entity(tableName = "bin_info")
 public class BinInfo {
 

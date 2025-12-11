@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import io.agritrack.philosofish.R;
 
-public class SortingSampleAdapter extends RecyclerView.Adapter<SortingSampleAdapter.MyViewHolder>{
+public class SortingSampleAdapter extends RecyclerView.Adapter<SortingSampleAdapter.MyViewHolder> {
 
     private final LayoutInflater mLayoutInflater;
     private List<SortingDetails> mList;
@@ -43,9 +43,9 @@ public class SortingSampleAdapter extends RecyclerView.Adapter<SortingSampleAdap
     }
 
     public void addUniqueItem(SortingDetails val) {
-       // if (this.mList.stream().noneMatch(x -> x.timestamp.equals(val.timestamp))) {
-            this.mList.add(val);
-      //  }
+        // if (this.mList.stream().noneMatch(x -> x.timestamp.equals(val.timestamp))) {
+        this.mList.add(val);
+        //  }
     }
 
 
@@ -152,7 +152,7 @@ public class SortingSampleAdapter extends RecyclerView.Adapter<SortingSampleAdap
         }
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder  {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvTime, tvFishTemp, tvWaterTemp, tvItemNo;
 
         public MyViewHolder(@NonNull View itemView) {

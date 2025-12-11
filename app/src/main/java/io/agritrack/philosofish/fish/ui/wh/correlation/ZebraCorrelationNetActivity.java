@@ -40,7 +40,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.common.util.Strings;
-//import com.zebra.rfid.api3.TagData;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -63,15 +62,13 @@ import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.data.service.EncodingSchemeService;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
+import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.ui.bo.GenericListModel;
 import io.agritrack.philosofish.rfid.SingleShotScanner;
+import io.agritrack.philosofish.rfid.X9KeyReceiver;
 import io.agritrack.philosofish.ui.LocationAwareActivity;
 import io.agritrack.philosofish.ui.adapter.FilterableAdapter;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
-import io.agritrack.philosofish.rfid.X9KeyReceiver;
-import io.agritrack.philosofish.fish.state.GlobalState;
-//import io.agritrack.philosofish.ui.adapter.bo.GenericListModel;
-//import io.agritrack.philosofish.ui.wh.fish.zebra.WhMenuActivity;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -239,7 +236,6 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
         CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
 
 
-
         String token = LocalPreferences.getToken();
         // sync WH Correlation Tx
         List<CorrelationTxDTO> dtos = new ArrayList<>();
@@ -374,11 +370,11 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
                         new String[]{Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT},
                         BLUETOOTH_PERMISSION_REQUEST_CODE);
             } else {
-               // rfidHandler.onCreate(this);
+                // rfidHandler.onCreate(this);
             }
 
         } else {
-           // rfidHandler.onCreate(this);
+            // rfidHandler.onCreate(this);
         }
         //rfidHandler.onResume();
         super.onResume();
@@ -474,7 +470,7 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(adapterAssets==null) {
+                if (adapterAssets == null) {
                     return true;
                 }
                 btnUncorr.setVisibility(View.GONE);
@@ -500,8 +496,6 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
 
             // persist WHCorrelationTX Record data to local DB.
             CorrelationTransaction tx = GlobalState.commitWHCorrelation(db);
-
-
 
 
             // sync WH Correlation Tx
@@ -622,7 +616,7 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
     public void onItemClick(boolean isCorrelated) {
         if (isCorrelated) {
             btnUncorr.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             btnUncorr.setVisibility(View.GONE);
         }
     }
@@ -657,7 +651,7 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
                                             confirmRfidReplacement.showNow(fm, getString(R.string.confirm_selection));
                                         });
 
-                                    }else {
+                                    } else {
                                         GlobalState.recWHCorrelation.rfid = epcStr;
                                         runOnUiThread(() -> tvCorrNetBarcode.setText(label));
                                         break;
@@ -715,13 +709,13 @@ public class ZebraCorrelationNetActivity extends LocationAwareActivity implement
                         db.assetDAO().update(currNet);
                     }
                 }
-                if(btnUncorr.isClickable()) {
+                if (btnUncorr.isClickable()) {
                     btnUncorr.setVisibility(View.GONE);
                 }
                 updateNetsList();
-                if(correlatedFilter.isChecked()) {
+                if (correlatedFilter.isChecked()) {
                     loadNetsFromLocalDB(uncorrNetsList);
-                }else {
+                } else {
                     loadNetsFromLocalDB(netsList);
                 }
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));

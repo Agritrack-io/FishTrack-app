@@ -1,7 +1,5 @@
 package io.agritrack.philosofish.data.dto.tx;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -12,7 +10,7 @@ import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
 
 public class ProcessingTxDTO {
 
-    private static final SimpleDateFormat simpleDateTime =  new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
+    private static final SimpleDateFormat simpleDateTime = new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
 
     public UUID id;
     public String clean_truck;

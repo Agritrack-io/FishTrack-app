@@ -77,7 +77,7 @@ public class ConfigActivity extends LocationAwareActivity {
 
         if (loc == null) {
             if (LocalPreferences.locationExists()) {
-                CToast(getAppContext(), render(R.string.no_location + "\n" +  R.string.previous_coordinates), Toast.LENGTH_LONG);
+                CToast(getAppContext(), render(R.string.no_location + "\n" + R.string.previous_coordinates), Toast.LENGTH_LONG);
             } else {
                 CToast(getAppContext(), render(R.string.no_location + "\n" + R.string.try_again), Toast.LENGTH_LONG);
             }

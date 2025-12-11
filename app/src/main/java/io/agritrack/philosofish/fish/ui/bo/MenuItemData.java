@@ -7,8 +7,8 @@ public class MenuItemData {
     private String description2;
     private int image;
 
-    public MenuItemData()
-    { }
+    public MenuItemData() {
+    }
 
     public MenuItemData(int id, String title, String description1, String description2, int image) {
         this.id = id;

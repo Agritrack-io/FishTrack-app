@@ -108,7 +108,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
         dismiss();
-       // ((InitBinsActivity)getActivity()).registerKeyReceiver();
+        // ((InitBinsActivity)getActivity()).registerKeyReceiver();
     }
 
     @Override
@@ -118,7 +118,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
 //        if (numArgs == 2) {
 //            ((InitBinsActivity)getActivity()).registerKeyReceiver();
 //        }
-        if (keyReceiver != null){
+        if (keyReceiver != null) {
             getActivity().unregisterReceiver(keyReceiver);
             keyReceiver = null;
         }
@@ -556,7 +556,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                                     stateResult.setValue(state);
                                 }
                             });
-                            if (keyReceiver != null){
+                            if (keyReceiver != null) {
                                 getActivity().unregisterReceiver(keyReceiver);
                                 keyReceiver = null;
                             }
@@ -619,7 +619,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                             });
                             // after Reset, initialize the logger and start logging...
                             if (isButtonVisible(InitOp)) {
-                                if (keyReceiver != null){
+                                if (keyReceiver != null) {
                                     getActivity().unregisterReceiver(keyReceiver);
                                     keyReceiver = null;
                                 }
@@ -673,7 +673,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                                 stateResult.setValue(state);
                             }
 
-                            if (keyReceiver != null){
+                            if (keyReceiver != null) {
                                 getActivity().unregisterReceiver(keyReceiver);
                                 keyReceiver = null;
                             }
@@ -726,7 +726,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
                             if (stateResult != null) {
                                 stateResult.setValue(state);
                             }
-                            if (keyReceiver != null){
+                            if (keyReceiver != null) {
                                 getActivity().unregisterReceiver(keyReceiver);
                                 keyReceiver = null;
                             }
@@ -769,7 +769,7 @@ public class LoggerDialogFragment extends DialogFragment implements TimeAnimator
     }
 
     private void attachTriggertoButton(View.OnClickListener ButtonListener) {
-        if (keyReceiver ==null) {
+        if (keyReceiver == null) {
             keyReceiver = new X9KeyReceiver(ButtonListener);
             IntentFilter filter = new IntentFilter();
             filter.addAction("android.rfid.FUN_KEY");

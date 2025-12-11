@@ -4,12 +4,12 @@ import android.content.Context;
 
 public class ConfigPersistenceFactory {
 
-    public enum PersistenceType{
+    public enum PersistenceType {
         FILE, MANUAL, WEB
     }
 
-    public static IConfigPersistenceAdapter getInstance(Context context, PersistenceType persistenceType){
-        switch (persistenceType){
+    public static IConfigPersistenceAdapter getInstance(Context context, PersistenceType persistenceType) {
+        switch (persistenceType) {
             case WEB:
                 return new ConfigWebPersistence(context);
             case FILE:

@@ -23,17 +23,18 @@ public class SyncCustomersCallBack extends BaseSyncCallBack<List<CustomerDTO>> {
         List<CustomerDTO> rs = response.body();
 
         if (rs != null) {
-            // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 
-            for (CustomerDTO customerDTO : rs) {
-                db.customerDAO().insert(CustomerDTO.convert(customerDTO));
+            for (CustomerDTO dto : rs) {
+                db.customerDAO().insert(CustomerDTO.convert(dto));
             }
-            // Employees sync succeeded.
-            syncResult.setValue(getAppContext().getString(R.string.customers_sync_completed));
+
+            // SAFE
+            set(getAppContext().getString(R.string.customers_sync_completed));
+
         } else {
-            // No Employees found
-            syncResult.setValue(getAppContext().getString(R.string.no_customers_found_alert));
+            // SAFE
+            set(getAppContext().getString(R.string.no_customers_found_alert));
         }
     }
 }

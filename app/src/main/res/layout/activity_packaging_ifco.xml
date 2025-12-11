@@ -82,62 +82,62 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerLayout">
 
-<!--        <RelativeLayout
-            android:uid="@+uid/incomingAssetALayout"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
-            app:layout_constraintBottom_toTopOf="@+uid/fishMainLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/shape_rounded_corner_with_shadow"
-                android:orientation="vertical"
-                android:padding="1dp">
-
-                <EditText
-                    android:uid="@+uid/etTraysQuantity"
+        <!--        <RelativeLayout
+                    android:uid="@+uid/incomingAssetALayout"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="50dp"
-                    android:layout_marginEnd="80dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/bg_rounded_dialog_input"
-                    android:ems="10"
-                    android:inputType="number"
-                    android:padding="5dp"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:textAlignment="viewEnd"
-                    android:textColorHint="@color/black"
-                    android:textSize="@dimen/text_view_font_size"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp"
+                    app:layout_constraintBottom_toTopOf="@+uid/fishMainLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/shape_rounded_corner_with_shadow"
+                        android:orientation="vertical"
+                        android:padding="1dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="16dp"
-                android:background="@color/agri_semi_green"
-                android:paddingHorizontal="8dp"
-                android:text="@string/trays_qty"
-                android:textColor="@color/label_blue"
-                android:textSize="18sp" />
+                        <EditText
+                            android:uid="@+uid/etTraysQuantity"
+                            android:layout_width="0dp"
+                            android:layout_height="50dp"
+                            android:layout_marginStart="50dp"
+                            android:layout_marginEnd="80dp"
+                            android:layout_marginBottom="8dp"
+                            android:background="@drawable/bg_rounded_dialog_input"
+                            android:ems="10"
+                            android:inputType="number"
+                            android:padding="5dp"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            android:textAlignment="viewEnd"
+                            android:textColorHint="@color/black"
+                            android:textSize="@dimen/text_view_font_size"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-        </RelativeLayout>-->
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="16dp"
+                        android:background="@color/agri_semi_green"
+                        android:paddingHorizontal="8dp"
+                        android:text="@string/trays_qty"
+                        android:textColor="@color/label_blue"
+                        android:textSize="18sp" />
+
+                </RelativeLayout>-->
 
         <RelativeLayout
             android:id="@+id/fishMainLayout"

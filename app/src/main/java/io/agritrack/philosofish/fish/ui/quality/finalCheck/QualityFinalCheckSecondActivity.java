@@ -1,7 +1,6 @@
 package io.agritrack.philosofish.fish.ui.quality.finalCheck;
 
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
-import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.fish.state.GlobalState.recQualityFinal;
 
 import android.app.ProgressDialog;
@@ -28,15 +27,15 @@ import io.agritrack.philosofish.fish.state.FinalQualityRecord;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
 
-public class QualityFinalCheckSecondActivity extends AppCompatActivity  {
+public class QualityFinalCheckSecondActivity extends AppCompatActivity {
 
     private final UploadingApi upldSvc = APIServiceGenerator.createAPI(UploadingApi.class);
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private MobileDB db;
     private YesNoDialogFragment confirmAllOkDlg;
     private EditText size1, size2, size3, type1, type2, type3, number1, number2, number3, actual1, actual2, actual3,
-            under11, under12, under13,under21,under22, under23, under31, under32, under33 , over11, over12, over13, over21, over22, over23,
-            over31, over32, over33 ,net1, net2, net3, ice1, ice2, ice3, temp1, temp2, temp3;
+            under11, under12, under13, under21, under22, under23, under31, under32, under33, over11, over12, over13, over21, over22, over23,
+            over31, over32, over33, net1, net2, net3, ice1, ice2, ice3, temp1, temp2, temp3;
     private ProgressDialog progressDialog;
     private ImageView ivSupport, ivNext, ivBack;
     private boolean proceedWithoutLocation = false;

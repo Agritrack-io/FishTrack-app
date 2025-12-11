@@ -106,6 +106,6 @@ public interface TransactionApi {
 
     @Headers("Content-Type: application/json; charset=utf-8")
     @PUT("/philosofish/bin-ledger/update-init-ts")
-    Call<Map<String,Long>> syncLoggerInitTs(@Body Map<String, Long> initTs, @Header("Authorization") String token);
+    Call<Map<String, Long>> syncLoggerInitTs(@Body Map<String, Long> initTs, @Header("Authorization") String token);
 }
 

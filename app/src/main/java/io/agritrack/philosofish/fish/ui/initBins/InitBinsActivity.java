@@ -39,12 +39,10 @@ import java.lang.ref.WeakReference;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.tx.TransactionApi;
@@ -60,6 +58,7 @@ import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.FishingRecord;
 import io.agritrack.philosofish.fish.state.GlobalState;
+import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.philosofish.rfid.SingleShotScanner;
 import io.agritrack.philosofish.rfid.X9KeyReceiver;
@@ -253,7 +252,7 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
     // release the singleton that points to the dialog.
     @Override
     public void handleDialogClose(DialogInterface dialog) {
-        if(dialog != null) {
+        if (dialog != null) {
             dialog.dismiss();
         }
         this.loggerDlg = null;
@@ -268,7 +267,7 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
     }
 
     public void registerKeyReceiver() {
-        if (keyReceiver == null){
+        if (keyReceiver == null) {
             keyReceiver = new X9KeyReceiver(this::onClick);
         }
         IntentFilter filter = new IntentFilter();
@@ -380,7 +379,7 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
     }
 
     protected void onClick(View view) {
-        if(this.loggerDlg != null) {
+        if (this.loggerDlg != null) {
             CToast(getApplicationContext(), render(R.string.init_in_progress), Toast.LENGTH_SHORT);
             return;
         }

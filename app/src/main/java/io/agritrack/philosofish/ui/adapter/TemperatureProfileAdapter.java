@@ -3,13 +3,11 @@ package io.agritrack.philosofish.ui.adapter;
 import static io.agritrack.philosofish.fish.state.GlobalState.recLoggerData;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,7 +24,6 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -95,8 +92,8 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
                     .summaryStatistics();
 
             high = stats.getMax();
-            low  = stats.getMin();
-            avg  = stats.getAverage();
+            low = stats.getMin();
+            avg = stats.getAverage();
 
             holder.setMeasurements(epc, model.values);
             holder.tvHigh.setText(String.format("%.2f°C", high));
@@ -104,7 +101,7 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             holder.tvAvg.setText(String.format("%.2f°C", avg));
         }
 
-        holder.tvBinEPC.setText(epc.substring(epc.length()-10));
+        holder.tvBinEPC.setText(epc.substring(epc.length() - 10));
 
         // existing UI
         holder.tvCageCode.setText(cageCode);
@@ -133,8 +130,8 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
 
                 LoggerDataRecord.TemperatureModel record = recLoggerData.data.get(binEPC);
 
-                record.surfaceT  = fishT;
-                record.bottomT   = waterT;
+                record.surfaceT = fishT;
+                record.bottomT = waterT;
                 record.corrAction = corrAct;
 
                 notifyItemChanged(position); // updates only the clicked card
@@ -144,7 +141,6 @@ public class TemperatureProfileAdapter extends RecyclerView.Adapter<TemperatureP
             dlg.showDialog();
         });
     }
-
 
 
     @Override

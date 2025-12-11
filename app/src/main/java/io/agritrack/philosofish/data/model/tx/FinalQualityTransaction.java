@@ -3,21 +3,9 @@ package io.agritrack.philosofish.data.model.tx;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.util.Date;
-import java.util.List;
 import java.util.UUID;
-
-import io.agritrack.philosofish.data.converter.DateConverter;
-import io.agritrack.philosofish.data.converter.SortingSampleConverter;
-import io.agritrack.philosofish.data.converter.TonneSampleConverter;
-import io.agritrack.philosofish.data.model.common.SortingSample;
-import io.agritrack.philosofish.data.model.common.TonneSample;
 
 @Entity(tableName = "final_quality_transaction")
 public class FinalQualityTransaction {

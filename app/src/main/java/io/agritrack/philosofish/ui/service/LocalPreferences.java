@@ -4,7 +4,6 @@ import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
@@ -99,7 +98,6 @@ public class LocalPreferences {
     }
 
 
-
     public static String getCurrentClusterId() {
         return pref.getString(SelectedCluster_Key, null);
     }
@@ -167,6 +165,7 @@ public class LocalPreferences {
             pref.edit().putInt(Power_Level_Key, powerLevel).apply();
         }
     }
+
     public static Integer getCurrentPower() {
         return (pref != null) ? pref.getInt(Power_Level_Key, 33) : 33; // Default to high power
     }

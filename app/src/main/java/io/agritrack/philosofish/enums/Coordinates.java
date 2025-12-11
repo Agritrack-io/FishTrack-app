@@ -9,7 +9,7 @@ public enum Coordinates {
         this.tp = coordType;
     }
 
-    public int getLiteral(){
+    public int getLiteral() {
         return tp;
     }
 }

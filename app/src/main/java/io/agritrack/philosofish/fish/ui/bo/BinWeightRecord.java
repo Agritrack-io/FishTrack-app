@@ -17,9 +17,10 @@ public class BinWeightRecord {
         this.data.put(binEPC, new BinRecord(binEPC, weight, temp, epochInit, epochFrom, epochTo));
     }
 
-    public BinRecord getRecordForEPC(String epc){
+    public BinRecord getRecordForEPC(String epc) {
         return this.data.get(epc);
     }
+
     public String toJSONText() {
         String SEPARATOR = "";
         StringBuilder sb = new StringBuilder();
@@ -33,16 +34,16 @@ public class BinWeightRecord {
         return String.format("[%s]", sb);
     }
 
-    public List<BinRecord> getBinsData(){
+    public List<BinRecord> getBinsData() {
         return new ArrayList<>(data.values());
     }
 
-    public Map<String, BinRecord> getBins(){
+    public Map<String, BinRecord> getBins() {
         return this.data;
     }
 
-    public boolean isEmpty(){
-        return this.data==null || this.data.isEmpty();
+    public boolean isEmpty() {
+        return this.data == null || this.data.isEmpty();
     }
 
     public class BinRecord {

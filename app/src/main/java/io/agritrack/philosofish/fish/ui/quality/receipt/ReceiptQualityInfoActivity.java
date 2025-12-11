@@ -327,20 +327,20 @@ public class ReceiptQualityInfoActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (Strings.isEmptyOrWhitespace(GlobalState.recQuality.pLot)) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.lot)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.lot)));
             }
 
             if (GlobalState.recQuality.minFishTemp == null) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.fish_min_temp)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.fish_min_temp)));
 
             }
 
             if (GlobalState.recQuality.meanFishTemp == null) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.fish_avg_temp)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.fish_avg_temp)));
             }
 
             if (GlobalState.recQuality.maxFishTemp == null) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.fish_max_temp)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.fish_max_temp)));
             }
         }
 

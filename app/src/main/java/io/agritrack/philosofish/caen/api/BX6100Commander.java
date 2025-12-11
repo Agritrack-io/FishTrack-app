@@ -71,11 +71,11 @@ public class BX6100Commander extends AbstractCAENCommander {
     public Reader.READER_ERR HighPowerLevel() {
         if (mUhfRManager != null) {
             Reader.READER_ERR err = mUhfRManager.setPower(33, 33);//set uhf module power
-            this.currPowerLevel = new Integer[] {33,33};
+            this.currPowerLevel = new Integer[]{33, 33};
             LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 33);
             if (err != Reader.READER_ERR.MT_OK_ERR) {
                 Reader.READER_ERR err1 = mUhfRManager.setPower(30, 30);//set uhf module power
-                this.currPowerLevel = new Integer[] {30,30};
+                this.currPowerLevel = new Integer[]{30, 30};
                 LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 30);
 
                 if (err1 != Reader.READER_ERR.MT_OK_ERR) {
@@ -93,12 +93,12 @@ public class BX6100Commander extends AbstractCAENCommander {
     public Reader.READER_ERR LowPowerLevel() {
         if (mUhfRManager != null) {
             Reader.READER_ERR err = mUhfRManager.setPower(13, 13);//set uhf module power
-            this.currPowerLevel = new Integer[] {13,13};
+            this.currPowerLevel = new Integer[]{13, 13};
             LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 13);
 
             if (err != Reader.READER_ERR.MT_OK_ERR) {
                 Reader.READER_ERR err1 = mUhfRManager.setPower(12, 12);//set uhf module power
-                this.currPowerLevel = new Integer[] {12,12};
+                this.currPowerLevel = new Integer[]{12, 12};
                 LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 12);
 
                 if (err1 != Reader.READER_ERR.MT_OK_ERR) {
@@ -117,12 +117,12 @@ public class BX6100Commander extends AbstractCAENCommander {
     public Reader.READER_ERR MedPowerLevel() {
         if (mUhfRManager != null) {
             Reader.READER_ERR err = mUhfRManager.setPower(20, 20);//set uhf module power
-            this.currPowerLevel = new Integer[] {20,20};
+            this.currPowerLevel = new Integer[]{20, 20};
             LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 20);
 
             if (err != Reader.READER_ERR.MT_OK_ERR) {
                 Reader.READER_ERR err1 = mUhfRManager.setPower(19, 19);//set uhf module power
-                this.currPowerLevel = new Integer[] {19,19};
+                this.currPowerLevel = new Integer[]{19, 19};
                 LocalPreferences.writeValue(LocalPreferences.Power_Level_Key, 19);
 
                 if (err1 != Reader.READER_ERR.MT_OK_ERR) {

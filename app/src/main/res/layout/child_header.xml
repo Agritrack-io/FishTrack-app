@@ -5,6 +5,7 @@
     android:layout_height="50dp"
     android:paddingStart="22dp"
     android:background="@drawable/list_item_bottom">
+
     <TextView
         android:id="@+id/txtHeader"
         android:layout_width="match_parent"

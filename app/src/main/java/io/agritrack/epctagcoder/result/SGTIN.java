@@ -1,7 +1,5 @@
 package io.agritrack.epctagcoder.result;
 
-import static io.agritrack.epctagcoder.parse.SGTIN.ParseSGTIN.Builder;
-
 public class SGTIN extends Base {
     private String extensionDigit;
     private String itemReference;

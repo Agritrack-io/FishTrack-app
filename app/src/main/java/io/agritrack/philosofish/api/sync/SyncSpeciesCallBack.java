@@ -23,17 +23,16 @@ public class SyncSpeciesCallBack extends BaseSyncCallBack<List<SpeciesDTO>> {
         List<SpeciesDTO> rs = response.body();
 
         if (rs != null) {
-            // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 
             for (SpeciesDTO speciesDTO : rs) {
                 db.speciesDAO().insert(SpeciesDTO.convert(speciesDTO));
             }
-            // Fish Species sync succeeded.
-            syncResult.setValue(getAppContext().getString(R.string.species_sync_completed));
+
+            // Safe setter (avoids crash when syncResult == null)
+            set(getAppContext().getString(R.string.species_sync_completed));
         } else {
-            // no Fish Species found
-            syncResult.setValue(getAppContext().getString(R.string.no_species_found_alert));
+            set(getAppContext().getString(R.string.no_species_found_alert));
         }
     }
 }

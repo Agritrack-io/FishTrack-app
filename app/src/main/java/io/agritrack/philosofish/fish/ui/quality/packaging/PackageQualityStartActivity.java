@@ -210,7 +210,7 @@ public class PackageQualityStartActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (GlobalState.recQuality.qualityBins == null || GlobalState.recQuality.qualityBins.isEmpty()) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.received_bins)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.received_bins)));
 
             }
         }

@@ -49,11 +49,11 @@ import io.agritrack.philosofish.data.model.common.IotLogger;
 import io.agritrack.philosofish.data.service.EncodingSchemeService;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
+import io.agritrack.philosofish.rfid.ScanInventoryThread;
 import io.agritrack.philosofish.sound.SoundUtil;
 import io.agritrack.philosofish.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.philosofish.ui.login.LoginActivity;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
-import io.agritrack.philosofish.rfid.ScanInventoryThread;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -302,7 +302,7 @@ public class ImportCAENLoggersToDBActivity extends AppCompatActivity {
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (GlobalState.assetData.loggers == null || GlobalState.assetData.loggers.isEmpty()) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.loggers)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.loggers)));
             }
         }
         return sb.toString();

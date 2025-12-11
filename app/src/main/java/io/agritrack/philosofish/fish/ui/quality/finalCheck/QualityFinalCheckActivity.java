@@ -45,10 +45,8 @@ import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.FinalQualityRecord;
 import io.agritrack.philosofish.fish.state.GlobalState;
-import io.agritrack.philosofish.fish.state.PackageStepsState;
 import io.agritrack.philosofish.fish.state.QualityStepsState;
 import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
-import io.agritrack.philosofish.fish.ui.quality.packaging.PackageQualityCheckLabelActivity;
 import io.agritrack.philosofish.sound.SoundUtil;
 import io.agritrack.philosofish.ui.custom.ToggleGroup;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
@@ -57,7 +55,7 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
 
     private MobileDB db;
     private ImageView ivSupport;
-    private EditText  tvCurrentLot;
+    private EditText tvCurrentLot;
     private Spinner spFishLot;
     private Set<String> fishLotSet;
     private List<BinInfo> binInfos;
@@ -65,7 +63,7 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
     private ArrayAdapter<String> lotListAdapter;
     private SupportDialog supportDialog;
     private boolean scanning = false;
-    private YesNoDialogFragment confirmNewLotDialog,  confirmSaveDataDialog;
+    private YesNoDialogFragment confirmNewLotDialog, confirmSaveDataDialog;
     private String currentLot, bestBefore;
     private Integer selectedExfoRating, selectedPaletteRating, selectedBoxRating;
 
@@ -121,7 +119,7 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
             // recQualityPackage.fishLot will come from spinner
             scanning = false;
         } else if (!txQuality.isSynced) {
-            if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot))  {
+            if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot)) {
                 int position = lotListAdapter.getPosition(txQuality.fishingLot);
                 if (position != -1) {
                     spFishLot.setSelection(position);
@@ -139,7 +137,7 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
             loadStateFromDB(txQuality);
             scanning = false;
         } else {
-            CToast(getAppContext(),String.format(getResources().getString(R.string.lot_label_control_done), txQuality.lot), Toast.LENGTH_LONG );
+            CToast(getAppContext(), String.format(getResources().getString(R.string.lot_label_control_done), txQuality.lot), Toast.LENGTH_LONG);
             scanning = false;
         }
     }
@@ -207,7 +205,7 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
         recQualityFinal.sample3.fishTemp = txQuality.fishTempThird;
 
         recQualityFinal.foreignBody = txQuality.foreignBody;
-        recQualityFinal.lotAccepted  = txQuality.lotAccepted;
+        recQualityFinal.lotAccepted = txQuality.lotAccepted;
         recQualityFinal.corrAction = txQuality.corrAction;
         recQualityFinal.discardedQty = txQuality.discardedQty;
 
@@ -257,7 +255,6 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
         });
 
 
-
         // set (any?) previously selected values to activity Controls.
         initControlsFromState();
 
@@ -267,11 +264,11 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
         filter.addAction("com.rfid.SCAN");
         registerReceiver(receiverFinal, filter);
 
-        confirmNewLotDialog= YesNoDialogFragment.instance();
+        confirmNewLotDialog = YesNoDialogFragment.instance();
         confirmNewLotDialog.onConfirm(bundle -> {
             FinalQualityTransaction tx = commitFinalQuality(db, false);
             if (tx == null) {
-                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityFinal.lot),Toast.LENGTH_LONG);
+                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityFinal.lot), Toast.LENGTH_LONG);
             }
             loadBarcodeInfo(currentLot);
         });
@@ -279,12 +276,12 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
 
         });
 
-        confirmSaveDataDialog= YesNoDialogFragment.instance();
+        confirmSaveDataDialog = YesNoDialogFragment.instance();
         confirmSaveDataDialog.onConfirm(bundle -> {
             updateState();
             FinalQualityTransaction tx = commitFinalQuality(db, false);
             if (tx == null) {
-                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityFinal.lot),Toast.LENGTH_LONG);
+                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityFinal.lot), Toast.LENGTH_LONG);
             }
 
             QualityStepsState.completed[3] = true; // Final quality COMPLETE green check
@@ -476,7 +473,7 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
         if (qltRecord.expanded != null && qltRecord.expanded) {
             cbExpanded.setChecked(true);
         }
-        if (qltRecord.soft != null &&qltRecord.soft) {
+        if (qltRecord.soft != null && qltRecord.soft) {
             cbSoft.setChecked(true);
         }
 
@@ -492,7 +489,7 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
             selectedExfoRating = 1;
         } else if (checkedId == R.id.tbPaletteA) {
             selectedPaletteRating = 3;
-        }else if (checkedId == R.id.tbPaletteB) {
+        } else if (checkedId == R.id.tbPaletteB) {
             selectedPaletteRating = 2;
         } else if (checkedId == R.id.tbPaletteC) {
             selectedPaletteRating = 1;
@@ -500,7 +497,7 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
             selectedBoxRating = 3;
         } else if (checkedId == R.id.tbBoxB) {
             selectedBoxRating = 2;
-        }else if (checkedId == R.id.tbBoxC) {
+        } else if (checkedId == R.id.tbBoxC) {
             selectedBoxRating = 1;
         }
     }
@@ -530,32 +527,32 @@ public class QualityFinalCheckActivity extends AppCompatActivity implements Togg
         recQualityFinal.paletteRating = selectedPaletteRating;
         recQualityFinal.boxRating = selectedBoxRating;
 
-        if(cbSoft.isChecked()) {
+        if (cbSoft.isChecked()) {
             recQualityFinal.soft = true;
         } else {
             recQualityFinal.soft = false;
         }
-        if(cbBody.isChecked()) {
+        if (cbBody.isChecked()) {
             recQualityFinal.body = true;
         } else {
             recQualityFinal.body = false;
         }
-        if(cbHead.isChecked()) {
+        if (cbHead.isChecked()) {
             recQualityFinal.head = true;
         } else {
             recQualityFinal.head = false;
         }
-        if(cbCylindrical.isChecked()) {
+        if (cbCylindrical.isChecked()) {
             recQualityFinal.cylinrical = true;
         } else {
             recQualityFinal.cylinrical = false;
         }
-        if(cbExpanded.isChecked()) {
+        if (cbExpanded.isChecked()) {
             recQualityFinal.expanded = true;
         } else {
             recQualityFinal.expanded = false;
         }
-        if(cbAreas.isChecked()) {
+        if (cbAreas.isChecked()) {
             recQualityFinal.areas = true;
         } else {
             recQualityFinal.areas = false;

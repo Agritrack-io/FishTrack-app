@@ -2,7 +2,6 @@ package io.agritrack.philosofish.fish.ui.transport;
 
 import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
 import static io.agritrack.philosofish.common.LargeString.render;
-import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 import android.app.AlertDialog;
@@ -33,7 +32,6 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 import io.agritrack.philosofish.R;
@@ -45,9 +43,9 @@ import io.agritrack.philosofish.fish.state.TransportationRecord;
 import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.rfid.ScanInventoryThread;
 import io.agritrack.philosofish.rfid.X9KeyReceiver;
+import io.agritrack.philosofish.sound.SoundUtil;
 import io.agritrack.philosofish.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
-import io.agritrack.philosofish.sound.SoundUtil;
 
 public class TransportBinsActivity extends AppCompatActivity {
     // listens to trigger button clicks.

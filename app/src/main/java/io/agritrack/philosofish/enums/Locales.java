@@ -9,7 +9,7 @@ public enum Locales {
         this.lng = lang;
     }
 
-    public int getValue(){
+    public int getValue() {
         return this.lng;
     }
 

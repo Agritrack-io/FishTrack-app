@@ -1,7 +1,6 @@
 package io.agritrack.philosofish.fish.ui.quality.packaging;
 
 import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
-import static io.agritrack.philosofish.FishTrackApplication.IsOnline;
 import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
 import static io.agritrack.philosofish.common.LargeString.render;
 import static io.agritrack.philosofish.fish.state.GlobalState.recQualityPackage;
@@ -27,19 +26,19 @@ import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
-import io.agritrack.philosofish.data.dto.tx.PackageQualityTxDTO;
-import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
-import io.agritrack.philosofish.data.repo.IFishTrackRepository;
-import io.agritrack.philosofish.fish.state.PackageQualityRecord;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.tx.TransactionApi;
 import io.agritrack.philosofish.api.upload.UploadingApi;
 import io.agritrack.philosofish.common.FileUtils;
 import io.agritrack.philosofish.data.db.MobileDB;
+import io.agritrack.philosofish.data.dto.tx.PackageQualityTxDTO;
+import io.agritrack.philosofish.data.model.tx.PackageQualityTransaction;
+import io.agritrack.philosofish.data.repo.IFishTrackRepository;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
+import io.agritrack.philosofish.fish.state.PackageQualityRecord;
 import io.agritrack.philosofish.fish.state.PackageStepsState;
 import io.agritrack.philosofish.ui.LocationAwareActivity;
 import io.agritrack.philosofish.ui.service.AuthenticationService;
@@ -127,7 +126,6 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
     }
-
 
 
     protected void configFooter() {

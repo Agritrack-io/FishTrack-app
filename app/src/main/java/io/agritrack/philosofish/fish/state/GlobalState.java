@@ -34,7 +34,6 @@ import io.agritrack.philosofish.data.model.tx.ProcessingTransaction;
 import io.agritrack.philosofish.data.model.tx.QualityTransaction;
 import io.agritrack.philosofish.data.model.tx.ReceiptQualityTransaction;
 import io.agritrack.philosofish.data.model.tx.TransportTransaction;
-import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.data.model.wh.RFIDInventory;
 import io.agritrack.philosofish.data.model.wh.RFIDInventoryItem;
 import io.agritrack.philosofish.enums.TxStatus;
@@ -86,28 +85,54 @@ public class GlobalState {
         return recTransport;
     }
 
+
+
+    public static void clearAllQualityStates() {
+        recQualityReceipt = new ReceiptQualityRecord();
+        recQualityPackage = new PackageQualityRecord();
+        recQualityFinal = new FinalQualityRecord();
+        recQuality = new QualityRecord();
+    }
+
+
     public static ProcessingRecord initProcessingRecord() {
         recProcessing = new ProcessingRecord();
         return recProcessing;
     }
 
     public static ReceiptQualityRecord initReceiptQualityRecord() {
-        recQualityReceipt  = new ReceiptQualityRecord();
+        recQualityReceipt = new ReceiptQualityRecord();
 
         return recQualityReceipt;
     }
 
     public static FinalQualityRecord initFinalQualityRecord() {
-        recQualityFinal  = new FinalQualityRecord();
+        recQualityFinal = new FinalQualityRecord();
 
         return recQualityFinal;
     }
 
     public static PackageQualityRecord initPackageQualityRecord() {
-        recQualityPackage  = new PackageQualityRecord();
+        recQualityPackage = new PackageQualityRecord();
 
         return recQualityPackage;
     }
+    public static boolean shouldReset = false;
+
+
+    public static void resetQualityWorkflow() {
+
+        recQualityReceipt = new ReceiptQualityRecord();
+        recQualityPackage = new PackageQualityRecord();  // ADD THIS ✔
+        recQualityFinal = new FinalQualityRecord();
+        recQuality = new QualityRecord();
+
+        recFishing = new FishingRecord();
+
+        shouldReset = true;
+    }
+
+
 
     public static QualityRecord initQualityRecord() {
         //MobileDB db = MobileDB.getInstance(getAppContext());
@@ -245,7 +270,7 @@ public class GlobalState {
             txFishing.longitude = recFishing.longitude;
             txFishing.latitude = recFishing.latitude;
 
-            db.fishingTransactionDAO().update(txFishing);
+            db.fishingTransactionDAO().insert(txFishing);
             return txFishing;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -293,6 +318,30 @@ public class GlobalState {
             ex.printStackTrace();
             return null;
         }
+    }
+    public static void resetAll() {
+        recHarvest = new HarvestRecord();
+        recFishing = new FishingRecord();
+        recFishingRequests = new LinkedList<>();
+        recTransport = new TransportationRecord();
+        recProcessing = new ProcessingRecord();
+        recQualityReceipt = new ReceiptQualityRecord();
+        recQualityPackage = new PackageQualityRecord();
+        recQualityFinal = new FinalQualityRecord();
+        recQuality = new QualityRecord();
+
+        recWHIncoming = new WHTxRecord();
+        recWHOutgoing = new WHTxRecord();
+        recWHInternal = new WHTxRecord();
+        recWHCorrelation = new WHCorrelationRecord();
+        recWHInventory = new InventoryWHRecord();
+
+        recInternalRepair = new RepairRecord();
+        recExternalRepair = new RepairRecord();
+
+        recTools = new SeaTemperatureRecord();
+        recLoggerData = new LoggerDataRecord();
+        assetData = new AssetRecord();
     }
 
     public static ProcessingTransaction commitProcessing(MobileDB db) {
@@ -425,6 +474,7 @@ public class GlobalState {
             return null;
         }
     }
+
     public static PackageQualityTransaction commitPackageLabelCheckQuality(MobileDB db, Boolean finalCommit) {
         try {
 
@@ -533,14 +583,14 @@ public class GlobalState {
 
     public static FinalQualityTransaction commitFinalQuality(MobileDB db, Boolean finalCommit) {
         try {
-
-
-            FinalQualityTransaction txQuality = db.finalQualityTransactionDAO().getByLot(recQualityFinal.lot);
-            if (txQuality == null) {
-                txQuality = new FinalQualityTransaction();
-                txQuality.lot = recQualityFinal.lot;
-
+            if (recQualityFinal.lot != null) {
+                db.finalQualityTransactionDAO().deleteByLot(recQualityFinal.lot);
             }
+
+            FinalQualityTransaction txQuality = new FinalQualityTransaction();
+            txQuality.lot = recQualityFinal.lot;
+
+
             txQuality.fishingLot = recQualityFinal.fishLot;
 
             txQuality.exfoRating = recQualityFinal.exfoRating;
@@ -624,13 +674,54 @@ public class GlobalState {
             }
 
             db.finalQualityTransactionDAO().insert(txQuality);
-
             return txQuality;
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+    public static void deleteAllLotRecords(MobileDB db, String key) {
+        if (key == null || key.trim().isEmpty()) return;
+
+        try {
+            // BININFO MUST BE DELETED FIRST
+            db.binInfoDAO().deleteByLot(key);
+
+            // Fishing
+            db.fishingTransactionDAO().deleteByHlot(key);
+
+            // Receipt quality
+            db.receiptQualityTransactionDAO().deleteByLot(key);
+
+            // Packaging quality
+            db.packageQualityTransactionDAO().deleteByLot(key);
+            db.packageQualityTransactionDAO().deleteByFishingLot(key);
+
+            // Final quality
+            db.finalQualityTransactionDAO().deleteByLot(key);
+            db.finalQualityTransactionDAO().deleteByFishingLot(key);
+
+            // Generic quality
+            db.qualityTransactionDAO().deleteByPlot(key);
+
+            // CLEAR IN-MEMORY STATE
+            recQualityPackage.lot = null;
+            recQualityPackage.fishLot = null;
+
+            recQualityFinal.lot = null;
+            recQualityFinal.fishLot = null;
+
+            recFishing.hlot = null;
+            recFishing.hlot = null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
     public static QualityTransaction commitQuality(MobileDB db, Boolean finalCommit) {
         try {
@@ -688,7 +779,7 @@ public class GlobalState {
             txQuality.longitude = recQuality.longitude;
             txQuality.latitude = recQuality.latitude;
 
-            db.qualityTransactionDAO().update(txQuality);
+            db.qualityTransactionDAO().insert(txQuality);
 
             return txQuality;
         } catch (Exception ex) {
@@ -938,6 +1029,7 @@ public class GlobalState {
             return null;
         }
     }
+
     public static CorrelationTransaction commitWHCorrelation(MobileDB db) {
         try {
             CorrelationTransaction txCorrelation = new CorrelationTransaction();

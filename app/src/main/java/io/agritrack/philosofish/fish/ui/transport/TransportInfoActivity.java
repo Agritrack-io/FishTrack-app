@@ -1,5 +1,11 @@
 package io.agritrack.philosofish.fish.ui.transport;
 
+import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
+import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
+import static io.agritrack.philosofish.common.LargeString.render;
+import static io.agritrack.philosofish.fish.state.GlobalState.recTransport;
+import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -24,12 +30,6 @@ import io.agritrack.philosofish.data.model.Site;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.fish.state.TransportationRecord;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
-
-import static io.agritrack.philosofish.FishTrackApplication.IsDemo;
-import static io.agritrack.philosofish.FishTrackApplication.getAppContext;
-import static io.agritrack.philosofish.common.LargeString.render;
-import static io.agritrack.philosofish.fish.state.GlobalState.recTransport;
-import static io.agritrack.philosofish.ui.custom.CustomToast.CToast;
 
 public class TransportInfoActivity extends AppCompatActivity {
 
@@ -70,17 +70,17 @@ public class TransportInfoActivity extends AppCompatActivity {
         // AutoCompleteTextView driverNames, driverPhones, licensePlates
 
         Set<String> driverNames = LocalPreferences.getDriverNames();
-        ArrayAdapter<String> driverNamesAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, driverNames.toArray(new String[driverNames.size()]));
+        ArrayAdapter<String> driverNamesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, driverNames.toArray(new String[driverNames.size()]));
         etDriverName.setThreshold(3);
         etDriverName.setAdapter(driverNamesAdapter);
 
         Set<String> driverPhones = LocalPreferences.getDriverPhones();
-        ArrayAdapter<String> driverPhonesAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, driverPhones.toArray(new String[driverPhones.size()]));
+        ArrayAdapter<String> driverPhonesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, driverPhones.toArray(new String[driverPhones.size()]));
         etDriverPhone.setThreshold(3);
         etDriverPhone.setAdapter(driverPhonesAdapter);
 
         Set<String> licensePlates = LocalPreferences.getLicensePlates();
-        ArrayAdapter<String> licensePlatesAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, licensePlates.toArray(new String[licensePlates.size()]));
+        ArrayAdapter<String> licensePlatesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, licensePlates.toArray(new String[licensePlates.size()]));
         etLicensePlate.setThreshold(3);
         etLicensePlate.setAdapter(licensePlatesAdapter);
 
@@ -153,7 +153,7 @@ public class TransportInfoActivity extends AppCompatActivity {
         swParallelTransport.setChecked(trns.parallelTransport);
     }
 
-    private  void updateState() {
+    private void updateState() {
         if (spPackagingSite.getSelectedItem() != null) {
             recTransport.packagingSite = spPackagingSite.getSelectedItem().toString();
         }

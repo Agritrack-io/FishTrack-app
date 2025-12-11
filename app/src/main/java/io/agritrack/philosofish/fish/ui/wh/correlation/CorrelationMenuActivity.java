@@ -48,20 +48,24 @@ public class CorrelationMenuActivity extends AppCompatActivity {
 
                 switch (position) {
                     case 0:
-                         i = new Intent(appCtx, ZebraCorrelationCageActivity.class);
-                        startActivity(i);;
+                        i = new Intent(appCtx, ZebraCorrelationCageActivity.class);
+                        startActivity(i);
+                        ;
                         break;
                     case 1:
-                         i = new Intent(appCtx, ZebraCorrelationNetActivity.class);
-                        startActivity(i);;
+                        i = new Intent(appCtx, ZebraCorrelationNetActivity.class);
+                        startActivity(i);
+                        ;
                         break;
                     case 2:
-                         i = new Intent(appCtx, CorrelationBinActivity.class);
-                        startActivity(i);;
+                        i = new Intent(appCtx, CorrelationBinActivity.class);
+                        startActivity(i);
+                        ;
                         break;
                     case 3:
                         i = new Intent(appCtx, CorrelationCageNetActivity.class);
-                        startActivity(i);;
+                        startActivity(i);
+                        ;
                         break;
                     default:
                 }

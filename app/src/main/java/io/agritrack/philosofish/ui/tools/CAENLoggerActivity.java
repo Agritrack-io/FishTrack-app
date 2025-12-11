@@ -49,11 +49,11 @@ import io.agritrack.philosofish.caen.api.CAENLoggerService;
 import io.agritrack.philosofish.caen.api.ICAEN_API;
 import io.agritrack.philosofish.caen.api.RFIDModuleFactory;
 import io.agritrack.philosofish.common.Filters;
+import io.agritrack.philosofish.rfid.SingleShotScanner;
 import io.agritrack.philosofish.ui.login.LoginActivity;
 import io.agritrack.philosofish.ui.tools.caen.ILoggerDialog;
 import io.agritrack.philosofish.ui.tools.caen.LoggerDialogFragment;
 import io.agritrack.philosofish.ui.tools.caen.ReadLoggerDialogDecorator;
-import io.agritrack.philosofish.rfid.SingleShotScanner;
 
 public class CAENLoggerActivity extends AppCompatActivity {
     // Local handler that receives the RFID scanner results.

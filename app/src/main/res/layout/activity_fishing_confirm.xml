@@ -55,7 +55,7 @@
             tools:ignore="MissingPrefix" />
 
 
-       <TextView
+        <TextView
             android:id="@+id/tvHeaderFishingConfirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

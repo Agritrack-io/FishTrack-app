@@ -41,4 +41,8 @@ public interface FishingTransactionDAO {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(FishingTransaction fishingTransaction);
+
+    @Query("DELETE FROM fishing_transaction WHERE hlot = :lot")
+    int deleteByHlot(String lot);
+
 }

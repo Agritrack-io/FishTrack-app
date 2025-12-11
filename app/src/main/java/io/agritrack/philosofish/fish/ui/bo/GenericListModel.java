@@ -5,11 +5,13 @@ import java.util.UUID;
 /**
  * This class is intended for use in List Adapters.
  * It provides the 'Id' of an entity primary key, a label to be shown on a list
- *  and (if required) a check box to allow for multiple items selection.
+ * and (if required) a check box to allow for multiple items selection.
  */
 public class GenericListModel {
 
-    public enum origin {Normal, Split, Offline};
+    public enum origin {Normal, Split, Offline}
+
+    ;
 
     private UUID id;
     private String label, requestId;
@@ -49,7 +51,7 @@ public class GenericListModel {
     }
 
     public GenericListModel(String requestId, String label, origin type) {
-        this(requestId,label);
+        this(requestId, label);
         this.type = type;
     }
 

@@ -2,8 +2,6 @@ package io.agritrack.philosofish.data.dto.tx;
 
 import android.util.Base64;
 
-import androidx.room.ColumnInfo;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
@@ -17,7 +15,7 @@ import io.agritrack.philosofish.ui.service.LocalPreferences;
 
 public class FinalQualityTxDTO {
 
-    private static final SimpleDateFormat simpleDateTime =  new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
+    private static final SimpleDateFormat simpleDateTime = new SimpleDateFormat("dd/MM/yyyy'T'HH:mm:ss");
 
     public UUID id;
 
@@ -92,8 +90,6 @@ public class FinalQualityTxDTO {
 
     @SerializedName("standard_other")
     public String standardOther;
-
-
 
 
     public static FinalQualityTxDTO convert(FinalQualityTransaction qualityTx) {

@@ -43,33 +43,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
-<!--    <Button-->
-<!--        android:uid="@+uid/btnCancel"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="8dp"-->
-<!--        android:layout_marginBottom="8dp"-->
-<!--        android:background="@drawable/button_press_effect"-->
-<!--        android:textColor="@color/yellow"-->
-<!--        android:text="CANCEL"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toStartOf="@+uid/btnOk"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+uid/ivPhoto" />-->
+    <!--    <Button-->
+    <!--        android:uid="@+uid/btnCancel"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:layout_marginBottom="8dp"-->
+    <!--        android:background="@drawable/button_press_effect"-->
+    <!--        android:textColor="@color/yellow"-->
+    <!--        android:text="CANCEL"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toStartOf="@+uid/btnOk"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+uid/ivPhoto" />-->
 
-<!--    <Button-->
-<!--        android:uid="@+uid/btnOk"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="8dp"-->
-<!--        android:layout_marginBottom="8dp"-->
-<!--        android:background="@drawable/button_press_effect"-->
-<!--        android:textColor="@color/yellow"-->
-<!--        android:text="SAVE"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toEndOf="@+uid/btnCancel"-->
-<!--        app:layout_constraintTop_toBottomOf="@+uid/ivPhoto" />-->
+    <!--    <Button-->
+    <!--        android:uid="@+uid/btnOk"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:layout_marginBottom="8dp"-->
+    <!--        android:background="@drawable/button_press_effect"-->
+    <!--        android:textColor="@color/yellow"-->
+    <!--        android:text="SAVE"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toEndOf="@+uid/btnCancel"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+uid/ivPhoto" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

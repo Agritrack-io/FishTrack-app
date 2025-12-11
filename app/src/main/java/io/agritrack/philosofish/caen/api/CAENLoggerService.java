@@ -107,7 +107,7 @@ public class CAENLoggerService {
             int i = 0;
 
             //check if ctrlReg is '00000', if not, wait for 2 seconds and read again
-            while(_state.ctrlReg != null && _state.ctrlReg.endsWith("1") && i < 2) {
+            while (_state.ctrlReg != null && _state.ctrlReg.endsWith("1") && i < 2) {
                 this.park2Second();
                 future = this.execReadControlRegister(_state, actnPool);
                 _state = future.get();
@@ -852,7 +852,7 @@ public class CAENLoggerService {
         try {
 //            CompletableFuture.supplyAsync(() -> {
 //                try {
-            Thread.sleep(2*1000);
+            Thread.sleep(2 * 1000);
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }

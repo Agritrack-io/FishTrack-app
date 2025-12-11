@@ -20,6 +20,12 @@ public interface PackageQualityTxDAO {
     @Query("SELECT * from package_quality_transaction where lot=:lot LIMIT 1")
     PackageQualityTransaction getByLot(String lot);
 
+    @Query("DELETE from package_quality_transaction where lot=:lot")
+    int deleteByLot(String lot);
+
+    @Query("DELETE FROM package_quality_transaction WHERE fish_lot = :fishLot")
+    int deleteByFishingLot(String fishLot);
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(PackageQualityTransaction... qualityTxs);
@@ -39,3 +45,4 @@ public interface PackageQualityTxDAO {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(PackageQualityTransaction qualityTx);
 }
+

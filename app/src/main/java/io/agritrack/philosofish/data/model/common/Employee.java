@@ -61,7 +61,7 @@ public class Employee {
     public User user;*/
 
     public String fullName() {
-        return this.firstName.substring(0,1).toUpperCase() + this.firstName.substring(1).toLowerCase()
-                + " " + this.lastName.substring(0,1).toUpperCase() + this.lastName.substring(1).toLowerCase();
+        return this.firstName.substring(0, 1).toUpperCase() + this.firstName.substring(1).toLowerCase()
+                + " " + this.lastName.substring(0, 1).toUpperCase() + this.lastName.substring(1).toLowerCase();
     }
 }

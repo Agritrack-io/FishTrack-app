@@ -13,7 +13,8 @@ public class X9KeyReceiver extends BroadcastReceiver {
     private boolean keyUpFlag = true;
 
 
-    public X9KeyReceiver() { }
+    public X9KeyReceiver() {
+    }
 
     public X9KeyReceiver(View.OnClickListener l) {
 //        this.clickBtn = btn;
@@ -26,7 +27,7 @@ public class X9KeyReceiver extends BroadcastReceiver {
         int keyCode = intent.getIntExtra("keyCode", 0);
         boolean keyDown = intent.getBooleanExtra("keydown", false);
 
-        if ((keyCode == KeyEvent.KEYCODE_F3 || keyCode == KeyEvent.KEYCODE_F4  || keyCode == KeyEvent.KEYCODE_F5)) {
+        if ((keyCode == KeyEvent.KEYCODE_F3 || keyCode == KeyEvent.KEYCODE_F4 || keyCode == KeyEvent.KEYCODE_F5)) {
 
             if (keyUpFlag && keyDown && System.currentTimeMillis() - startTime > 500) {
                 keyUpFlag = false;

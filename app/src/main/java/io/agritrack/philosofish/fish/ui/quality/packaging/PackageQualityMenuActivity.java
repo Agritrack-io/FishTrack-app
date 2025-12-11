@@ -11,7 +11,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -22,10 +21,7 @@ import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.state.PackageStepsState;
-import io.agritrack.philosofish.fish.ui.FishHomeActivity;
-import io.agritrack.philosofish.fish.ui.binTurnover.BinTurnoverActivity;
 import io.agritrack.philosofish.fish.ui.quality.QualitySelectStepsActivity;
-import io.agritrack.philosofish.fish.ui.quality.finalCheck.QualityFinalCheckActivity;
 import io.agritrack.philosofish.fish.ui.quality.receipt.ReceiptQualityStartActivity;
 import io.agritrack.philosofish.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.philosofish.ui.adapter.InventoryMenuAdapter;

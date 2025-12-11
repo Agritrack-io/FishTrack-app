@@ -38,7 +38,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.common.util.CollectionUtils;
 import com.google.android.gms.common.util.Strings;
 import com.kkmcn.kbeaconlib2.KBCfgPackage.KBCfgBase;
 import com.kkmcn.kbeaconlib2.KBCfgPackage.KBCfgCommon;
@@ -55,10 +54,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
-import common.Assert;
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
 import io.agritrack.philosofish.api.tx.TransactionApi;
@@ -73,7 +70,6 @@ import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.ui.bo.GenericListModel;
-import io.agritrack.philosofish.rfid.MultipleFilterSingleShotScanner;
 import io.agritrack.philosofish.rfid.SingleShotScanner;
 import io.agritrack.philosofish.rfid.X9KeyReceiver;
 import io.agritrack.philosofish.ui.LocationAwareActivity;
@@ -84,7 +80,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CorrelationBinActivity extends LocationAwareActivity implements KBeaconsMgr.KBeaconMgrDelegate, KBeacon.ConnStateDelegate, KBeacon.NotifyDataDelegate{
+public class CorrelationBinActivity extends LocationAwareActivity implements KBeaconsMgr.KBeaconMgrDelegate, KBeacon.ConnStateDelegate, KBeacon.NotifyDataDelegate {
 
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final ScanHandler mScanHandler = new ScanHandler(this);
@@ -97,7 +93,8 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
     private SearchView svSearchAsset;
     private RecyclerView rvBins;
     private ProgressDialog progressDialog;
-    private YesNoDialogFragment confirmGPSSelectionDlg, confirmBinRfidDlg, confirmRfidReplacement;;
+    private YesNoDialogFragment confirmGPSSelectionDlg, confirmBinRfidDlg, confirmRfidReplacement;
+    ;
     private boolean proceedWithoutLocation = false;
     private ImageView ivSupport, ivNext, ivBack;
     private SupportDialog supportDialog;
@@ -114,7 +111,7 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
     private static final String LOG_TAG = "ScanExample";
     private int mRssiFilterValue = -40;
     private int mScanFailedContinueNum = 0;
-    private final static int  MAX_ERROR_SCAN_NUMBER = 2;
+    private final static int MAX_ERROR_SCAN_NUMBER = 2;
     private HashMap<String, KBeacon> mBeaconsDictory;
     private KBeacon[] mBeaconsArray;
     private KBeaconsMgr mBeaconsMgr;
@@ -143,13 +140,12 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
         svSearchAsset.setIconifiedByDefault(false);
 
         mBeaconsMgr = KBeaconsMgr.sharedBeaconManager(this);
-        if (mBeaconsMgr == null)
-        {
-            CToast(getAppContext(),"make sure the phone has support ble funtion", Toast.LENGTH_LONG);
+        if (mBeaconsMgr == null) {
+            CToast(getAppContext(), "make sure the phone has support ble funtion", Toast.LENGTH_LONG);
             finish();
             return;
         }
-        mBeaconsMgr.delegate =  this;
+        mBeaconsMgr.delegate = this;
         mBeaconsMgr.setScanMode(KBeaconsMgr.SCAN_MODE_LOW_LATENCY);
 
         confirmRfidReplacement = YesNoDialogFragment.instance(); //dialog in the case where a specific net is already corr
@@ -323,7 +319,6 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
     }
 
 
-
     private void stopScanner() {
         if (this.scanner_runnable != null) {
             this.scanner_runnable.stopReading();
@@ -348,7 +343,7 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
             unregisterReceiver(keyReceiver);
 
         if (mBeacon != null && (mBeacon.getState() == KBConnState.Connected
-                || mBeacon.getState() == KBConnState.Connecting)){
+                || mBeacon.getState() == KBConnState.Connecting)) {
             mBeacon.disconnect();
         }
     }
@@ -496,28 +491,22 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
         }
     }
 
-    private void handleStartScan(){
+    private void handleStartScan() {
 
         isScanning = true;
 
         mBeaconsMgr.setScanMinRssiFilter(mRssiFilterValue);
-        if (!checkBluetoothPermitAllowed())
-        {
+        if (!checkBluetoothPermitAllowed()) {
             return;
         }
 
         int nStartScan = mBeaconsMgr.startScanning();
-        if (nStartScan == 0)
-        {
+        if (nStartScan == 0) {
             Log.v(TAG, "start scan success");
-        }
-        else if (nStartScan == KBeaconsMgr.SCAN_ERROR_BLE_NOT_ENABLE)
-        {
-            CToast(getAppContext(),"Το Bluetooth δεν είναι ενεργοποιημένο", Toast.LENGTH_LONG);
-        }
-        else if (nStartScan == KBeaconsMgr.SCAN_ERROR_UNKNOWN)
-        {
-            CToast(getAppContext(),"Παρακαλώ επιβεβαιώστε ότι η εφαρμογή έχει πρόσβαση στο Bluetooth", Toast.LENGTH_LONG);
+        } else if (nStartScan == KBeaconsMgr.SCAN_ERROR_BLE_NOT_ENABLE) {
+            CToast(getAppContext(), "Το Bluetooth δεν είναι ενεργοποιημένο", Toast.LENGTH_LONG);
+        } else if (nStartScan == KBeaconsMgr.SCAN_ERROR_UNKNOWN) {
+            CToast(getAppContext(), "Παρακαλώ επιβεβαιώστε ότι η εφαρμογή έχει πρόσβαση στο Bluetooth", Toast.LENGTH_LONG);
         }
     }
 
@@ -558,37 +547,36 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == PERMISSION_SCAN){
-            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+        if (requestCode == PERMISSION_SCAN) {
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια σάρωσης BLE για να ξεκινήσει τη σάρωση BLE", Toast.LENGTH_LONG);
 
             }
         }
 
-        if (requestCode == PERMISSION_CONNECT){
-            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+        if (requestCode == PERMISSION_CONNECT) {
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια σύνδεσης BLE για την εύρεση BLE", Toast.LENGTH_LONG);
 
             }
         }
 
-        if (requestCode == PERMISSION_COARSE_LOCATION){
-            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+        if (requestCode == PERMISSION_COARSE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια κατά προσέγγιση τοποθεσίας για να ξεκινήσει τη σάρωση BLE", Toast.LENGTH_LONG);
             }
         }
-        if (requestCode == PERMISSION_FINE_LOCATION){
-            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+        if (requestCode == PERMISSION_FINE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια ακριβούς τοποθεσίας για να ξεκινήσει τη σάρωση BLE", Toast.LENGTH_LONG);
             }
         }
     }
 
-    public void onBeaconDiscovered(KBeacon[] beacons)
-    {
+    public void onBeaconDiscovered(KBeacon[] beacons) {
 
         if (beacons == null || beacons.length == 0) {
             return; // No beacons found, exit early
@@ -622,10 +610,10 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
         isScanning = false;
     }
 
-    public void onCentralBleStateChang(int nNewState)
-    {
+    public void onCentralBleStateChang(int nNewState) {
         Log.e(TAG, "centralBleStateChang：" + nNewState);
     }
+
     private List<Asset> sortAssetsSmart(List<Asset> list) {
         return list.stream()
                 .sorted((a, b) -> naturalCompare(a.code, b.code))
@@ -662,7 +650,8 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
 
             } else {
                 if (ca != cb) return Character.compare(ca, cb);
-                ia++; ib++;
+                ia++;
+                ib++;
             }
         }
 
@@ -670,10 +659,9 @@ public class CorrelationBinActivity extends LocationAwareActivity implements KBe
     }
 
 
-    public void onScanFailed(int errorCode)
-    {
-        if (mScanFailedContinueNum >= MAX_ERROR_SCAN_NUMBER){
-            CToast(getAppContext(),"Scan encountered error, error time:" + mScanFailedContinueNum, Toast.LENGTH_SHORT);
+    public void onScanFailed(int errorCode) {
+        if (mScanFailedContinueNum >= MAX_ERROR_SCAN_NUMBER) {
+            CToast(getAppContext(), "Scan encountered error, error time:" + mScanFailedContinueNum, Toast.LENGTH_SHORT);
             isScanning = false;
 
         }

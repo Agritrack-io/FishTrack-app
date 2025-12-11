@@ -43,7 +43,6 @@ import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.state.PackageQualityRecord;
-import io.agritrack.philosofish.fish.state.PackageStepsState;
 import io.agritrack.philosofish.fish.state.QualityRecord;
 import io.agritrack.philosofish.sound.SoundUtil;
 import io.agritrack.philosofish.ui.custom.ToggleGroup;
@@ -55,7 +54,7 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
     private ToggleGroup tgEyeCondition, tgGillCondition, tgFreshCondition, tgSkinCondition;
     private int selectedEyeRating, selectedGillRating, selectedSkinRating, selectedFreshRating, overallGrade;
     private ImageView ivSupport;
-    private TextView  tvOverall;
+    private TextView tvOverall;
     private EditText tvCurrentLot;
     private Spinner spFishLot;
     private Set<String> fishLotSet;
@@ -64,7 +63,7 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
     private ArrayAdapter<String> lotListAdapter;
     private SupportDialog supportDialog;
     private boolean scanning = false;
-    private YesNoDialogFragment confirmNewLotDialog,  confirmSaveDataDialog;
+    private YesNoDialogFragment confirmNewLotDialog, confirmSaveDataDialog;
     private String currentLot, bestBefore;
 
 
@@ -76,7 +75,7 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
             if (data != null) {
                 String barcode = new String(data);
                 if (!barcode.isEmpty() && barcode.length() >= 12) {
-                     currentLot = barcode.substring(barcode.length() - 11);
+                    currentLot = barcode.substring(barcode.length() - 11);
                     // bestBefore = barcode.substring(barcode.length() - 21, barcode.length() - 15);
                     if (Strings.isEmptyOrWhitespace(recQualityPackage.lot)) {
                         loadBarcodeInfo(currentLot);
@@ -124,7 +123,7 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
             return;
 
         } else if (!txQuality.isFreshSynced) {
-            if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot))  {
+            if (!Strings.isEmptyOrWhitespace(txQuality.fishingLot)) {
                 int position = lotListAdapter.getPosition(txQuality.fishingLot);
                 if (position != -1) {
                     spFishLot.setSelection(position);
@@ -143,7 +142,7 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
             scanning = false;
             return;
         } else {
-            CToast(getAppContext(),String.format(getResources().getString(R.string.lot_package_control_done), txQuality.lot), Toast.LENGTH_LONG );
+            CToast(getAppContext(), String.format(getResources().getString(R.string.lot_package_control_done), txQuality.lot), Toast.LENGTH_LONG);
             scanning = false;
             return;
         }
@@ -234,11 +233,11 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
             }
         });
 
-        confirmNewLotDialog= YesNoDialogFragment.instance();
+        confirmNewLotDialog = YesNoDialogFragment.instance();
         confirmNewLotDialog.onConfirm(bundle -> {
             PackageQualityTransaction tx = commitPackageFreshQuality(db, false);
             if (tx == null) {
-                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot),Toast.LENGTH_LONG);
+                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot), Toast.LENGTH_LONG);
             }
             loadBarcodeInfo(currentLot);
         });
@@ -251,12 +250,12 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
         filter.addAction("com.rfid.SCAN");
         registerReceiver(receiverFresh, filter);
 
-        confirmSaveDataDialog= YesNoDialogFragment.instance();
+        confirmSaveDataDialog = YesNoDialogFragment.instance();
         confirmSaveDataDialog.onConfirm(bundle -> {
             updateState();
             PackageQualityTransaction tx = commitPackageFreshQuality(db, false);
             if (tx == null) {
-                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot),Toast.LENGTH_LONG);
+                CToast(getAppContext(), String.format(getResources().getString(R.string.save_quality_failed), recQualityPackage.lot), Toast.LENGTH_LONG);
             }
             LocalBroadcastManager.getInstance(this).unregisterReceiver(receiverFresh);
             unregisterReceiver(receiverFresh);
@@ -479,9 +478,9 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
                     break;
             }
         }
-        if ( (selectedSkinRating > 0 && selectedSkinRating <= 4)
-                && (selectedGillRating > 0 && selectedGillRating <= 4) && (selectedEyeRating > 0 && selectedEyeRating <= 4) ) {
-            overallGrade =  selectedEyeRating + selectedGillRating + selectedSkinRating;
+        if ((selectedSkinRating > 0 && selectedSkinRating <= 4)
+                && (selectedGillRating > 0 && selectedGillRating <= 4) && (selectedEyeRating > 0 && selectedEyeRating <= 4)) {
+            overallGrade = selectedEyeRating + selectedGillRating + selectedSkinRating;
             tvOverall.setText((overallGrade + ""));
         }
     }
@@ -510,7 +509,7 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
         recQualityPackage.gillGrade = selectedGillRating;
         recQualityPackage.skinGrade = selectedSkinRating;
         recQualityPackage.freshGrade = selectedFreshRating;
-        recQualityPackage.overallGrade = (selectedSkinRating > 0 && selectedEyeRating > 0 &&selectedGillRating > 0 ?
+        recQualityPackage.overallGrade = (selectedSkinRating > 0 && selectedEyeRating > 0 && selectedGillRating > 0 ?
                 selectedEyeRating + selectedGillRating + selectedSkinRating : null);
 
 
@@ -567,7 +566,7 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
             selectedEyeRating = 2;
         } else if (checkedId == R.id.tbFailEyes) {
             selectedEyeRating = 1;
-        }else if (checkedId == R.id.tbExtraGill) {
+        } else if (checkedId == R.id.tbExtraGill) {
             selectedGillRating = 4;
         } else if (checkedId == R.id.tbAGill) {
             selectedGillRating = 3;
@@ -575,7 +574,7 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
             selectedGillRating = 2;
         } else if (checkedId == R.id.tbFailGill) {
             selectedGillRating = 1;
-        }else if (checkedId == R.id.tbExtraFresh) {
+        } else if (checkedId == R.id.tbExtraFresh) {
             selectedFreshRating = 4;
         } else if (checkedId == R.id.tbAFresh) {
             selectedFreshRating = 3;
@@ -583,7 +582,7 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
             selectedFreshRating = 2;
         } else if (checkedId == R.id.tbFailFresh) {
             selectedFreshRating = 1;
-        }else if (checkedId == R.id.tbExtraSkin) {
+        } else if (checkedId == R.id.tbExtraSkin) {
             selectedSkinRating = 4;
         } else if (checkedId == R.id.tbASkin) {
             selectedSkinRating = 3;
@@ -594,8 +593,8 @@ public class PackageQualityFreshnessActivity extends AppCompatActivity implement
         }
 
         if ((selectedSkinRating > 0 && selectedSkinRating <= 4)
-                && (selectedGillRating > 0 && selectedGillRating <= 4) && (selectedEyeRating > 0 && selectedEyeRating <= 4) ) {
-            overallGrade =  selectedEyeRating + selectedGillRating + selectedSkinRating;
+                && (selectedGillRating > 0 && selectedGillRating <= 4) && (selectedEyeRating > 0 && selectedEyeRating <= 4)) {
+            overallGrade = selectedEyeRating + selectedGillRating + selectedSkinRating;
             tvOverall.setText(overallGrade + "");
         }
     }

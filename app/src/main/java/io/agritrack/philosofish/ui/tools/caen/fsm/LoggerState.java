@@ -1,7 +1,5 @@
 package io.agritrack.philosofish.ui.tools.caen.fsm;
 
-import static io.agritrack.philosofish.common.LargeString.render;
-
 public enum LoggerState {
     IDLE {
         @Override
@@ -145,7 +143,7 @@ public enum LoggerState {
             return this;
         }
 
-        return  next;
+        return next;
     }
 
     // ########################

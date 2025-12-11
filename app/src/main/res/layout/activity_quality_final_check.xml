@@ -219,7 +219,6 @@
         </RelativeLayout>
 
 
-
         <RelativeLayout
             android:id="@+id/seaTempBLayout"
             android:layout_width="0dp"
@@ -254,7 +253,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/btnScanBin" >
+                    app:layout_constraintBottom_toTopOf="@id/btnScanBin">
 
                 </androidx.recyclerview.widget.RecyclerView>
 

@@ -1,4 +1,5 @@
 package io.agritrack.philosofish.data.model;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

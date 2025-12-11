@@ -17,8 +17,6 @@ import retrofit2.http.QueryMap;
 public interface AuthApi {
 
 
-
-
     @Headers("Content-Type: application/json; charset=utf-8")
     @POST("/philosofish/auth/login")
     Call<AuthInfoRS> login(@Body LoginRQ rq);

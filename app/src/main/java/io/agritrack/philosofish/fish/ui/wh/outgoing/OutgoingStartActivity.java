@@ -235,12 +235,12 @@ public class OutgoingStartActivity extends AppCompatActivity implements ToggleGr
 //            }
 
             if (Strings.isEmptyOrWhitespace(recWHOutgoing.toSite)) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.target_site)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.target_site)));
 
             }
 
             if (Strings.isEmptyOrWhitespace(recWHOutgoing.fromSite)) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.source_site)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.source_site)));
             }
         }
 

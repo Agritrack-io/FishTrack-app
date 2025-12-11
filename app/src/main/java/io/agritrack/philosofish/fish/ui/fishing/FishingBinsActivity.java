@@ -13,7 +13,6 @@ import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,10 +40,8 @@ import com.google.android.gms.common.util.Strings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -59,14 +56,12 @@ import io.agritrack.philosofish.common.AlphanumericComparator;
 import io.agritrack.philosofish.common.Constants;
 import io.agritrack.philosofish.common.Filters;
 import io.agritrack.philosofish.data.db.MobileDB;
-import io.agritrack.philosofish.data.model.BinInfo;
 import io.agritrack.philosofish.data.model.CageDetails;
 import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.dialog.CageListDialog;
 import io.agritrack.philosofish.dialog.GetTempDataDialog;
 import io.agritrack.philosofish.dialog.InfoDialog;
 import io.agritrack.philosofish.dialog.PowerLevelDialog;
-import io.agritrack.philosofish.dialog.SimpleListDialog;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
 import io.agritrack.philosofish.fish.state.FishingRecord;
@@ -76,7 +71,6 @@ import io.agritrack.philosofish.fish.ui.testBinTemperature.TestBinTempActivity;
 import io.agritrack.philosofish.rfid.ScanInventoryThread;
 import io.agritrack.philosofish.rfid.X9KeyReceiver;
 import io.agritrack.philosofish.sound.SoundUtil;
-import io.agritrack.philosofish.ui.adapter.BinWeightCageAdapter;
 import io.agritrack.philosofish.ui.adapter.TemplateRecyclerAdapter;
 import io.agritrack.philosofish.ui.service.LocalPreferences;
 
@@ -194,7 +188,6 @@ public class FishingBinsActivity extends AppCompatActivity implements PowerLevel
                     GlobalState.commitFishing(db, Boolean.FALSE);
                     adapterBins.setAllUnselected();
                     adapterBins.notifyDataSetChanged();
-
 
 
                 });
@@ -378,7 +371,8 @@ public class FishingBinsActivity extends AppCompatActivity implements PowerLevel
         if (keyReceiver != null) {
             try {
                 unregisterReceiver(keyReceiver);
-            } catch (IllegalArgumentException ignored) { }
+            } catch (IllegalArgumentException ignored) {
+            }
         }
         stopScanner();
     }
@@ -496,11 +490,11 @@ public class FishingBinsActivity extends AppCompatActivity implements PowerLevel
         StringBuilder sb = new StringBuilder();
         if (!IsDemo) {
             if (recFishing.availBins == null || recFishing.availBins.isEmpty()) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.bins_to_use)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.bins_to_use)));
             }
 
             if (recFishing.cageCode == null || recFishing.cageCode.isEmpty()) {
-                sb.append(String.format(getString(R.string.field) +"\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.cage)));
+                sb.append(String.format(getString(R.string.field) + "\n%s " + getString(R.string.is_missing) + "\n", getString(R.string.cage)));
             }
         }
         return sb.toString();

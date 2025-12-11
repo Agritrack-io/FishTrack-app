@@ -27,14 +27,17 @@ public class SyncSuppliersCallBack extends BaseSyncCallBack<List<SupplierDTO>> {
             // get an instance of local DB
             db = MobileDB.getInstance(getAppContext());
 
-            for (SupplierDTO SupplierDTO : rs) {
-                db.supplierDAO().insert(convert(SupplierDTO));
+            for (SupplierDTO dto : rs) {
+                db.supplierDAO().insert(convert(dto));
             }
-            // Employees sync succeeded.
-            syncResult.setValue(getAppContext().getString(R.string.employees_sync_completed));
+
+            // Suppliers sync succeeded (NULL SAFE)
+            set(getAppContext().getString(R.string.employees_sync_completed));
+
         } else {
-            // No Employees found
-            syncResult.setValue(getAppContext().getString(R.string.no_employees_found_alert));
+            // No Suppliers found (NULL SAFE)
+            set(getAppContext().getString(R.string.no_employees_found_alert));
         }
     }
+
 }

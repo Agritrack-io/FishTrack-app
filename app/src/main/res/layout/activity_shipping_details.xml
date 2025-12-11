@@ -1,279 +1,279 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/fishingStartActivityLayout"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@color/agri_semi_green"
-android:descendantFocusability="beforeDescendants"
-android:focusableInTouchMode="true"
-tools:context=".fruit.ui.shipping.ShippingDetailsActivity">
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/headerLayout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fishingStartActivityLayout"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
-    android:background="@drawable/bg_form_screen"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:fadingEdge="horizontal"
-    android:paddingTop="0dp"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
-
-    <ImageView
-        android:id="@+id/ivSupport"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/button_press_effect"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/support" />
-
-    <TextView
-        android:id="@+id/tvTitleToolbar"
-        fontPath="fonts/open_sans_semibold.ttf"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="16dp"
-        android:width="250sp"
-        android:gravity="center|top|fill_vertical"
-        android:text="@string/title_shipping"
-        android:textColor="@color/yellow"
-        android:textSize="@dimen/title_font_size"
-        app:layout_constraintBottom_toTopOf="@+id/tvHeaderShippingDetails"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingPrefix" />
-
-    <TextView
-        android:id="@+id/tvHeaderShippingDetails"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/agri_blue"
-        android:backgroundTintMode="screen"
-        android:gravity="center"
-        android:textColor="@color/agri_semi_green"
-        android:textSize="@dimen/subtitle_font_size"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitleToolbar"
-        tools:layout_conversion_absoluteHeight="0dp"
-        tools:layout_conversion_absoluteWidth="0dp" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/formLayout"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
+    android:layout_height="match_parent"
     android:background="@color/agri_semi_green"
-    app:layout_constraintBottom_toTopOf="@+id/footerLayout"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintHorizontal_bias="0.0"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/headerLayout">
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    tools:context=".fruit.ui.shipping.ShippingDetailsActivity">
 
-    <RelativeLayout
-        android:id="@+id/transportStartALayout"
-        android:layout_width="0dp"
-        android:layout_height="430dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="124dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@drawable/bg_form_screen"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:fadingEdge="horizontal"
+        android:paddingTop="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_rounded_corner_with_shadow"
-            android:orientation="vertical"
-            android:padding="1dp">
-
-            <TextView
-                android:id="@+id/tvChooseCustomer"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
-                android:gravity="left"
-                android:text="@string/select_customer"
-                android:textColor="@color/label_blue"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/spCustomer"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_conversion_absoluteHeight="0dp"
-                tools:layout_conversion_absoluteWidth="0dp" />
-
-            <Spinner
-                android:id="@+id/spCustomer"
-                style="@style/spinner_style"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:dropDownWidth="match_parent"
-                android:focusableInTouchMode="true"
-                android:requiresFadingEdge="horizontal"
-                android:spinnerMode="dropdown"
-                android:textAlignment="textStart"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvChooseCustomer"
-                tools:layout_conversion_absoluteHeight="0dp"
-                tools:layout_conversion_absoluteWidth="0dp" />
-
-            <AutoCompleteTextView
-                android:id="@+id/etDriverName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:completionThreshold="1"
-                android:ems="10"
-                android:hint="@string/driver_name"
-                android:imeOptions="actionNext"
-                android:inputType="textAutoComplete"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/etDriverPhone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spCustomer" />
-
-            <AutoCompleteTextView
-                android:id="@+id/etDriverPhone"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:completionThreshold="1"
-                android:ems="10"
-                android:hint="@string/driver_phone"
-                android:imeOptions="actionNext"
-                android:inputType="phone"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toTopOf="@+id/etLicensePlate"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etDriverName" />
-
-            <AutoCompleteTextView
-                android:id="@+id/etLicensePlate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/bg_rounded_dialog_input"
-                android:completionThreshold="1"
-                android:ems="10"
-                android:hint="@string/license_plate"
-                android:imeOptions="actionDone"
-                android:inputType="textPersonName"
-                android:padding="5dp"
-                android:paddingStart="10dp"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/text_view_font_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etDriverPhone" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/ivSupport"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/button_press_effect"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/support" />
 
         <TextView
+            android:id="@+id/tvTitleToolbar"
+            fontPath="fonts/open_sans_semibold.ttf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="16dp"
-            android:background="@color/agri_semi_green"
-            android:paddingHorizontal="8dp"
-            android:text="@string/shipping_details"
-            android:textColor="@color/label_blue"
-            android:textSize="18sp" />
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="16dp"
+            android:width="250sp"
+            android:gravity="center|top|fill_vertical"
+            android:text="@string/title_shipping"
+            android:textColor="@color/yellow"
+            android:textSize="@dimen/title_font_size"
+            app:layout_constraintBottom_toTopOf="@+id/tvHeaderShippingDetails"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingPrefix" />
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/tvHeaderShippingDetails"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/agri_blue"
+            android:backgroundTintMode="screen"
+            android:gravity="center"
+            android:textColor="@color/agri_semi_green"
+            android:textSize="@dimen/subtitle_font_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleToolbar"
+            tools:layout_conversion_absoluteHeight="0dp"
+            tools:layout_conversion_absoluteWidth="0dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/footerLayout"
-    android:layout_width="0dp"
-    android:layout_height="68sp"
-    android:background="@drawable/border_top"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/formLayout">
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:scaleX="0.7"
-        android:scaleY="0.7"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ivToConfirm"
-        app:layout_constraintStart_toEndOf="@+id/ivBackToShippingStart"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/powered_by_agritrack" />
-
-    <ImageView
-        android:id="@+id/ivBackToShippingStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/button_rounded_shape_corners"
-        android:padding="1dp"
-        android:scaleX="1.5"
-        android:scaleY="1.2"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/formLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/agri_semi_green"
+        app:layout_constraintBottom_toTopOf="@+id/footerLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_shortcut_arrow_back" />
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout">
 
-    <ImageView
-        android:id="@+id/ivToConfirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/button_rounded_shape_corners"
-        android:padding="1dp"
-        android:scaleX="1.5"
-        android:scaleY="1.2"
+        <RelativeLayout
+            android:id="@+id/transportStartALayout"
+            android:layout_width="0dp"
+            android:layout_height="430dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="124dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/shape_rounded_corner_with_shadow"
+                android:orientation="vertical"
+                android:padding="1dp">
+
+                <TextView
+                    android:id="@+id/tvChooseCustomer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="left"
+                    android:text="@string/select_customer"
+                    android:textColor="@color/label_blue"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/spCustomer"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_conversion_absoluteHeight="0dp"
+                    tools:layout_conversion_absoluteWidth="0dp" />
+
+                <Spinner
+                    android:id="@+id/spCustomer"
+                    style="@style/spinner_style"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:dropDownWidth="match_parent"
+                    android:focusableInTouchMode="true"
+                    android:requiresFadingEdge="horizontal"
+                    android:spinnerMode="dropdown"
+                    android:textAlignment="textStart"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvChooseCustomer"
+                    tools:layout_conversion_absoluteHeight="0dp"
+                    tools:layout_conversion_absoluteWidth="0dp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/etDriverName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:completionThreshold="1"
+                    android:ems="10"
+                    android:hint="@string/driver_name"
+                    android:imeOptions="actionNext"
+                    android:inputType="textAutoComplete"
+                    android:padding="5dp"
+                    android:paddingStart="10dp"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/etDriverPhone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/spCustomer" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/etDriverPhone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:completionThreshold="1"
+                    android:ems="10"
+                    android:hint="@string/driver_phone"
+                    android:imeOptions="actionNext"
+                    android:inputType="phone"
+                    android:padding="5dp"
+                    android:paddingStart="10dp"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toTopOf="@+id/etLicensePlate"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etDriverName" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/etLicensePlate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/bg_rounded_dialog_input"
+                    android:completionThreshold="1"
+                    android:ems="10"
+                    android:hint="@string/license_plate"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPersonName"
+                    android:padding="5dp"
+                    android:paddingStart="10dp"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/text_view_font_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etDriverPhone" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="16dp"
+                android:background="@color/agri_semi_green"
+                android:paddingHorizontal="8dp"
+                android:text="@string/shipping_details"
+                android:textColor="@color/label_blue"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/footerLayout"
+        android:layout_width="0dp"
+        android:layout_height="68sp"
+        android:background="@drawable/border_top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/formLayout">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivToConfirm"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToShippingStart"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/powered_by_agritrack" />
+
+        <ImageView
+            android:id="@+id/ivBackToShippingStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
+            android:scaleX="1.5"
+            android:scaleY="1.2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_shortcut_arrow_back" />
+
+        <ImageView
+            android:id="@+id/ivToConfirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/button_rounded_shape_corners"
+            android:padding="1dp"
+            android:scaleX="1.5"
+            android:scaleY="1.2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_shortcut_arrow_forward" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

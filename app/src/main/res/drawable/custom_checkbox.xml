@@ -1,9 +1,5 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true" android:state_selected="true"
-        android:drawable="@drawable/icons8_checkbox_50__1_" />
-    <item android:state_checked="true" android:state_selected="false"
-        android:drawable="@drawable/icons8_indeterminate_checkbox_48"
-        />
-    <item android:state_checked="false"
-        android:drawable="@drawable/icons8_checkbox_50" />
+    <item android:state_checked="true" android:state_selected="true" android:drawable="@drawable/icons8_checkbox_50__1_" />
+    <item android:state_checked="true" android:state_selected="false" android:drawable="@drawable/icons8_indeterminate_checkbox_48" />
+    <item android:state_checked="false" android:drawable="@drawable/icons8_checkbox_50" />
 </selector>

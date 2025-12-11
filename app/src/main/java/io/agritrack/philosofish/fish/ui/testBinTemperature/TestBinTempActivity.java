@@ -12,7 +12,6 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,19 +39,13 @@ import com.kkmcn.kbeaconlib2.KBeacon;
 import com.kkmcn.kbeaconlib2.KBeaconsMgr;
 
 import java.lang.ref.WeakReference;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 
-import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.R;
-import io.agritrack.philosofish.caen.api.CAENLoggerService;
-import io.agritrack.philosofish.caen.api.ICAEN_API;
-import io.agritrack.philosofish.caen.api.RFIDModuleFactory;
-import io.agritrack.philosofish.caen.common.CAENState;
-import io.agritrack.philosofish.common.Filters;
 import io.agritrack.philosofish.data.db.MobileDB;
 import io.agritrack.philosofish.data.model.wh.Asset;
 import io.agritrack.philosofish.dialog.SupportDialog;
+import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.fish.ui.fishing.FishingBinsActivity;
 import io.agritrack.philosofish.fish.ui.fishing.FishingFillBinsActivity;
 import io.agritrack.philosofish.fish.ui.initBins.InitBinsActivity;
@@ -101,7 +94,7 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
 
     private int mScanFailedContinueNum = 0;
 
-    private final static int  MAX_ERROR_SCAN_NUMBER = 2;
+    private final static int MAX_ERROR_SCAN_NUMBER = 2;
     private HashMap<String, KBeacon> mBeaconsDictory;
     private KBeacon[] mBeaconsArray;
     private KBeaconsMgr mBeaconsMgr;
@@ -139,13 +132,12 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
 
         mBeaconsDictory = new HashMap<>(50);
         mBeaconsMgr = KBeaconsMgr.sharedBeaconManager(this);
-        if (mBeaconsMgr == null)
-        {
-            CToast(getAppContext(),"make sure the phone has support ble funtion", Toast.LENGTH_LONG);
+        if (mBeaconsMgr == null) {
+            CToast(getAppContext(), "make sure the phone has support ble funtion", Toast.LENGTH_LONG);
             finish();
             return;
         }
-        mBeaconsMgr.delegate =  this;
+        mBeaconsMgr.delegate = this;
         mBeaconsMgr.setScanMode(KBeaconsMgr.SCAN_MODE_LOW_LATENCY);
 
         // get  references of the controls
@@ -174,7 +166,10 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
         }
 
         // Unregister receiver safely
-        try { unregisterReceiver(keyReceiver); } catch (Exception ignored) {}
+        try {
+            unregisterReceiver(keyReceiver);
+        } catch (Exception ignored) {
+        }
     }
 
 
@@ -190,7 +185,6 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
             mBeaconsMgr.stopScanning();
         }
     }
-
 
 
     @Override
@@ -260,7 +254,7 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
         });
 
         mTxtViewRssi = (TextView) findViewById(R.id.txtViewRssiValue);
-        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.rvBinsForTransport);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.rvBinsForTransport);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
@@ -280,7 +274,7 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
                                     .setMessage(R.string.bluetooth_error_need_reboot)
                                     .setPositiveButton("OK", null)
                                     .show();
-                        }else{
+                        } else {
                             clearAllData();
                             mDevListAdapter.notifyDataSetChanged();
                         }
@@ -293,35 +287,30 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
         ivSupport = findViewById(R.id.ivSupport);
     }
 
-    private void enableFilterSetting()
-    {
+    private void enableFilterSetting() {
         //filter
         boolean bChangeFilter = false;
 
-        if (mRssiFilterValue != mBeaconsMgr.getScanMinRssiFilter())
-        {
+        if (mRssiFilterValue != mBeaconsMgr.getScanMinRssiFilter()) {
             mBeaconsMgr.setScanMinRssiFilter(mRssiFilterValue);
             bChangeFilter = true;
         }
-        if (bChangeFilter){
+        if (bChangeFilter) {
             clearAllData();
             mDevListAdapter.notifyDataSetChanged();
         }
 
     }
 
-    public void clearAllData()
-    {
+    public void clearAllData() {
         mBeaconsDictory.clear();
         mBeaconsArray = null;
         mBeaconsMgr.clearBeacons();
         tvBinsCount.setText("0");
     }
 
-    public void onBeaconDiscovered(KBeacon[] beacons)
-    {
-        for (KBeacon pBeacons: beacons)
-        {
+    public void onBeaconDiscovered(KBeacon[] beacons) {
+        for (KBeacon pBeacons : beacons) {
             mBeaconsDictory.put(pBeacons.getMac(), pBeacons);
         }
 
@@ -336,39 +325,31 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
         tvBinsCount.setText(getCount() + "");
     }
 
-    public void onCentralBleStateChang(int nNewState)
-    {
+    public void onCentralBleStateChang(int nNewState) {
         Log.e(TAG, "centralBleStateChang：" + nNewState);
     }
 
-    public void onScanFailed(int errorCode)
-    {
-        if (mScanFailedContinueNum >= MAX_ERROR_SCAN_NUMBER){
-            CToast(getAppContext(),"Scan encountered error, error time:" + mScanFailedContinueNum, Toast.LENGTH_SHORT);
+    public void onScanFailed(int errorCode) {
+        if (mScanFailedContinueNum >= MAX_ERROR_SCAN_NUMBER) {
+            CToast(getAppContext(), "Scan encountered error, error time:" + mScanFailedContinueNum, Toast.LENGTH_SHORT);
         }
         mScanFailedContinueNum++;
     }
 
-    private void handleStartScan(){
+    private void handleStartScan() {
 
         enableFilterSetting();
-        if (!checkBluetoothPermitAllowed())
-        {
+        if (!checkBluetoothPermitAllowed()) {
             return;
         }
 
         int nStartScan = mBeaconsMgr.startScanning();
-        if (nStartScan == 0)
-        {
+        if (nStartScan == 0) {
             Log.v(TAG, "start scan success");
-        }
-        else if (nStartScan == KBeaconsMgr.SCAN_ERROR_BLE_NOT_ENABLE)
-        {
-            CToast(getAppContext(),"Το Bluetooth δεν είναι ενεργοποιημένο", Toast.LENGTH_LONG);
-        }
-        else if (nStartScan == KBeaconsMgr.SCAN_ERROR_UNKNOWN)
-        {
-            CToast(getAppContext(),"Παρακαλώ επιβεβαιώστε ότι η εφαρμογή έχει πρόσβαση στο Bluetooth", Toast.LENGTH_LONG);
+        } else if (nStartScan == KBeaconsMgr.SCAN_ERROR_BLE_NOT_ENABLE) {
+            CToast(getAppContext(), "Το Bluetooth δεν είναι ενεργοποιημένο", Toast.LENGTH_LONG);
+        } else if (nStartScan == KBeaconsMgr.SCAN_ERROR_UNKNOWN) {
+            CToast(getAppContext(), "Παρακαλώ επιβεβαιώστε ότι η εφαρμογή έχει πρόσβαση στο Bluetooth", Toast.LENGTH_LONG);
         }
     }
 
@@ -409,56 +390,50 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == PERMISSION_SCAN){
-            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+        if (requestCode == PERMISSION_SCAN) {
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια σάρωσης BLE για να ξεκινήσει τη σάρωση BLE", Toast.LENGTH_LONG);
 
             }
         }
 
-        if (requestCode == PERMISSION_CONNECT){
-            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+        if (requestCode == PERMISSION_CONNECT) {
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια σύνδεσης BLE για την εύρεση BLE", Toast.LENGTH_LONG);
 
             }
         }
 
-        if (requestCode == PERMISSION_COARSE_LOCATION){
-            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+        if (requestCode == PERMISSION_COARSE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια κατά προσέγγιση τοποθεσίας για να ξεκινήσει τη σάρωση BLE", Toast.LENGTH_LONG);
             }
         }
-        if (requestCode == PERMISSION_FINE_LOCATION){
-            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED){
+        if (requestCode == PERMISSION_FINE_LOCATION) {
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 CToast(getAppContext(), "Η εφαρμογή χρειάζεται άδεια ακριβούς τοποθεσίας για να ξεκινήσει τη σάρωση BLE", Toast.LENGTH_LONG);
             }
         }
     }
 
-    public KBeacon getBeaconDevice(int nIndex)
-    {
-        if (mBeaconsArray != null && mBeaconsArray.length > nIndex)
-        {
+    public KBeacon getBeaconDevice(int nIndex) {
+        if (mBeaconsArray != null && mBeaconsArray.length > nIndex) {
             return mBeaconsArray[nIndex];
-        }
-        else
-        {
+        } else {
             return null;
         }
     }
 
-    public int getCount()
-    {
-        if (mBeaconsArray == null){
+    public int getCount() {
+        if (mBeaconsArray == null) {
             return 0;
-        }else{
+        } else {
             return mBeaconsArray.length;
         }
     }
-
 
 
     @Override
@@ -476,8 +451,8 @@ public class TestBinTempActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void stopScanSafe(){
-        if(mBeaconsMgr.isScanning()){
+    private void stopScanSafe() {
+        if (mBeaconsMgr.isScanning()) {
             mBeaconsMgr.stopScanning();
             progressBar.setVisibility(View.GONE);
             btnScanBin.setBackground(getResources().getDrawable(R.drawable.bg_rounded_btn_login, null));
