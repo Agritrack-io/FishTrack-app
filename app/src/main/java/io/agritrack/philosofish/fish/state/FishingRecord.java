@@ -46,6 +46,49 @@ public class FishingRecord {
 
     public FishingRecord() {
     }
+    public void reset() {
+        txKey = null;
+        fishingRq = null;
+        requesterName = null;
+        reqWeight = null;
+        speciesName = null;
+        averageWeight = null;
+
+        platformRFID = null;
+        cageRFID = null;
+        expectedCageRFID = null;
+        cageCode = null;
+        hlot = null;
+
+        availBins = new java.util.ArrayList<>();
+        fishingTeam = new java.util.ArrayList<>();
+
+        pathologist = null;
+        lastFed = null;
+
+        adequateIce = Boolean.TRUE;
+        iceSupplier = null;
+
+        totalFishWeight = null;
+        totalBinsUsed = null;
+
+        longitude = null;
+        latitude = null;
+
+        notes = null;
+        packagingPlant = null;
+
+        typedCageCode = null;
+        outOfSystemFishing = false;
+        reasonOutOfSystemFishing = null;
+
+        parentItinSno = null;
+        reasonOfDeviation = null;
+
+        binTemperatureRecord = new BinTemperatureRecord();
+        binWeightRecord = new BinWeightRecord();
+    }
+
 
     public static FishingRecord convert(FishingTransaction tx) {
         FishingRecord fishingRecord = new FishingRecord();
@@ -73,8 +116,10 @@ public class FishingRecord {
         if (tx.lastFeed != null) {
             fishingRecord.lastFed = tx.lastFeed;
         }
-        for (BinWeightRecord.BinRecord rec : tx.harvestBinsData) {
-            fishingRecord.binWeightRecord.addRecord(rec.binEPC, rec.weight, rec.init, rec.from, rec.to);
+        if (tx.harvestBinsData != null) {
+            for (BinWeightRecord.BinRecord rec : tx.harvestBinsData) {
+                fishingRecord.binWeightRecord.addRecord(rec.binEPC, rec.weight, rec.init, rec.from, rec.to);
+            }
         }
         fishingRecord.fishingTeam = tx.team;
         fishingRecord.longitude = tx.longitude;

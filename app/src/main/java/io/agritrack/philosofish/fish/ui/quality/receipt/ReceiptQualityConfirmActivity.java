@@ -219,50 +219,59 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
     private boolean updateState() {
         try {
             progressDialog.setCancelable(false);
-            progressDialog.setMessage(render("Synchronizing data..."));
+            progressDialog.setMessage(render("Saving data..."));
             progressDialog.show();
 
             String token = LocalPreferences.getToken();
 
+            // 1. Upload photos (async, non-blocking)
             syncAllPhotos();
 
-            // persist Processing Record data to local DB.
-            ReceiptQualityTransaction tx = GlobalState.commitReceiptQuality(db, Boolean.TRUE);
+            // 2. SAVE LOCALLY (ALWAYS)
+            ReceiptQualityTransaction tx =
+                    GlobalState.commitReceiptQuality(db, Boolean.TRUE);
 
+            final String savedLot = tx.lot;
+
+            resetReceiptQualityState();
 
             if (IsOnline) {
-                // sync Processing records
-                Call<ReceiptQualityTxDTO> syncTxAsyncCall = updService.syncRecQualityTx(ReceiptQualityTxDTO.convert(tx), "Bearer " + token);
-                syncTxAsyncCall.enqueue(new ReceiptQualityConfirmActivity.SyncTxCallBack());
-
-            } else {
-                for (int i = 0; i < 3; i++) {
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
-                }
+                Call<ReceiptQualityTxDTO> call =
+                        updService.syncRecQualityTx(
+                                ReceiptQualityTxDTO.convert(tx),
+                                "Bearer " + token
+                        );
+                call.enqueue(new SyncTxCallBack(savedLot));
+            }
+            else {
+                runOnUiThread(() ->
+                        CToast(getApplicationContext(),
+                                render(R.string.tx_saved_local_find_network_and_sync),
+                                Toast.LENGTH_LONG)
+                );
             }
 
             return true;
+
         } catch (Exception e) {
             e.printStackTrace();
-            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+            CToast(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG);
             return false;
-        } finally {
-            progressDialog.dismiss();
         }
     }
 
-    private boolean qualityTxMarkSynced() {
-        try {
-            System.out.println("About to delete quality tx");
-            ReceiptQualityTransaction delObj = db.receiptQualityTransactionDAO().getByLot(recQualityReceipt.lot);
-            delObj.isSynced = true;
-            db.receiptQualityTransactionDAO().update(delObj);
-            return true;
-        } catch (Exception x) {
-            x.printStackTrace();
-            return false;
-        }
+
+    private boolean qualityTxMarkSynced(String lot) {
+        ReceiptQualityTransaction obj =
+                db.receiptQualityTransactionDAO().getByLot(lot);
+
+        if (obj == null) return false;
+
+        obj.isSynced = true;
+        db.receiptQualityTransactionDAO().update(obj);
+        return true;
     }
+
     private void resetReceiptQualityState() {
         GlobalState.initReceiptQualityRecord();
 
@@ -275,24 +284,31 @@ public class ReceiptQualityConfirmActivity extends LocationAwareActivity {
     }
 
     public class SyncTxCallBack implements Callback<ReceiptQualityTxDTO> {
+
+        private final String lot;
+
+        public SyncTxCallBack(String lot) {
+            this.lot = lot;
+        }
+
         @Override
-        public void onResponse(Call<ReceiptQualityTxDTO> call, Response<ReceiptQualityTxDTO> response) {
+        public void onResponse(Call<ReceiptQualityTxDTO> call,
+                               Response<ReceiptQualityTxDTO> response) {
             if (response.isSuccessful() || IsDemo) {
-                qualityTxMarkSynced();
-                resetReceiptQualityState();
+                qualityTxMarkSynced(lot);
 
                 runOnUiThread(() ->
-                        CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT)
-                );
-            } else {
-                runOnUiThread(() ->
-                        CToast(getApplicationContext(), render(R.string.error_postquality_update_failure), Toast.LENGTH_LONG)
+                        CToast(getApplicationContext(),
+                                render(R.string.tx_successfully_updated),
+                                Toast.LENGTH_SHORT)
                 );
             }
         }
 
 
-        @Override
+
+
+    @Override
         public void onFailure(Call<ReceiptQualityTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
                 runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));

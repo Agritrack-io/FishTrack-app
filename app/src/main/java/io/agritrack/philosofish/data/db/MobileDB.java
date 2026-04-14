@@ -83,7 +83,7 @@ import io.agritrack.philosofish.data.model.wh.RFIDInventoryItem;
         TransportTransaction.class, ProcessingTransaction.class, QualityTransaction.class, ReceiptQualityTransaction.class,
         PackageQualityTransaction.class, PostPackageQualityTransaction.class, AssetTransaction.class, AssetTxItem.class, CorrelationTransaction.class,
         RFIDInventory.class, RFIDInventoryItem.class, Customer.class, Measurement.class, TemperatureData.class, FinalQualityTransaction.class},
-        version = 2, exportSchema = false)
+        version = 1, exportSchema = false)
 
 @TypeConverters({TxStatusEnumConverter.class, DateConverter.class, LongListConverter.class,
         StringSetConverter.class, StringListConverter.class, ConsumableTypeConverter.class, UUIDConverter.class, SortingSampleConverter.class, TimeConverter.class})

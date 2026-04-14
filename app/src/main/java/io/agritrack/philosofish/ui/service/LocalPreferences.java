@@ -357,11 +357,19 @@ public class LocalPreferences {
     }
 
     public static List<EpcPerDevice> getCurrentEpcList() {
-        String json = pref.getString(Current_Epc_Key, "[]");
-        if (!json.equalsIgnoreCase("[]")) {
-            return Arrays.asList(gson.fromJson(json, EpcPerDevice[].class));
-        } else {
-            return null;
+        String json = pref.getString(Current_Epc_Key, null);
+
+        if (json == null || json.isEmpty()) {
+            return new ArrayList<>();
         }
+
+        EpcPerDevice[] array = gson.fromJson(json, EpcPerDevice[].class);
+
+        if (array == null || array.length == 0) {
+            return new ArrayList<>();
+        }
+
+        return new ArrayList<>(Arrays.asList(array));
     }
+
 }

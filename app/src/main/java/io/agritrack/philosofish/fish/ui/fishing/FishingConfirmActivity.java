@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentManager;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.UUID;
 
 import io.agritrack.philosofish.R;
 import io.agritrack.philosofish.api.APIServiceGenerator;
@@ -36,6 +37,7 @@ import io.agritrack.philosofish.dialog.InfoDialog;
 import io.agritrack.philosofish.dialog.SelectReasonOfFishingWeightDeviationDialog;
 import io.agritrack.philosofish.dialog.SupportDialog;
 import io.agritrack.philosofish.dialog.YesNoDialogFragment;
+import io.agritrack.philosofish.fish.state.FishingRecord;
 import io.agritrack.philosofish.fish.state.GlobalState;
 import io.agritrack.philosofish.fish.ui.FishHomeActivity;
 import io.agritrack.philosofish.ui.LocationAwareActivity;
@@ -195,18 +197,7 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         etPIN = findViewById(R.id.etPasswordFishing);
     }
 
-    private boolean deleteTx() {
-        try {
-            System.out.println("About to delete fishing tx");
-            FishingTransaction delObj = new FishingTransaction();
-            delObj.id = recFishing.txKey;
-            db.fishingTransactionDAO().delete(delObj);
-            return true;
-        } catch (Exception x) {
-            x.printStackTrace();
-            return false;
-        }
-    }
+
 
     private void initControlsFromState() {
         tvUsername.setText(LocalPreferences.getLoggedInUser(""));
@@ -230,10 +221,14 @@ public class FishingConfirmActivity extends LocationAwareActivity {
         try {
             String token = LocalPreferences.getToken();
 
-            // persist Fishing Record data to local DB.
-            FishingTransaction tx = GlobalState.commitFishing(db, Boolean.TRUE);
+            FishingTransaction tx = GlobalState.commitFishingFinal(db);
 
-            // Delete harvest request since it is executed
+            if (tx == null || tx.id == null) {
+                throw new IllegalStateException("Fishing transaction not created");
+            }
+
+            final UUID txId = tx.id;
+
             if (recFishing.fishingRq != null) {
                 FishingRequest hDelObj = new FishingRequest();
                 hDelObj.requestId = recFishing.fishingRq;
@@ -241,33 +236,62 @@ public class FishingConfirmActivity extends LocationAwareActivity {
             }
 
             if (IsOnline) {
-                // sync fish tx
-                Call<FishingTxDTO> syncTxAsyncCall = updService.syncFishingTx(FishingTxDTO.convert(tx), "Bearer " + token);
-                syncTxAsyncCall.enqueue(new SyncTxCallBack());
+                Call<FishingTxDTO> syncTxAsyncCall =
+                        updService.syncFishingTx(
+                                FishingTxDTO.convert(tx),
+                                "Bearer " + token
+                        );
+
+                syncTxAsyncCall.enqueue(new SyncTxCallBack(txId));
             } else {
                 for (int i = 0; i < 3; i++) {
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                    runOnUiThread(() ->
+                            CToast(
+                                    getApplicationContext(),
+                                    render(R.string.tx_saved_local_find_network_and_sync),
+                                    Toast.LENGTH_LONG
+                            )
+                    );
                 }
             }
 
             return true;
+
         } catch (Exception e) {
             e.printStackTrace();
-            CToast(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG);
+            CToast(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG);
             saveCrashInfo2File(e);
             return false;
         }
     }
 
+
     public class SyncTxCallBack implements Callback<FishingTxDTO> {
+
+        private final java.util.UUID txId;
+
+        public SyncTxCallBack(java.util.UUID txId) {
+            this.txId = txId;
+        }
+
         @Override
         public void onResponse(Call<FishingTxDTO> call, Response<FishingTxDTO> response) {
             if (response.isSuccessful() || IsDemo) {
-                deleteTx();
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_LONG));
-            } else {
-                // could not update Fishing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_fishing_tx_update_failure), Toast.LENGTH_LONG));
+
+                try {
+                    FishingTransaction delObj = new FishingTransaction();
+                    delObj.id = txId;
+                    db.fishingTransactionDAO().delete(delObj);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                GlobalState.recFishing = new FishingRecord();
+                runOnUiThread(() -> CToast(
+                        getApplicationContext(),
+                        render(R.string.tx_successfully_updated),
+                        Toast.LENGTH_LONG
+                ));
             }
         }
 
@@ -281,14 +305,13 @@ public class FishingConfirmActivity extends LocationAwareActivity {
                 }
             } else {
                 if (call.isCanceled()) {
-                    //Call was cancelled by user
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
                 } else {
-                    //Generic error handling
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
                 }
             }
         }
     }
+
 
 }

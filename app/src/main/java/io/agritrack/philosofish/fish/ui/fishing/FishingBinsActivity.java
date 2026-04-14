@@ -185,7 +185,6 @@ public class FishingBinsActivity extends AppCompatActivity implements PowerLevel
                     tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                     adapterBins.clearSelectedValue();
                     recFishing.availBins = adapterBins.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
-                    GlobalState.commitFishing(db, Boolean.FALSE);
                     adapterBins.setAllUnselected();
                     adapterBins.notifyDataSetChanged();
 
@@ -251,7 +250,6 @@ public class FishingBinsActivity extends AppCompatActivity implements PowerLevel
                     } else {
                         recFishing.binWeightRecord.addRecord(binEPC, 0, System.currentTimeMillis() / 1000L, null, null);
                     }
-                    GlobalState.commitFishing(db, Boolean.FALSE);
                 }
             }
         });
@@ -399,10 +397,29 @@ public class FishingBinsActivity extends AppCompatActivity implements PowerLevel
             if (scanner_runnable != null) {
                 scanner_runnable.stopReading();
             }
+
+            clearBinSession();
+
+
             Intent i = new Intent(getApplicationContext(), HarvestRequestsActivity.class);
             startActivity(i);
         });
     }
+
+
+    private void clearBinSession() {
+        // UI
+        adapterBins.setValues(new ArrayList<>());
+        adapterBins.notifyDataSetChanged();
+        tvBinsCount.setText("0");
+
+        // STATE
+        recFishing.availBins = null;
+        recFishing.binWeightRecord.clear();
+
+        stopScanner();
+    }
+
 
     private void assignCtrlVars() {
         btnChooseCage = findViewById(R.id.btnChooseCage);
@@ -464,27 +481,20 @@ public class FishingBinsActivity extends AppCompatActivity implements PowerLevel
 
     private void updateState() {
 
-        // Get current bins from adapter
         List<String> newBins = adapterBins.getValues()
                 .stream()
                 .map(x -> x.epc)
                 .collect(Collectors.toList());
 
-        // Do not overwrite with empty list
-        if (newBins.isEmpty()) {
-            return; // nothing to update
-        }
-
-        // only update if user actually added bins
         recFishing.availBins = newBins;
+        recFishing.binWeightRecord.clear();
 
-        for (String bin : recFishing.availBins) {
+        for (String bin : newBins) {
             recFishing.binWeightRecord.addRecord(bin, 0, null, null, null);
         }
 
-        // Save state
-        GlobalState.commitFishing(db, false);
     }
+
 
     private String validate() {
         StringBuilder sb = new StringBuilder();
@@ -543,13 +553,15 @@ public class FishingBinsActivity extends AppCompatActivity implements PowerLevel
                 case 100:
                     ArrayList<CharSequence> epcList = msg.getData().getCharSequenceArrayList("epc");
                     if (epcList != null && !epcList.isEmpty()) {
-                        epcList.stream().forEach(x -> adapterBins.addUniqueItem(new TemplateRecyclerAdapter.BinEpc(x.toString())));
+                        epcList.forEach(x ->
+                                adapterBins.addUniqueItem(new TemplateRecyclerAdapter.BinEpc(x.toString()))
+                        );
+
                         tvBinsCount.setText(String.valueOf(adapterBins.getItemCount()));
                         adapterBins.notifyDataSetChanged();
-                        recFishing.availBins = adapterBins.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
-                        GlobalState.commitFishing(db, Boolean.FALSE);
                     }
                     break;
+
                 case 1980:
                     if (!IsDemo) {
                         //CToast(getApplicationContext(), render("No IOT Logger was found linked to this BIN!!"), Toast.LENGTH_SHORT);

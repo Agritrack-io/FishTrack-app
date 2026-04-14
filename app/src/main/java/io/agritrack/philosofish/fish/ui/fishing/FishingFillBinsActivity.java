@@ -284,7 +284,6 @@ public class FishingFillBinsActivity extends AppCompatActivity implements ISumma
         if (tvUsedBinsCount.getText() != null && !Strings.isEmptyOrWhitespace(tvUsedBinsCount.getText().toString())) {
             recFishing.totalBinsUsed = Short.valueOf(tvUsedBinsCount.getText().toString());
         }
-        GlobalState.commitFishing(db, Boolean.FALSE);
 
         return recFishing;
     }

@@ -20,7 +20,7 @@ public interface QualityTransactionDAO {
     @Query("SELECT * from quality_transaction where id=:qualityTxId LIMIT 1")
     QualityTransaction getById(Long qualityTxId);
 
-    @Query("SELECT * from quality_transaction where user_name=:userName and status='NONE' or status='PENDING' order by created_at desc LIMIT 1")
+    @Query("SELECT * from quality_transaction where user_name=:userName and (status='NONE' or status='PENDING') order by created_at desc LIMIT 1")
     QualityTransaction getMostRecentOpenTx(String userName);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

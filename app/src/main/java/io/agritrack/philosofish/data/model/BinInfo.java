@@ -52,4 +52,8 @@ public class BinInfo {
 
     @ColumnInfo(name = "plant")
     public String plant;
+
+    @ColumnInfo(name = "logger")
+    public String logger;
+
 }

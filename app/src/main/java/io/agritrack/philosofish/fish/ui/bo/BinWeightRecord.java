@@ -9,6 +9,10 @@ public class BinWeightRecord {
 
     private final Map<String, BinRecord> data = new HashMap<>();
 
+    public void clear() {
+        data.clear();
+    }
+
     public void addRecord(String binEPC, Integer weight, Long epochInit, Long epochFrom, Long epochTo) {
         this.data.put(binEPC, new BinRecord(binEPC, weight, epochInit, epochFrom, epochTo));
     }

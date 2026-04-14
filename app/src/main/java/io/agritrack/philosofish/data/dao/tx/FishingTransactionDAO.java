@@ -24,7 +24,7 @@ public interface FishingTransactionDAO {
     @Query("SELECT * from fishing_transaction where id=:fishingTransactionId LIMIT 1")
     FishingTransaction getById(UUID fishingTransactionId);
 
-    @Query("SELECT * from fishing_transaction where user_name=:userName and status='NONE' or status='PENDING' order by created_at desc LIMIT 1")
+    @Query("SELECT * FROM fishing_transaction WHERE user_name = :userName   AND (status = 'NONE' OR status = 'PENDING') ORDER BY created_at DESC LIMIT 1 ")
     FishingTransaction getMostRecentOpenTx(String userName);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

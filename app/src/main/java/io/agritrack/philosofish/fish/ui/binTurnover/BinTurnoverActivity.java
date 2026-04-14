@@ -13,7 +13,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -21,6 +20,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.Html;
 import android.util.Log;
@@ -66,7 +66,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import io.agritrack.data.repo.MeasurementRepository;
 import io.agritrack.philosofish.R;
@@ -106,20 +105,26 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMgr.KBeaconMgrDelegate, KBeacon.ConnStateDelegate, KBeacon.NotifyDataDelegate {
+    private final java.util.concurrent.atomic.AtomicBoolean didNavigate = new java.util.concurrent.atomic.AtomicBoolean(false);
 
+    private static final int PERMISSION_COARSE_LOCATION = 22;
+    private static final int PERMISSION_FINE_LOCATION = 23;
+    private static final int PERMISSION_SCAN = 24;
+    private static final int PERMISSION_CONNECT = 25;
+    private final static String TAG = "Beacon.ScanAct";//DeviceScanActivity.class.getSimpleName();
+    private static final String LOG_TAG = "ScanExample";
+    private static final long SYNC_TIMEOUT_MS = 20000;
+    private static final long SCAN_TIMEOUT_MS = 8000;
     // Local handler that receives the RFID scanner results.
     private final ScanHandler mScanHandler = new ScanHandler(this);
-
     private final MutableLiveData<CAENState> stateResult = new MutableLiveData<>();
-
     private final TransactionApi updService = APIServiceGenerator.createAPI(TransactionApi.class);
     private final MutableLiveData<String> syncResult = new MutableLiveData<>();
-
-    // variable to hold the dialog. Only 1 instance of ILoggerDialog may be active...
-    private ILoggerDialog loggerDlg = null;
-
+    private final Handler autoHandler = new Handler(Looper.getMainLooper());
     // listens to trigger button clicks.
     protected BroadcastReceiver keyReceiver = null;
+    // variable to hold the dialog. Only 1 instance of ILoggerDialog may be active...
+    private ILoggerDialog loggerDlg = null;
     private MobileDB db;
     private IFishTrackRepository tempDataRepo, measRepo;
     private BinInfoRepository binInfoRepo;
@@ -146,37 +151,22 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
     private Button btnScanBin;
     private SupportDialog supportDialog;
     private String callingActivity;
-
     private Double surfaceTemp;
-
     private long mNextReadReverseIndex = KBRecordDataRsp.INVALID_DATA_RECORD_POS;
     private int mTotalReverseReadIndex = 0;
-
-    private static final int PERMISSION_COARSE_LOCATION = 22;
-    private static final int PERMISSION_FINE_LOCATION = 23;
-    private static final int PERMISSION_SCAN = 24;
-    private static final int PERMISSION_CONNECT = 25;
-    private final static String TAG = "Beacon.ScanAct";//DeviceScanActivity.class.getSimpleName();
-    private static final String LOG_TAG = "ScanExample";
-    private int mRssiFilterValue = -40;
-    private int mScanFailedContinueNum = 0;
-    private final static int MAX_ERROR_SCAN_NUMBER = 2;
-    private HashMap<String, KBeacon> mBeaconsDictory;
-    private KBeacon[] mBeaconsArray;
     private KBeaconsMgr mBeaconsMgr;
     private KBeacon mBeacon;
-    private boolean isScanning = false;
-    private int findBeaconAttempts = 0;
-
+    private boolean isConnecting = false;
     private String defaultProdLane = "1";
-
-    private Queue<String> pendingBins = new LinkedList<>();
+    private volatile boolean isActive = false;
+    private boolean isScanning = false;
+    private boolean bleRetryAllowed = false;
+    private volatile boolean userLeftScreen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bin_turnover);
-
 
         // instantiate ProgressDialog and set style.
         progressDialog = new ProgressDialog(BinTurnoverActivity.this);
@@ -200,32 +190,32 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
         }
 
         if (callingActivity != null && callingActivity.equalsIgnoreCase("BinTurnoverActivity")) {
-
+            // Already initialized from previous activity
         } else {
             SyncApi syncService = APIServiceGenerator.createAPI(SyncApi.class);
             String token = LocalPreferences.getToken();
             // sync Bin Info (complete BinLedger)
 
-            ComponentName callActivity = getCallingActivity();
-
             progressDialog.setMessage(render("Retrieving Data"));
-            progressDialog.show();
+            safeShowProgress("...");
 
             Call<List<BinInfoDTO>> syncBinsByPlantAsyncCall = syncService.getCompleteBinLedger("Bearer " + token);
             syncBinsByPlantAsyncCall.enqueue(new SyncBinInfo(this.syncResult));
         }
+
         // dont allow user to use the activity without bluetooth required permissions since they wont be able to do anything important
         checkBluetoothPermitAllowed();
 
         //initialize data logger manager
         mBeaconsMgr = KBeaconsMgr.sharedBeaconManager(this);
         if (mBeaconsMgr == null) {
-            CToast(getAppContext(), "make sure the phone has support ble funtion", Toast.LENGTH_LONG);
+            CToast(this, "make sure the phone has support ble funtion", Toast.LENGTH_LONG);
             finish();
             return;
         }
         mBeaconsMgr.delegate = this;
         mBeaconsMgr.setScanMode(KBeaconsMgr.SCAN_MODE_LOW_LATENCY);
+        mBeaconsMgr.setScanMinRssiFilter(-100);
 
         // set Header Info
         TextView tvHeader = findViewById(R.id.tvHeaderBinOverturn);
@@ -242,7 +232,6 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
 
         tvLotLabel.setVisibility(View.INVISIBLE);
         tvLot.setVisibility(View.INVISIBLE);
-
 
         String[] lines = new String[]{"1", "2", "3", "4", "5", "6"};
         // load all sites with (Packaging role?) and fill in the spPackagingSite Spinner.
@@ -267,6 +256,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
         tempProfileAdapter.notifyDataSetChanged();
 
         adapterBins = new BinWeightCageAdapter(this, new ArrayList<BinWeightCageAdapter.BinDetails>());
+        adapterBins.setOnBinSelectedListener(this::onBinSelected);
 
         if (adapterBinList != null && adapterBinList.size() > 0) {
             binList.stream().forEach(x -> adapterBins.addExpectedItem(loadBinInfo(x)));
@@ -299,16 +289,33 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
         // observe for state object obtained by LoggerDialog...
         //-----------------------------------------------------
         syncResult.observe(this, rs -> {
-            progressDialog.dismiss();
+            safeDismissProgress();
             // handle Successful operation from Logger.
             if (rs == null) {
-                //CToast(getAppContext(), "Αποτυχία σύνδεσης, ελέγξτε τη σύνδεσή σας ή επικοινωνήστε με την υποστήριξη", Toast.LENGTH_LONG);
                 finish();
             }
         });
         // ------ Logger Observer -----------------------------
 
         configFooter();
+    }
+
+    private void releaseBeacon() {
+        try {
+            if (mBeacon != null) {
+                mBeacon.disconnect();
+            }
+        } catch (Exception ignored) {
+        }
+
+        mBeacon = null;
+        isConnecting = false;
+        mNextReadReverseIndex = KBRecordDataRsp.INVALID_DATA_RECORD_POS;
+        mTotalReverseReadIndex = 0;
+    }
+
+    private boolean allTempsDownloaded() {
+        return adapterBins.getItemCount() == 0;
     }
 
     private boolean checkBluetoothPermitAllowed() {
@@ -345,6 +352,29 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
         }
 
         return bHasPermission;
+    }
+
+    private void safeShowProgress(String message) {
+        try {
+            if (!isActive || isFinishing() || isDestroyed() || progressDialog == null) return;
+            progressDialog.setMessage(message);
+            if (!progressDialog.isShowing()) {
+                progressDialog.show();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error showing progress dialog: " + e.getMessage());
+        }
+    }
+
+    private void safeDismissProgress() {
+        try {
+            if (progressDialog == null) return;
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error dismissing progress dialog: " + e.getMessage());
+        }
     }
 
     @Override
@@ -407,26 +437,59 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
         ivBack = findViewById(R.id.ivBackToMenu);
     }
 
+    private void forceStopAllOperations() {
+        try {
+            // stop RFID scanning
+            stopScanner();
+
+            // stop BLE scanning + disconnect
+            stopBleCompletely();
+
+            // cancel delayed callbacks
+            mScanHandler.removeCallbacksAndMessages(null);
+            autoHandler.removeCallbacksAndMessages(null);
+
+            // close progress dialog
+            safeDismissProgress();
+
+            // reset flags
+            isScanning = false;
+            isConnecting = false;
+            bleRetryAllowed = false;
+
+            // hard release beacon
+            releaseBeacon();
+
+        } catch (Exception ignored) {
+        }
+    }
+
     protected void configFooter() {
         ivNext = findViewById(R.id.ivToCongs);
-        ivNext.setVisibility(View.INVISIBLE);
+        ivNext.setVisibility(View.VISIBLE);
         ivNext.setOnClickListener(view -> {
-            stopScanner();
+
+            forceStopAllOperations();
+
             String v = validate();
             if (!Strings.isEmptyOrWhitespace(v)) {
-                CToast(getApplicationContext(), render("Invalid inputs : " + v), Toast.LENGTH_LONG);
-            } else {
-
-                QualityStepsState.completed[0] = true;
-
-                moveToNextScreen();
+                CToast(this, render("Invalid inputs : " + v), Toast.LENGTH_LONG);
+                return;
             }
+
+            QualityStepsState.completed[0] = true;
+            moveToNextScreen();
         });
 
+
         ivBack.setOnClickListener(view -> {
-            stopScanner();
+
+            userLeftScreen = true;
+            forceStopAllOperations();
+
             Intent i = new Intent(getApplicationContext(), QualitySelectStepsActivity.class);
             startActivity(i);
+            finish();
         });
     }
 
@@ -434,12 +497,13 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
         try {
             progressDialog.setCancelable(false);
             progressDialog.setMessage(render("Synchronizing data..."));
-            progressDialog.show();
+            safeShowProgress("...");
 
             String token = LocalPreferences.getToken();
 
-            db.binInfoDAO().updateBinInfoSetSorted(binEPC);
-
+            for (String epc : recLoggerData.data.keySet()) {
+                db.binInfoDAO().updateBinInfoSetSorted(epc);
+            }
             List<TemperatureTimeSeries> measurements = GlobalState.commitMeasurements(db, null);
             List<TemperatureTimeSeriesDTO> sortingTimeSeriesDTOs = new ArrayList<>();
             for (TemperatureTimeSeries ts : measurements) {
@@ -450,13 +514,32 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
                 if (!sortingTimeSeriesDTOs.isEmpty()) {
                     Call<List<TemperatureTimeSeriesDTO>> syncMsAsyncCall =
                             updService.syncMeasurements(sortingTimeSeriesDTOs, "Bearer " + token);
+                    autoHandler.postDelayed(() -> {
+                        try {
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                syncMsAsyncCall.cancel();
+                                safeDismissProgress();
+                                CToast(this, "Sync timeout. Data saved locally.", Toast.LENGTH_LONG);
+                                goNextAfterSync();
+                            }
+                        } catch (Exception ignored) {
+                        }
+                    }, SYNC_TIMEOUT_MS);
 
                     syncMsAsyncCall.enqueue(new SyncMsCallBack());
+                    return false;
+
+                } else {
+                    safeDismissProgress();
+                    CToast(this, "No temperature data to send", Toast.LENGTH_SHORT);
                 }
             } else {
                 for (int i = 0; i < 3; i++) {
-                    runOnUiThread(() -> CToast(getApplicationContext(),
-                            render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
+                    runOnUiThread(() ->
+                            CToast(this,
+                                    render(R.string.tx_saved_local_find_network_and_sync),
+                                    Toast.LENGTH_LONG)
+                    );
                 }
             }
 
@@ -468,15 +551,8 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
         }
     }
 
-
     private String validate() {
-        StringBuilder sb = new StringBuilder();
-        if (!IsDemo) {
-            if (binEPC == null) {
-                sb.append(String.format("\n%s is missing", "'Bin to turnover'"));
-            }
-        }
-        return sb.toString();
+        return "";
     }
 
     public void registerKeyReceiver() {
@@ -491,51 +567,82 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
     @Override
     protected void onStart() {
         super.onStart();
-        // Listen for Fn key press/release;
-        registerKeyReceiver();
+        isActive = true;
+        userLeftScreen = false;
     }
 
     @Override
     protected void onStop() {
-        super.onStop();
-        this.stopScanner();
-        //unregister the receiver
+        isActive = false;
+
         if (keyReceiver != null) {
-            unregisterReceiver(keyReceiver);
-            keyReceiver = null;
+            try {
+                unregisterReceiver(keyReceiver);
+            } catch (Exception ignored) {
+            }
         }
 
-        if (mBeacon != null && (mBeacon.getState() == KBConnState.Connected
-                || mBeacon.getState() == KBConnState.Connecting)) {
-            mBeacon.disconnect();
-        }
+        cleanupAll();
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
+        isActive = false;
+        cleanupAll();
         super.onDestroy();
-        this.stopScanner();
+    }
+
+    private void cleanupAll() {
+        stopScanner();
+
+        mScanHandler.removeCallbacksAndMessages(null);
+        autoHandler.removeCallbacksAndMessages(null);
+
+        scanAllBins = false;
+
+        try {
+            if (mBeaconsMgr != null) {
+                mBeaconsMgr.stopScanning();
+                mBeaconsMgr.clearBeacons();
+                mBeaconsMgr.delegate = null;
+            }
+        } catch (Exception ignored) {
+        }
+
+        releaseBeacon();
+
+        try {
+            if (progressDialog != null && progressDialog.isShowing()) {
+                safeDismissProgress();
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     protected void onClick(View view) {
-        if (progressDialog.isShowing()) {
-            CToast(getApplicationContext(), render(R.string.temp_downloading_in_progress), Toast.LENGTH_SHORT);
-            return;
-        }
+        if (!isActive || userLeftScreen) return;
+        if (isScanning || isConnecting) return;
+
+        isScanning = true;
 
         scanner_runnable = new SingleShotScanner(mScanHandler);
         scanner_runnable.setFilter(Filters.RFID_BIN);
         scanner_runnable.startReading();
         mScanHandler.postDelayed(scanner_runnable, 0);
-
     }
 
     // ###################################################
     private void stopScanner() {
-        if (this.scanner_runnable != null) {
-            this.scanner_runnable.stopReading();
-            mScanHandler.removeCallbacks(this.scanner_runnable);
+        try {
+            if (this.scanner_runnable != null) {
+                this.scanner_runnable.stopReading();
+                mScanHandler.removeCallbacks(this.scanner_runnable);
+            }
+        } catch (Exception ignored) {
         }
+
+        isScanning = false;
     }
 
     private BinWeightCageAdapter.BinDetails loadBinInfo(String epc) {
@@ -565,9 +672,6 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
         } else {
             tempProfileAdapter.fill(tmpBin);
         }
-
-        adapterBins.removeItem(tmpBin.rfid);
-        adapterBins.notifyDataSetChanged();
     }
 
     private void confirmScanBinOutOfLotDialog() {
@@ -601,7 +705,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
                 String login = LocalPreferences.getLoggedInUser("").trim();
 
                 if (Strings.isEmptyOrWhitespace(insertedPin)) {
-                    CToast(getAppContext(), render(R.string.missing_pin), Toast.LENGTH_LONG);
+                    CToast(BinTurnoverActivity.this, render(R.string.missing_pin), Toast.LENGTH_LONG);
                     return;
                 }
 
@@ -609,7 +713,6 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
                 AuthenticationService authSvc = new AuthenticationService();
                 boolean authentication = authSvc.authenticateUser(db, login, insertedPin);
                 if (authentication) {
-                    triggerDataLoggerDialog();
                     dialog.dismiss();
                 } else {
                     CToast(getAppContext(), render(R.string.invalid_password), Toast.LENGTH_LONG);
@@ -631,169 +734,215 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
 
             tmpBin = db.binInfoDAO().getByRFId(binEPC);
 
-            //todo:remove following lines
-            tmpBin = new BinInfo();
-            tmpBin.rfid = binEPC;
-            tmpBin.totalWeight = 50.0;
-            //////////////////////////
 
             if (tmpBin == null) {
-                CToast(getApplicationContext(), getString(R.string.sync_and_check_if_correct_bin, binEPC.substring(binEPC.length() - 4)), Toast.LENGTH_LONG);
+                CToast(this,
+                        getString(R.string.sync_and_check_if_correct_bin,
+                                binEPC.substring(binEPC.length() - 4)),
+                        Toast.LENGTH_LONG);
                 return;
             }
             if (tmpBin.sorted) {
-                CToast(getApplicationContext(), render(R.string.already_scannned_bin), Toast.LENGTH_LONG);
+                CToast(this, render(R.string.already_scannned_bin), Toast.LENGTH_LONG);
                 return;
             }
 
-            int nStartScan = mBeaconsMgr.startScanning();
 
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage(render("Εύρεση καταγραφικού..."));
-            progressDialog.show();
-            if (nStartScan == 0) {
-                Log.v(TAG, "start scan success");
-            } else if (nStartScan == KBeaconsMgr.SCAN_ERROR_BLE_NOT_ENABLE) {
-                CToast(getAppContext(), "Το Bluetooth δεν είναι ενεργοποιημένο", Toast.LENGTH_LONG);
-            } else if (nStartScan == KBeaconsMgr.SCAN_ERROR_UNKNOWN) {
-                CToast(getAppContext(), "Παρακαλώ επιβεβαιώστε ότι η εφαρμογή έχει πρόσβαση στο Bluetooth", Toast.LENGTH_LONG);
-            }
         }
     }
+
+    private void startLoggerScan() {
+        if (isConnecting || !bleRetryAllowed) return;
+
+        safeShowProgress("Εύρεση καταγραφικού...");
+        mBeaconsMgr.startScanning();
+
+        autoHandler.postDelayed(() -> {
+            if (!isConnecting) {
+                stopBleCompletely();
+                safeDismissProgress();
+                CToast(this, "Logger not found. Tap the bin to retry.", Toast.LENGTH_LONG);
+            }
+        }, SCAN_TIMEOUT_MS);
+    }
+
+
+    private void onBinSelected(String selectedBinEpc) {
+        binEPC = selectedBinEpc;
+
+        Asset asset = db.assetDAO().getAssetByEpc(binEPC);
+        if (asset == null || Strings.isEmptyOrWhitespace(asset.loggerEPC)) {
+            CToast(this, "Bin not linked to logger", Toast.LENGTH_LONG);
+            return;
+        }
+
+        loggerEPC = asset.loggerEPC;
+        startLoggerScan();
+    }
+
 
     @Override
     public void onConnStateChange(KBeacon beacon, KBConnState state, int nReason) {
-        if (state == KBConnState.Disconnected && !pendingBins.isEmpty()) {
-            mBeaconsMgr.startScanning(); // auto reconnect, no pause
+        if (!isActive || userLeftScreen) return;
+
+        if (state == KBConnState.Disconnected) {
+            stopBleCompletely();
+            safeDismissProgress();
+
+            if (!userLeftScreen) {
+                CToast(this, "Logger disconnected", Toast.LENGTH_LONG);
+            }
             return;
         }
+
         if (state == KBConnState.Connected) {
+            if (userLeftScreen) return;
+
             Log.v(LOG_TAG, "device has connected");
 
-            mBeacon.readSensorRecord(KBSensorType.HTHumidity,
-                    mNextReadReverseIndex, //read from last pos
-                    KBSensorReadOption.ReverseOrder,  //read direction type
-                    60,   //number of records the app want to read
+            mBeacon.readSensorRecord(
+                    KBSensorType.HTHumidity,
+                    mNextReadReverseIndex,
+                    KBSensorReadOption.ReverseOrder,
+                    60,
                     (bSuccess, dataRsp, error) -> {
+
+                        if (!isActive || userLeftScreen) return;
+
                         if (bSuccess) {
                             Long fishingTime = EncodingUtils.normalizeEpochTime(tmpBin.pickedAt);
                             List<TempSample> samples = new LinkedList<>();
-                            //mNextReadReverseIndex = dataRsp.readDataNextPos;
-                            for (KBRecordBase sensorRecord : dataRsp.readDataRspList) {
-                                boolean isAfterFishing;
-                                KBRecordHumidity record = (KBRecordHumidity) sensorRecord;
-                                Log.v(LOG_TAG, mTotalReverseReadIndex
-                                        + ": utc time:" + record.utcTime
-                                        + ",temperature:" + record.temperature
-                                        + ",humidity:" + record.humidity);
-                                mTotalReverseReadIndex++;
 
-                                if (fishingTime == null) {
-                                    isAfterFishing = true;
-                                } else {
-                                    if (record.utcTime > fishingTime) {
-                                        isAfterFishing = true;
-                                    } else {
-                                        isAfterFishing = false;
-                                    }
-                                }
-                                samples.add(new TempSample(createTimestamp(record.utcTime * 1000), String.format("%.2f", record.temperature), isAfterFishing));
+                            for (KBRecordBase sensorRecord : dataRsp.readDataRspList) {
+                                if (!isActive || userLeftScreen) return;
+
+                                KBRecordHumidity record = (KBRecordHumidity) sensorRecord;
+                                boolean isAfterFishing = fishingTime == null || record.utcTime > fishingTime;
+
+                                samples.add(new TempSample(
+                                        createTimestamp(record.utcTime * 1000),
+                                        String.format("%.2f", record.temperature),
+                                        isAfterFishing
+                                ));
                             }
-                            if (dataRsp.readDataNextPos == KBRecordDataRsp.INVALID_DATA_RECORD_POS) {
-                                Log.v(LOG_TAG, "Read data complete");
-                            } else {
-                                Log.v(LOG_TAG, "next read position:" + dataRsp.readDataNextPos);
-                            }
+
                             if (!CollectionUtils.isEmpty(samples)) {
-                                //put them in chronological order
                                 Collections.reverse(samples);
                                 retrievedAt = System.currentTimeMillis();
-                                recLoggerData.addDataSet(loggerEPC, binEPC, defaultProdLane, retrievedAt, samples);
-                                GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), binEPC, defaultProdLane);
-                                fillTemperatureProfileAdapter();   // updates adapter + UI visually
-                                pendingBins.remove(binEPC);
-                                adapterBins.removeItem(binEPC);
-                                adapterBins.notifyDataSetChanged();
-                                progressDialog.dismiss();
 
-                                if (pendingBins.isEmpty()) {
-                                    ivNext.setVisibility(View.VISIBLE);   // STOP & wait user confirmation
-                                } else {
-                                    startNextBinProcess();                // Continue scanning automatically
+                                recLoggerData.addDataSet(loggerEPC, binEPC, defaultProdLane, retrievedAt, samples);
+                                GlobalState.commitMeasurement(
+                                        MobileDB.getInstance(getAppContext()),
+                                        binEPC,
+                                        defaultProdLane
+                                );
+
+                                if (!userLeftScreen) {
+                                    fillTemperatureProfileAdapter();
+                                    adapterBins.removeItem(binEPC);
+                                    adapterBins.notifyDataSetChanged();
+                                    bleRetryAllowed = adapterBins.getItemCount() > 0;
                                 }
 
-                                // still bins remaining -> auto scan next
-
+                                safeDismissProgress();
+                                releaseBeacon();
                                 return;
-
                             } else {
                                 recLoggerData.addDataSet(loggerEPC, binEPC, defaultProdLane, System.currentTimeMillis(), null);
                                 GlobalState.commitMeasurement(MobileDB.getInstance(getAppContext()), binEPC, defaultProdLane);
-                                fillTemperatureProfileAdapter();
+
+                                if (!userLeftScreen) {
+                                    fillTemperatureProfileAdapter();
+                                }
                             }
                         }
-                        progressDialog.dismiss();
-                    });
+
+                        safeDismissProgress();
+                    }
+            );
         }
     }
+
 
     @Override
     public void onNotifyDataReceived(KBeacon beacon, int nEventType, byte[] sensorData) {
 
     }
 
+    private void goNextAfterSync() {
+        if (!didNavigate.compareAndSet(false, true)) return;
+
+        runOnUiThread(() -> {
+            Intent i = new Intent(getApplicationContext(), FishHomeActivity.class);
+
+            if (scannedBinEPCs.size() < binList.size()) {
+                i = new Intent(getApplicationContext(), BinTurnoverActivity.class);
+                i.putStringArrayListExtra("adapterBinList", (ArrayList<String>) convertBinDetailsToEPCs(adapterBins.getValues()));
+                i.putStringArrayListExtra("scannedBinList", (ArrayList<String>) scannedBinEPCs);
+                i.putStringArrayListExtra("expectedBinList", (ArrayList<String>) binList);
+                i.putExtra("calling_activity", "BinTurnoverActivity");
+            }
+
+            startActivity(i);
+            finish();
+        });
+    }
+
+
     @Override
     public void onBeaconDiscovered(KBeacon[] beacons) {
-        if (beacons == null || beacons.length == 0) return;
+        if (!isActive || userLeftScreen || isConnecting || !bleRetryAllowed) return;
 
         for (KBeacon beacon : beacons) {
+            if (loggerEPC != null &&
+                    beacon.getMac() != null &&
+                    beacon.getMac().equalsIgnoreCase(loggerEPC)) {
 
-            // Much smoother match — compares partial or full MAC
-            if (loggerEPC != null && beacon.getMac() != null && beacon.getMac().contains(loggerEPC)) {
-                try {
-                    KBAdvPacketSensor s = (KBAdvPacketSensor) beacon.getAdvPacketByType(KBAdvType.Sensor);
-                    surfaceTemp = s != null ? Double.valueOf(s.getTemperature()) : null;
-                } catch (Exception ignored) {
-                }
+                isScanning = false;
+                isConnecting = true;
 
                 mBeaconsMgr.stopScanning();
-                progressDialog.setMessage(render("Σύνδεση με καταγραφικό"));
-
                 mBeacon = beacon;
+
+                if (userLeftScreen) return;
+
                 mBeacon.connect(LocalPreferences.getLoggerPassword(), 20000, this);
                 return;
             }
         }
-
-        // Retry quietly instead of freezing
-        if (++findBeaconAttempts >= 5) {
-            progressDialog.dismiss();
-            CToast(getAppContext(), "Logger not found — skipping bin", Toast.LENGTH_LONG);
-            findBeaconAttempts = 0;
-            if (pendingBins.isEmpty()) {
-                ivNext.setVisibility(View.VISIBLE);
-            } else {
-                startNextBinProcess();
-            }
-            // move forward smooth
-        }
     }
+
 
     @Override
     public void onCentralBleStateChang(int nNewState) {
 
     }
 
+    private void stopBleCompletely() {
+        isScanning = false;
+        isConnecting = false;
+
+        try {
+            if (mBeaconsMgr != null) {
+                mBeaconsMgr.stopScanning();
+            }
+        } catch (Exception ignored) {
+        }
+
+        releaseBeacon();
+    }
+
+
     @Override
     public void onScanFailed(int errorCode) {
-        if (mScanFailedContinueNum >= MAX_ERROR_SCAN_NUMBER) {
-            CToast(getAppContext(), "Scan encountered error, error time:" + mScanFailedContinueNum, Toast.LENGTH_SHORT);
-            progressDialog.dismiss();
-            mBeaconsMgr.stopScanning();
-        }
-        mScanFailedContinueNum++;
+        if (!isActive || userLeftScreen) return;
 
+        stopBleCompletely();
+        safeDismissProgress();
+
+        CToast(this, "Scan failed. Press Scan to retry.", Toast.LENGTH_LONG);
     }
+
 
     private class ScanHandler extends Handler {
         private final WeakReference<BinTurnoverActivity> mActivity;
@@ -805,6 +954,8 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
         @SuppressLint("StringFormatMatches")
         @Override
         public void handleMessage(Message msg) {
+            BinTurnoverActivity a = mActivity.get();
+            if (a == null || !a.isActive) return;
             switch (msg.what) {
                 case 1:
                     String epcStr = msg.getData().getString("epc");
@@ -813,46 +964,20 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
                         try {
                             if (!Strings.isEmptyOrWhitespace(epcStr)) {
                                 if (tempProfileAdapter.getItemCount() > 0) {
-                                    CToast(getApplicationContext(), render(getString(R.string.already_scannned_bin_first_sync_temps, tempProfileAdapter.getEpc().substring(tempProfileAdapter.getEpc().length() - 10))), Toast.LENGTH_LONG);
+                                    CToast(a, render(getString(R.string.already_scannned_bin_first_sync_temps, tempProfileAdapter.getEpc().substring(tempProfileAdapter.getEpc().length() - 10))), Toast.LENGTH_LONG);
                                     return;
                                 }
-                                //loggerEPC = epcStr;
-                                binEPC = epcStr;
-                                //new code here
-                                //#########################
-                                Asset bin = db.assetDAO().getAssetByEpc(binEPC);
-//                                bin = new Asset();
-//                                bin.rfid = epcStr;
-//                                bin.loggerEPC = "BC:57:29:13:FF:CD";
-                                if (bin == null) {
-                                    CToast(getApplicationContext(), render(getString(R.string.epc_not_correlated_to_bin, binEPC.substring(binEPC.length() - 10))), Toast.LENGTH_LONG);
-                                    return;
-                                } else {
-                                    loggerEPC = bin.loggerEPC;
-                                    if (Strings.isEmptyOrWhitespace(bin.loggerEPC)) {
-                                        CToast(getApplicationContext(), render(getString(R.string.bin_not_correlated_to_logger, bin.code, binEPC.substring(binEPC.length() - 10))), Toast.LENGTH_LONG);
-                                        return;
-                                    }
 
-                                    if (!binList.contains(binEPC)) {
-                                        while (attemptsToScanBinOutOfLot < 1) {
-                                            attemptsToScanBinOutOfLot++;
-                                            CToast(getApplicationContext(), render(R.string.scanned_bin_out_of_lot), Toast.LENGTH_LONG);
-                                            return;
-                                        }
-                                        confirmScanBinOutOfLotDialog();
-                                        adapterBins.markReceived(Collections.singletonList(binEPC));
-                                        attemptsToScanBinOutOfLot = 0;
-                                        return;
-                                    }
-                                    triggerDataLoggerDialog();
-                                    return;
-
-
+                                if (!adapterBins.contains(epcStr)) {
+                                    adapterBins.addExpectedItem(loadBinInfo(epcStr));
+                                    scannedBinEPCs.add(epcStr);
+                                    adapterBins.notifyDataSetChanged();
+                                    bleRetryAllowed = true;
                                 }
-                                //########################
+
+
                             } else {
-                                CToast(getApplicationContext(), render(R.string.scan_bin_again), Toast.LENGTH_SHORT);
+                                CToast(a, render(R.string.scan_bin_again), Toast.LENGTH_SHORT);
                             }
                             this.removeCallbacks(scanner_runnable);
                         } catch (Exception e) {
@@ -864,8 +989,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
                                 List<BinInfo> binInfoList = db.binInfoDAO().getEPCListByRFId(epcStr);
                                 String lot = null;
 
-                                //todo: comment follwing line, omly used for tesing
-                                binList.add(epcStr);
+
                                 ///////
                                 for (BinInfo bin : binInfoList) {
                                     binList.add(bin.rfid);
@@ -874,11 +998,9 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
                                 if (binList == null || binList.isEmpty()) {
                                     while (attemptsToGetEpcList < 3) {
                                         attemptsToGetEpcList++;
-                                        CToast(getApplicationContext(), render(getString(R.string.no_epc_list_returned)), Toast.LENGTH_LONG);
                                         return;
                                     }
                                     attemptsToGetEpcList = 0;
-                                    CToast(getApplicationContext(), render(getString(R.string.scan_all_bins)), Toast.LENGTH_LONG);
                                     btnScanBin.setText(R.string.scan_bin);
                                     scanAllBins = true;
                                     return;
@@ -886,6 +1008,7 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
                                 binList.stream().forEach(x -> adapterBins.addExpectedItem(loadBinInfo(x)));
                                 adapterBins.notifyDataSetChanged();
                                 btnScanBin.setText(R.string.scan_bin);
+                                bleRetryAllowed = true;
                                 scanAllBins = true;
 
                                 if (!Strings.isEmptyOrWhitespace(lot)) {
@@ -894,17 +1017,8 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
                                     tvLot.setText(lot);
                                 }
 
-                                /* ============ ADDED FOR AUTO-PROCESSING ============ */
-                                pendingBins.clear();
-                                pendingBins.addAll(binList);
-                                btnScanBin.setEnabled(false);           // No more manual scans
-                                if (pendingBins.isEmpty()) {
-                                    ivNext.setVisibility(View.VISIBLE);
-                                } else {
-                                    startNextBinProcess();
-                                }
-                                // Automatically start first bin
-                                /* =================================================== */
+                                /* ============ REMOVED AUTO-PROCESSING CODE ============ */
+                                // User will now manually scan each bin they want to download
 
                             }
                         } catch (Exception e) {
@@ -916,83 +1030,73 @@ public class BinTurnoverActivity extends AppCompatActivity implements KBeaconsMg
                     this.removeCallbacks(scanner_runnable);
                     break;
             }
-
         }
     }
-
-    private void startNextBinProcess() {
-        if (pendingBins.isEmpty()) {
-            return;
-        }
-
-        binEPC = pendingBins.poll();   // Take next EPC
-        processSingleBin(binEPC);      // Start BLE + temperature read
-    }
-
-    private void processSingleBin(String epc) {
-        Asset bin = db.assetDAO().getAssetByEpc(epc);
-
-        if (bin == null || Strings.isEmptyOrWhitespace(bin.loggerEPC)) {
-            CToast(getAppContext(), "Missing logger for BIN " + epc, Toast.LENGTH_LONG);
-            if (pendingBins.isEmpty()) {
-                ivNext.setVisibility(View.VISIBLE);
-            } else {
-                startNextBinProcess();
-            }
-            // Skip + continue to next
-            return;
-        }
-
-        loggerEPC = bin.loggerEPC;
-        progressDialog.setMessage("Reading temperature for BIN: " + epc);
-        progressDialog.show();
-        findBeaconAttempts = 0;
-        mBeaconsMgr.startScanning();    // find logger automatically
-    }
-
 
     public class SyncMsCallBack implements Callback<List<TemperatureTimeSeriesDTO>> {
         @Override
-        public void onResponse(Call<List<TemperatureTimeSeriesDTO>> call, Response<List<TemperatureTimeSeriesDTO>> response) {
-            progressDialog.dismiss();
-            List<TemperatureTimeSeriesDTO> rs = response.body();
+        public void onResponse(Call<List<TemperatureTimeSeriesDTO>> call,
+                               Response<List<TemperatureTimeSeriesDTO>> response) {
+            if (!isActive || isFinishing() || isDestroyed()) return;
+            safeDismissProgress();
+            releaseBeacon();
+
             ivBack.setVisibility(View.VISIBLE);
-            ivNext.setVisibility(View.INVISIBLE);
 
             if (response.isSuccessful()) {
-                // reset existing Temperature values in stateRecord.
                 recLoggerData.clearData();
                 tempDataRepo.removeAll(db);
                 db.measurementsDAO().deleteAll();
                 measRepo.removeAll(db);
-                // binInfoRepo.removeOneBin(db, tmpBin);
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
+
+                runOnUiThread(() ->
+                        CToast(BinTurnoverActivity.this,
+                                render(R.string.tx_successfully_updated),
+                                Toast.LENGTH_SHORT)
+                );
             } else {
-                // could not update Processing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_temperatures_tx_update_failure), Toast.LENGTH_LONG));
+                runOnUiThread(() ->
+                        CToast(BinTurnoverActivity.this,
+                                render(R.string.error_temperatures_tx_update_failure),
+                                Toast.LENGTH_LONG)
+                );
             }
+
+            goNextAfterSync();
         }
 
         @Override
         public void onFailure(Call<List<TemperatureTimeSeriesDTO>> call, Throwable error) {
+            if (!isActive || isFinishing() || isDestroyed()) return;
+
+            safeDismissProgress();
+            releaseBeacon();
+
             ivBack.setVisibility(View.VISIBLE);
             ivNext.setVisibility(View.VISIBLE);
-            if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
-            } else if (error instanceof IOException) {
-                for (int i = 0; i < 3; i++) {
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
-                }
-            } else {
-                if (call.isCanceled()) {
-                    //Call was cancelled by user
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
+
+            runOnUiThread(() -> {
+                if (error instanceof SocketTimeoutException) {
+                    CToast(BinTurnoverActivity.this,
+                            render(R.string.error_connection_timeout),
+                            Toast.LENGTH_LONG);
+                } else if (error instanceof IOException) {
+                    CToast(BinTurnoverActivity.this,
+                            render(R.string.tx_saved_local_find_network_and_sync),
+                            Toast.LENGTH_LONG);
+                } else if (call.isCanceled()) {
+                    CToast(BinTurnoverActivity.this,
+                            render(R.string.error_cancelled_call),
+                            Toast.LENGTH_LONG);
                 } else {
-                    //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
+                    CToast(BinTurnoverActivity.this,
+                            render(R.string.general_error + error.getLocalizedMessage()),
+                            Toast.LENGTH_LONG);
                 }
-            }
+
+                goNextAfterSync();
+            });
         }
+
     }
 }
-

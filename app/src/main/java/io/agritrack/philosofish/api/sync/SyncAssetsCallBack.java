@@ -36,7 +36,6 @@ public class SyncAssetsCallBack extends BaseSyncCallBack<List<AssetDTO>> {
 
         } else {
 
-            set(getAppContext().getString(R.string.no));
         }
     }
 }

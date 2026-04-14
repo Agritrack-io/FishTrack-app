@@ -74,41 +74,45 @@ public class FilterableAdapter extends RecyclerView.Adapter<FilterableAdapter.vi
     }
 
     @Override
-    public void onBindViewHolder(viewHolder viewHolder, int position) {
-        if (position == 0) {
-            viewHolder.rfid.setText(Html.fromHtml("<b>" + "<font color='#16325c'>"
-                            + getAppContext().getResources().getString(R.string.barcode) + "</font>" + "</b>",
-                    HtmlCompat.FROM_HTML_MODE_LEGACY));
-            viewHolder.code.setText(Html.fromHtml("<b>" + "<font color='#16325c'>"
-                            + getAppContext().getResources().getString(R.string.code) + "</font>" + "</b>",
-                    HtmlCompat.FROM_HTML_MODE_LEGACY));
-//            viewHolder.netEye.setText(Html.fromHtml("<b>" + "<font color='#16325c'>"
-//                            + getAppContext().getResources().getString(R.string.eye) + "</font>" + "</b>",
-//                    HtmlCompat.FROM_HTML_MODE_LEGACY));
-//            viewHolder.perimeter.setText(Html.fromHtml("<b>" + "<font color='#16325c'>"
-//                            + getAppContext().getResources().getString(R.string.perimeter) + "</font>" + "</b>",
-//                    HtmlCompat.FROM_HTML_MODE_LEGACY));
-        } else if (position > 0 && position <= getItemCount() - 1) {
-            position = position - 1;
-            viewHolder.rfid.setText(arrayListFiltered.get(position).getRfid());
-            viewHolder.code.setText(!Strings.isEmptyOrWhitespace(arrayListFiltered.get(position).getCode()) ? arrayListFiltered.get(position).getCode() : arrayListFiltered.get(position).getLabel());
-//            viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
-//            viewHolder.netEye.setText(arrayListFiltered.get(position).getNetEyeGirth() != null ? String.valueOf(arrayListFiltered.get(position).getNetEyeGirth()) : "");
-//            viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
-//            viewHolder.perimeter.setText(arrayListFiltered.get(position).getPerimeter() != null ? String.valueOf(arrayListFiltered.get(position).getPerimeter()) : "");
+    public void onBindViewHolder(viewHolder holder, int adapterPos) {
 
-            viewHolder.itemView.setSelected(selectedPos == position + 1);
+        if (adapterPos == 0) {
+            holder.code.setText(Html.fromHtml("<b><font color='#16325c'>"
+                    + context.getString(R.string.code)
+                    + "</font></b>", HtmlCompat.FROM_HTML_MODE_LEGACY));
 
-            viewHolder.itemView.setBackgroundColor(selectedPos == position + 1 ? Color.GRAY : Color.TRANSPARENT);
+            holder.rfid.setText(Html.fromHtml("<b><font color='#16325c'>"
+                    + context.getString(R.string.barcode)
+                    + "</font></b>", HtmlCompat.FROM_HTML_MODE_LEGACY));
+
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+            return;
         }
-        if (arrayListFiltered.size() > 0) {
 
-            viewHolder.code.setTextColor(!Strings.isEmptyOrWhitespace(arrayListFiltered.get(position).getRfid()) ? Color.RED : Color.BLACK);
-            viewHolder.rfid.setVisibility(View.GONE);
-//            viewHolder.netEye.setVisibility(arrayListFiltered.get(position).getNetEyeGirth() != null ? View.VISIBLE : View.GONE);
-//            viewHolder.perimeter.setVisibility(arrayListFiltered.get(position).getPerimeter() != null ? View.VISIBLE : View.GONE);
-        }
+        int dataPos = adapterPos - 1;
+        GenericListModel item = arrayListFiltered.get(dataPos);
+
+        boolean isCorrelated = !Strings.isEmptyOrWhitespace(item.getRfid());
+
+        holder.code.setText(!Strings.isEmptyOrWhitespace(item.getCode()) ? item.getCode() : item.getLabel());
+        holder.code.setTextColor(isCorrelated ? Color.RED : Color.BLACK);
+
+        holder.rfid.setText(isCorrelated ? lastPart(item.getRfid(), 11) : "");
+        holder.rfid.setVisibility(isCorrelated ? View.VISIBLE  : View.GONE);
+
+        holder.itemView.setSelected(selectedPos == adapterPos);
+        holder.itemView.setBackgroundColor(selectedPos == adapterPos ? Color.GRAY : Color.TRANSPARENT);
     }
+
+    private String lastPart(String value, int keepChars) {
+        if (Strings.isEmptyOrWhitespace(value)) return "";
+        value = value.trim();
+
+        return value.length() <= keepChars
+                ? value
+                : value.substring(value.length() - keepChars);
+    }
+
 
     @Override
     public int getItemCount() {

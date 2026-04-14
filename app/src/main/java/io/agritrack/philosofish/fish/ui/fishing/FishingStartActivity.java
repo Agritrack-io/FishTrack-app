@@ -195,7 +195,6 @@ public class FishingStartActivity extends AppCompatActivity {
             fishingRecord.reqWeight = Double.valueOf(tvRequestedQuantity.getText().toString());
         }
 
-        GlobalState.commitFishing(db, Boolean.FALSE);
 
         return fishingRecord;
     }

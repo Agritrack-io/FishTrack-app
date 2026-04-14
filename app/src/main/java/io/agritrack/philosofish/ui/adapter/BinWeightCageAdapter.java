@@ -26,10 +26,31 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
     private String selectedValue = null;
     private String selectedLabel = null;
 
+    private OnBinSelectedListener onBinSelectedListener;
     public BinWeightCageAdapter(Context context, List<BinDetails> values) {
         this.mList = values;
         this.mLayoutInflater = LayoutInflater.from(context);
     }
+
+    public interface OnBinSelectedListener {
+        void onBinSelected(String epc);
+    }
+
+    public void clear() {
+        mList.clear();
+        notifyDataSetChanged();
+    }
+
+
+    public void setOnBinSelectedListener(OnBinSelectedListener listener) {
+        this.onBinSelectedListener = listener;
+    }
+
+    public boolean contains(String epc) {
+        if (epc == null) return false;
+        return mList.stream().anyMatch(b -> epc.equals(b.epc));
+    }
+
 
     public List<BinDetails> getValues() {
         return mList;
@@ -128,13 +149,15 @@ public class BinWeightCageAdapter extends RecyclerView.Adapter<BinWeightCageAdap
             //holder.itemView.setBackgroundColor(Color.WHITE);
             holder.tvItemName.setTextColor(Color.BLACK);
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currBin.setSelected(!currBin.isSelected);
-                holder.itemView.setBackgroundColor(currBin.isSelected ? Color.GRAY : Color.TRANSPARENT);
+        holder.itemView.setOnClickListener(v -> {
+
+
+            if (onBinSelectedListener != null) {
+                onBinSelectedListener.onBinSelected(currBin.epc);
             }
+
         });
+
 
 //        holder.itemView.setBackgroundColor(selectedPos == position ? Color.GRAY : Color.TRANSPARENT);
         holder.tvItemSNo.setText(position + 1 + ".");

@@ -19,8 +19,8 @@ android {
         applicationId "io.agritrack.philosofish"
         minSdkVersion 26
         targetSdk 34
-        versionCode 3
-        versionName "1.03"
+        versionCode 8
+        versionName "2.2.1"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

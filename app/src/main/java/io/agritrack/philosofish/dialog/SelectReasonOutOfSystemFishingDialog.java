@@ -165,7 +165,6 @@ public class SelectReasonOutOfSystemFishingDialog implements AdapterView.OnItemC
                             recFishing.outOfSystemFishing = true;
                             recFishing.requesterName = supervisor.getText().toString();
                             recFishing.packagingPlant = plants.getSelectedItem().toString();
-                            GlobalState.commitFishing(db, Boolean.FALSE);
 
                             // Redirect directly to HarvestRequestsActivity instead
                             Intent i = new Intent(activity, io.agritrack.philosofish.fish.ui.fishing.HarvestRequestsActivity.class);

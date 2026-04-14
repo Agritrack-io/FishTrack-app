@@ -241,12 +241,17 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
             syncAllPhotos();
 
             // persist Processing Record data to local DB.
-            PackageQualityTransaction tx = GlobalState.commitPackageFreshQuality(db, Boolean.TRUE);
+            PackageQualityTransaction tx =
+                    GlobalState.commitPackageFreshQuality(db, Boolean.TRUE);
+
+            final String savedLot = tx.lot;
+
+            resetPackageQualityState();
 
             if (hasConnection()) {
                 // sync Processing records
                 Call<PackageQualityTxDTO> syncTxAsyncCall = updService.syncPackQualityTx(PackageQualityTxDTO.convertFresh(tx), "Bearer " + token);
-                syncTxAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncTxCallBack());
+                syncTxAsyncCall.enqueue(new PackageQualityConfirmActivity.SyncTxCallBack(savedLot));
             } else {
                 for (int i = 0; i < 3; i++) {
                     runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
@@ -262,54 +267,68 @@ public class PackageQualityConfirmActivity extends LocationAwareActivity {
             progressDialog.dismiss();
         }
     }
-
-    private boolean qualityTxMarkFreshSynced() {
-        try {
-            System.out.println("About to delete quality tx");
-            PackageQualityTransaction delObj = db.packageQualityTransactionDAO().getByLot(recQualityPackage.lot);
-            if (delObj != null) {
-                delObj.isFreshSynced = true;
-                db.packageQualityTransactionDAO().update(delObj);
-                return true;
-            }
-            return false;
-        } catch (Exception x) {
-            x.printStackTrace();
-            return false;
-        }
+    private void resetPackageQualityState() {
+        GlobalState.initPackageQualityRecord();
     }
 
+    private boolean qualityTxMarkFreshSynced(String lot) {
+        PackageQualityTransaction obj =
+                db.packageQualityTransactionDAO().getByLot(lot);
+
+        if (obj == null) return false;
+
+        obj.isFreshSynced = true;
+        db.packageQualityTransactionDAO().update(obj);
+        return true;
+    }
+
+
     public class SyncTxCallBack implements Callback<PackageQualityTxDTO> {
+
+        private final String lot;
+
+        public SyncTxCallBack(String lot) {
+            this.lot = lot;
+        }
+
         @Override
-        public void onResponse(Call<PackageQualityTxDTO> call, Response<PackageQualityTxDTO> response) {
+        public void onResponse(Call<PackageQualityTxDTO> call,
+                               Response<PackageQualityTxDTO> response) {
             if (response.isSuccessful() || IsDemo) {
-                qualityTxMarkFreshSynced();
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_successfully_updated), Toast.LENGTH_SHORT));
-            } else {
-                // could not update Processing TX on backend!!!
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_postquality_update_failure), Toast.LENGTH_LONG));
+                qualityTxMarkFreshSynced(lot);
+
+                runOnUiThread(() ->
+                        CToast(getApplicationContext(),
+                                render(R.string.tx_successfully_updated),
+                                Toast.LENGTH_SHORT)
+                );
             }
         }
 
         @Override
         public void onFailure(Call<PackageQualityTxDTO> call, Throwable error) {
             if (error instanceof SocketTimeoutException) {
-                runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_connection_timeout), Toast.LENGTH_LONG));
+                runOnUiThread(() ->
+                        CToast(getApplicationContext(),
+                                render(R.string.error_connection_timeout),
+                                Toast.LENGTH_LONG)
+                );
             } else if (error instanceof IOException) {
-                for (int i = 0; i < 3; i++) {
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.tx_saved_local_find_network_and_sync), Toast.LENGTH_LONG));
-                }
+                runOnUiThread(() ->
+                        CToast(getApplicationContext(),
+                                render(R.string.tx_saved_local_find_network_and_sync),
+                                Toast.LENGTH_LONG)
+                );
             } else {
-                if (call.isCanceled()) {
-                    //Call was cancelled by user
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.error_cancelled_call), Toast.LENGTH_LONG));
-                } else {
-                    //Generic error handling
-                    runOnUiThread(() -> CToast(getApplicationContext(), render(R.string.general_error + error.getLocalizedMessage()), Toast.LENGTH_LONG));
-                }
+                runOnUiThread(() ->
+                        CToast(getApplicationContext(),
+                                render(R.string.general_error + error.getLocalizedMessage()),
+                                Toast.LENGTH_LONG)
+                );
             }
         }
     }
+
 
     public class PhotoFileUploadCallBack implements Callback<ResponseBody> {
         @Override

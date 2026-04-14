@@ -173,7 +173,6 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
                         recFishing.availBins = rcAdapterBins.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
 
                         // TODO:: add component in GlobalState for Bins Initialization, should not use the Fishing state.
-                        GlobalState.commitFishing(db, Boolean.FALSE);
                     }
                 });
 
@@ -238,7 +237,6 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
                     } else {
                         recFishing.binWeightRecord.addRecord(binEPC, 0, System.currentTimeMillis() / 1000L, null, null);
                     }
-                    GlobalState.commitFishing(db, Boolean.FALSE);
                 }
             }
         });
@@ -435,7 +433,6 @@ public class InitBinsActivity extends AppCompatActivity implements IDialogCloseL
                                 rcAdapterBins.setValues(scannedBinEPCs.stream().map(x -> new TemplateRecyclerAdapter.BinEpc(x)).collect(Collectors.toList()));
                                 rcAdapterBins.notifyDataSetChanged();
                                 recFishing.availBins = rcAdapterBins.getValues().stream().map(x -> x.epc).collect(Collectors.toList());
-                                GlobalState.commitFishing(db, Boolean.FALSE);
 
                                 // ------------------------------------------
                                 //--- New implementation of Logger Dialog ---

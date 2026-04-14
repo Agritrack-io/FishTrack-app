@@ -76,7 +76,7 @@ public class GlobalState {
     }
 
     public static FishingRecord initFishingRecord() {
-        recFishing = new FishingRecord();
+        recFishing.reset();
         return recFishing;
     }
 
@@ -127,8 +127,7 @@ public class GlobalState {
         recQualityFinal = new FinalQualityRecord();
         recQuality = new QualityRecord();
 
-        recFishing = new FishingRecord();
-
+        recFishing.reset();
         shouldReset = true;
     }
 
@@ -226,11 +225,15 @@ public class GlobalState {
         }
     }
 
-    public static FishingTransaction commitFishing(MobileDB db, Boolean finalCommit) {
+    public static FishingTransaction commitFishingFinal(MobileDB db) {
         try {
-            FishingTransaction txFishing = new FishingTransaction();
+            if (recFishing.txKey == null) {
+                recFishing.txKey = UUID.randomUUID();
+            }
 
+            FishingTransaction txFishing = new FishingTransaction();
             txFishing.id = recFishing.txKey;
+
             txFishing.outOfSystemFishing = recFishing.outOfSystemFishing;
             txFishing.fishingRq = recFishing.fishingRq;
             txFishing.requester = recFishing.requesterName;
@@ -240,31 +243,42 @@ public class GlobalState {
             txFishing.fishType = recFishing.speciesName;
             txFishing.notes = recFishing.notes;
             txFishing.hlot = recFishing.hlot;
-            txFishing.parentItinSno = "Split Request".equalsIgnoreCase(recFishing.notes) ? recFishing.parentItinSno : null;
+            txFishing.parentItinSno =
+                    "Split Request".equalsIgnoreCase(recFishing.notes)
+                            ? recFishing.parentItinSno
+                            : null;
+
             txFishing.lastFeed = recFishing.lastFed;
-            txFishing.averageWeight = String.valueOf(recFishing.averageWeight);
+            txFishing.averageWeight =
+                    recFishing.averageWeight != null
+                            ? String.valueOf(recFishing.averageWeight)
+                            : null;
             txFishing.ichthyopathologist = recFishing.pathologist;
             txFishing.packagingPlant = recFishing.packagingPlant;
-            txFishing.iceAdequacy = recFishing.adequateIce.toString();
+            txFishing.iceAdequacy = String.valueOf(recFishing.adequateIce);
             txFishing.iceSupplier = recFishing.iceSupplier;
+
             txFishing.availBins = recFishing.availBins;
             txFishing.harvestBinsCnt = recFishing.totalBinsUsed;
-            txFishing.orderedQuantity = recFishing.reqWeight != null ? Double.valueOf(recFishing.reqWeight).intValue() : null;
+            txFishing.orderedQuantity =
+                    recFishing.reqWeight != null ? recFishing.reqWeight.intValue() : null;
+
             txFishing.totalQty = recFishing.totalFishWeight;
-            if (finalCommit) {    //filter empty bins on final commit
-                if (recFishing.binWeightRecord.getBinsData() != null) {
-                    txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData()
+
+            txFishing.harvestBinsData =
+                    recFishing.binWeightRecord != null
+                            ? recFishing.binWeightRecord.getBinsData()
                             .stream()
-                            .filter(x -> x.weight != null && x.weight > 0)
-                            .collect(Collectors.toList());
-                }
-                txFishing.createdAt = System.currentTimeMillis();
-            } else {
-                txFishing.harvestBinsData = recFishing.binWeightRecord.getBinsData();
-            }
+                            .filter(b -> b.weight != null && b.weight > 0)
+                            .collect(Collectors.toList())
+                            : new ArrayList<>();
+
             txFishing.reasonOfDeviation = recFishing.reasonOfDeviation;
             txFishing.team = recFishing.fishingTeam;
-            txFishing.txStatus = Boolean.FALSE.equals(finalCommit) ? TxStatus.PENDING : TxStatus.COMPLETED;
+
+            txFishing.txStatus = TxStatus.COMPLETED;
+            txFishing.createdAt = System.currentTimeMillis();
+
             txFishing.user = LocalPreferences.getLoggedInUser("N/A");
             txFishing.site = LocalPreferences.getCurrentSiteName();
             txFishing.longitude = recFishing.longitude;
@@ -272,9 +286,9 @@ public class GlobalState {
 
             db.fishingTransactionDAO().insert(txFishing);
             return txFishing;
+
         } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            throw new IllegalStateException("Final commitFishing failed", ex);
         }
     }
 
@@ -321,7 +335,13 @@ public class GlobalState {
     }
     public static void resetAll() {
         recHarvest = new HarvestRecord();
-        recFishing = new FishingRecord();
+
+        if (recFishing == null) {
+            recFishing = new FishingRecord();
+        } else {
+            recFishing.reset();
+        }
+
         recFishingRequests = new LinkedList<>();
         recTransport = new TransportationRecord();
         recProcessing = new ProcessingRecord();

@@ -125,13 +125,11 @@ public class HarvestRequestsActivity extends AppCompatActivity implements Adapte
             if (!Strings.isEmptyOrWhitespace(v)) {
                 CToast(getApplicationContext(), render(v), Toast.LENGTH_LONG);
             } else {
-                // transfer existing Record Data to Entity and persist to db.
-                GlobalState.commitFishing(this.db, false);
-
                 Intent i = new Intent(getApplicationContext(), FishingBinsActivity.class);
                 startActivity(i);
             }
         });
+
 
         ImageView ivBack = findViewById(R.id.ivBackToHomeMenu);
         ivBack.setOnClickListener(view -> {
